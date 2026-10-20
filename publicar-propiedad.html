@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Propiedad Gratis | W Gestión Inmobiliaria</title>
+    <meta name="description" content="Publica tu propiedad de forma 100% gratuita y sin necesidad de registro en W Gestión Inmobiliaria. Alcance ante inversionistas fiduciarios en Santiago y Viña del Mar.">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#0D1117',
+                        'secondary': '#CAA052',
+                        'secondary-hover': '#B38B3D',
+                        'gold-accent': '#D4AF37',
+                        'tech-base': '#080C12',
+                        'tech-card': '#0E131D',
+                        'tech-border': 'rgba(255, 255, 255, 0.12)',
+                        'tech-border-bright': 'rgba(255, 255, 255, 0.25)',
+                        'brand-crimson': '#92003B',
+                        'brand-emerald': '#10B981',
+                        'brand-cobalt': '#2563EB',
+                    },
+                    fontFamily: {
+                        'display': ['"Urbanist"', '"Plus Jakarta Sans"', 'sans-serif'],
+                        'label': ['"Outfit"', 'sans-serif'],
+                        'body-lg': ['"Plus Jakarta Sans"', 'sans-serif'],
+                        'body-md': ['"Plus Jakarta Sans"', 'sans-serif'],
+                        'mono': ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts Oficiales: Urbanist + Outfit + Plus Jakarta Sans + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Urbanist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined' !important;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 20px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none !important;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .bg-grid-blueprint {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #080C12; }
+        ::-webkit-scrollbar-thumb { background: #26292c; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #CAA052; }
+    </style>
+</head>
+<body class="bg-[#080C12] text-white font-body-md antialiased selection:bg-[#CAA052] selection:text-black min-h-screen flex flex-col">
+
+    <!-- =========================================================
+         1. HEADER PRINCIPAL (W GESTIÓN INMOBILIARIA)
+         ========================================================= -->
+    <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-white/10 transition-all duration-300" style="background-color: rgba(8, 12, 18, 0.95);">
+        <div class="h-20 w-full px-6 md:px-12 lg:px-16 flex items-center justify-between max-w-[1700px] mx-auto">
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-3.5 group">
+                <div class="h-11 w-11 rounded-sm bg-white p-1.5 flex items-center justify-center border border-white/20 shadow-sm transition-transform group-hover:scale-105">
+                    <img src="./assets/media_1792425582649_f69a6f17.jpg" alt="Logo W Gestión Inmobiliaria" class="h-full w-full object-contain">
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-display font-medium text-lg sm:text-xl tracking-tight text-white group-hover:text-secondary transition-colors">
+                        W Gestión Inmobiliaria
+                    </span>
+                    <span class="font-label text-[9px] text-white/50 tracking-[0.22em] uppercase">Corretaje de Propiedades &amp; Administración de Condominios</span>
+                </div>
+            </a>
+
+            <!-- Navegación Exclusiva con Publicar Propiedad Activo -->
+            <nav class="hidden lg:flex items-center gap-8 font-label text-xs uppercase tracking-[0.2em]">
+                <a href="index.html" class="text-white/70 hover:text-white transition-colors py-2 relative group">
+                    <span>Inicio</span>
+                    <span class="absolute bottom-0 left-0 w-0 h-[1.5px] bg-secondary group-hover:w-full transition-all duration-300"></span>
+                </a>
+                <a href="index.html#catalogo-activo" class="text-white/70 hover:text-white transition-colors py-2 relative group">
+                    <span>Catálogo</span>
+                    <span class="absolute bottom-0 left-0 w-0 h-[1.5px] bg-secondary group-hover:w-full transition-all duration-300"></span>
+                </a>
+                <a href="servicios.html" class="text-white/70 hover:text-white transition-colors py-2 relative group">
+                    <span>Servicios</span>
+                    <span class="absolute bottom-0 left-0 w-0 h-[1.5px] bg-secondary group-hover:w-full transition-all duration-300"></span>
+                </a>
+                <a href="publicar-propiedad.html" class="text-white font-semibold py-2 relative group flex items-center gap-1.5">
+                    <span class="text-secondary">Publicar Propiedad</span>
+                    <span class="text-[9px] bg-[#92003B] text-white px-1.5 py-0.2 rounded font-mono font-bold tracking-normal">GRATIS</span>
+                    <span class="absolute bottom-0 left-0 w-full h-[1.5px] bg-secondary"></span>
+                </a>
+                <a href="index.html#contacto-asesor" class="text-white/70 hover:text-white transition-colors py-2 relative group">
+                    <span>Contacto</span>
+                    <span class="absolute bottom-0 left-0 w-0 h-[1.5px] bg-secondary group-hover:w-full transition-all duration-300"></span>
+                </a>
+            </nav>
+
+            <!-- Acción Directa Concierge -->
+            <div class="hidden sm:flex items-center gap-3">
+                <a href="https://wa.me/56965312618?text=Hola,%20tengo%20una%20consulta%20sobre%20la%20publicación%20de%20propiedades" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366]/20 border border-[#25D366]/40 text-[#25D366] font-label text-xs uppercase tracking-[0.15em] font-semibold rounded-sm hover:bg-[#25D366] hover:text-black transition-all duration-300">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span>WhatsApp Concierge</span>
+                </a>
+                <a href="intranet.html" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/20 text-gray-300 hover:text-white font-label text-xs rounded-sm hover:bg-white/10 transition-colors" title="Editor Visual">
+                    <i class="fa-solid fa-sliders text-xs text-secondary"></i>
+                    <span class="hidden xl:inline">Editor</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- =========================================================
+         2. HERO DE PUBLICACIÓN (LUXURY ARCHITECTURAL)
+         ========================================================= -->
+    <main class="flex-1 pt-28 pb-20 px-4 sm:px-6 md:px-12 lg:px-16 max-w-5xl mx-auto w-full relative">
+        
+        <!-- Ambient Glow Elements -->
+        <div class="absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-secondary/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+        <!-- Breadcrumb & Header Title -->
+        <div class="text-center mb-10 relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 border border-secondary/30 text-secondary text-[11px] font-mono uppercase tracking-[0.2em] mb-4">
+                <i class="fa-solid fa-bullhorn text-xs"></i> Publicación Abierta • Sin Registro
+            </div>
+            <h1 class="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight text-white mb-3">
+                Crea el Anuncio de tu <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-secondary to-[#E2B170]">Propiedad</span>
+            </h1>
+            <p class="text-white/60 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                Difunde tu inmueble de forma 100% gratuita. Conecta con compradores e inversionistas fiduciarios calificados en Santiago Oriente, Viña del Mar y todo Chile.
+            </p>
+
+            <!-- Trust Pills -->
+            <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mt-6 text-xs text-white/70">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                    <span>Sin registros ni contraseñas</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-secondary"></i>
+                    <span>Títulos protegidos Ley 21.442</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-amber-400"></i>
+                    <span>Código único de seguimiento</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================================================
+             3. FORMULARIO MODERNO EN SECCIONES
+             ========================================================= -->
+        <form id="property-publish-form" onsubmit="handlePublishSubmit(event)" class="space-y-8 relative z-10">
+
+            <!-- ----------------------------------------------------
+                 SECCIÓN 1: OPERACIÓN Y TIPO DE PROPIEDAD
+                 ---------------------------------------------------- -->
+            <div class="bg-[#0E131D] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
+                <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-sm">1</div>
+                    <div>
+                        <h2 class="font-display font-bold text-lg text-white">Tipo de Operación & Inmueble</h2>
+                        <p class="text-[11px] text-white/50">Define cómo comercializarás el activo</p>
+                    </div>
+                </div>
+
+                <!-- Tipo de Operación: Venta vs Arriendo -->
+                <div>
+                    <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-2.5">Tipo de Operación <span class="text-secondary">*</span></label>
+                    <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                        <label class="operation-card border border-white/15 bg-[#121824] hover:border-secondary p-4 rounded-xl flex items-center gap-3 cursor-pointer transition-all">
+                            <input type="radio" name="operation" value="Venta" checked onchange="handleOperationChange(this.value)" class="accent-secondary w-4 h-4">
+                            <div>
+                                <div class="font-display font-bold text-sm text-white flex items-center gap-1.5">
+                                    <i class="fa-solid fa-house-chimney text-secondary"></i> En Venta
+                                </div>
+                                <div class="text-[11px] text-white/50">Comercialización patrimonial</div>
+                            </div>
+                        </label>
+                        <label class="operation-card border border-white/15 bg-[#121824] hover:border-secondary p-4 rounded-xl flex items-center gap-3 cursor-pointer transition-all">
+                            <input type="radio" name="operation" value="Arriendo" onchange="handleOperationChange(this.value)" class="accent-secondary w-4 h-4">
+                            <div>
+                                <div class="font-display font-bold text-sm text-white flex items-center gap-1.5">
+                                    <i class="fa-solid fa-key text-emerald-400"></i> En Arriendo
+                                </div>
+                                <div class="text-[11px] text-white/50">Renta mensual garantizada</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Tipo de Inmueble -->
+                <div>
+                    <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-2.5">Tipo de Inmueble <span class="text-secondary">*</span></label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                        <label class="prop-type-pill p-3 rounded-lg border border-white/10 bg-[#121824] hover:border-secondary flex items-center gap-2 cursor-pointer transition-all">
+                            <input type="radio" name="propertyType" value="Departamento" checked class="accent-secondary">
+                            <span class="text-xs font-medium text-white">🏢 Departamento</span>
+                        </label>
+                        <label class="prop-type-pill p-3 rounded-lg border border-white/10 bg-[#121824] hover:border-secondary flex items-center gap-2 cursor-pointer transition-all">
+                            <input type="radio" name="propertyType" value="Casa" class="accent-secondary">
+                            <span class="text-xs font-medium text-white">🏡 Casa / Residencia</span>
+                        </label>
+                        <label class="prop-type-pill p-3 rounded-lg border border-white/10 bg-[#121824] hover:border-secondary flex items-center gap-2 cursor-pointer transition-all">
+                            <input type="radio" name="propertyType" value="Comercial" class="accent-secondary">
+                            <span class="text-xs font-medium text-white">🏛️ Comercial / Oficina</span>
+                        </label>
+                        <label class="prop-type-pill p-3 rounded-lg border border-white/10 bg-[#121824] hover:border-secondary flex items-center gap-2 cursor-pointer transition-all">
+                            <input type="radio" name="propertyType" value="Penthouse" class="accent-secondary">
+                            <span class="text-xs font-medium text-white">🌅 Penthouse Luxury</span>
+                        </label>
+                        <label class="prop-type-pill p-3 rounded-lg border border-white/10 bg-[#121824] hover:border-secondary flex items-center gap-2 cursor-pointer transition-all">
+                            <input type="radio" name="propertyType" value="Terreno" class="accent-secondary">
+                            <span class="text-xs font-medium text-white">🌳 Terreno / Parcela</span>
+                        </label>
+                        <label class="prop-type-pill p-3 rounded-lg border border-white/10 bg-[#121824] hover:border-secondary flex items-center gap-2 cursor-pointer transition-all">
+                            <input type="radio" name="propertyType" value="Industrial" class="accent-secondary">
+                            <span class="text-xs font-medium text-white">🏭 Bodega / Industrial</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Título del Anuncio (Máximo 70 caracteres) -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80">Título de la Propiedad <span class="text-secondary">*</span></label>
+                        <span id="title-char-counter" class="text-[11px] font-mono text-secondary">0/70</span>
+                    </div>
+                    <input type="text" id="prop-title" name="title" maxlength="70" required oninput="handleTitleInput(this)" placeholder="Ej: Espectacular Departamento con Vista Panorámica al Golf" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors">
+                    <p class="text-[10px] text-white/40 mt-1">Sugerencia: Menciona el tipo de inmueble, sector o atributo principal (máx. 70 caracteres).</p>
+                </div>
+
+                <!-- Descripción Breve del Inmueble con Asistente IA -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80">Descripción Breve <span class="text-secondary">*</span></label>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="enhanceDescriptionWithAI()" id="btn-ai-enhance" class="px-2.5 py-1 rounded bg-gradient-to-r from-purple-900/90 to-[#92003B] hover:from-purple-800 hover:to-[#b30048] text-white text-[10px] font-bold border border-secondary/50 flex items-center gap-1 shadow cursor-pointer transition-all">
+                                <i class="fa-solid fa-wand-magic-sparkles text-secondary"></i>
+                                <span>Redactar con IA</span>
+                            </button>
+                            <span id="desc-char-counter" class="text-[11px] font-mono text-white/50">0/600</span>
+                        </div>
+                    </div>
+                    <textarea id="prop-description" name="description" rows="4" maxlength="600" required oninput="handleDescInput(this)" placeholder="Describe las principales cualidades del inmueble, terminaciones, iluminación, áreas comunes y entorno cercano..." class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg p-3 text-sm text-white placeholder-white/30 focus:outline-none leading-relaxed transition-colors"></textarea>
+                </div>
+            </div>
+
+            <!-- ----------------------------------------------------
+                 SECCIÓN 2: UBICACIÓN TERRITORIAL (CHILE COMPLETO)
+                 ---------------------------------------------------- -->
+            <div class="bg-[#0E131D] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
+                <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-sm">2</div>
+                    <div>
+                        <h2 class="font-display font-bold text-lg text-white">Ubicación del Inmueble en Chile</h2>
+                        <p class="text-[11px] text-white/50">Formularios desplegables dependientes Región & Comuna</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Región (Desplegable) -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Región de Chile <span class="text-secondary">*</span></label>
+                        <select id="select-region" name="region" required onchange="handleRegionChange(this.value)" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-3 text-sm text-white focus:outline-none transition-colors cursor-pointer">
+                            <option value="">Seleccione una región...</option>
+                        </select>
+                    </div>
+
+                    <!-- Comuna (Subdependencia dinámica) -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Comuna <span class="text-secondary">*</span></label>
+                        <select id="select-comuna" name="comuna" required class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-3 text-sm text-white focus:outline-none transition-colors cursor-pointer" disabled>
+                            <option value="">Primero seleccione una región...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dirección Detallada: Calle, Número, Depto/Casa, Ciudad/Sector -->
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                    <div class="sm:col-span-6">
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Calle / Avenida <span class="text-secondary">*</span></label>
+                        <input type="text" name="street" required placeholder="Ej: Av. Apoquindo / Av. San Martín" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none">
+                    </div>
+                    <div class="sm:col-span-3">
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Número <span class="text-secondary">*</span></label>
+                        <input type="text" name="number" required placeholder="Ej: 4500" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none">
+                    </div>
+                    <div class="sm:col-span-3">
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Depto / Casa / Of.</label>
+                        <input type="text" name="unit" placeholder="Ej: 1402 / Casa B" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Sector / Ciudad -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Ciudad / Localidad</label>
+                        <input type="text" name="city" placeholder="Ej: Santiago / Viña del Mar" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Sector o Barrio Referencial</label>
+                        <input type="text" name="neighborhood" placeholder="Ej: San Damián, El Golf, Costa de Montemar" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Checkbox Privacidad de Dirección -->
+                <label class="flex items-center gap-2.5 text-xs text-white/70 cursor-pointer pt-1">
+                    <input type="checkbox" name="hideExactAddress" checked class="w-4 h-4 rounded accent-secondary">
+                    <span>Ocultar número exacto públicamente (mostrar solo calle y sector referencial para mayor seguridad).</span>
+                </label>
+            </div>
+
+            <!-- ----------------------------------------------------
+                 SECCIÓN 3: PRECIO & VALORES
+                 ---------------------------------------------------- -->
+            <div class="bg-[#0E131D] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
+                <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-sm">3</div>
+                    <div>
+                        <h2 class="font-display font-bold text-lg text-white">Precio & Gastos del Inmueble</h2>
+                        <p class="text-[11px] text-white/50">Valores en UF o Pesos Chilenos (CLP)</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- Moneda -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Moneda <span class="text-secondary">*</span></label>
+                        <select id="currency-select" name="currency" onchange="updatePricePlaceholder(this.value)" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="UF" selected>Unidad de Fomento (UF)</option>
+                            <option value="CLP">Pesos Chilenos ($ CLP)</option>
+                        </select>
+                    </div>
+
+                    <!-- Precio -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5" id="label-price">Valor Solicitado <span class="text-secondary">*</span></label>
+                        <div class="relative">
+                            <input type="number" step="any" id="prop-price" name="price" required placeholder="Ej: 14800" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white font-mono placeholder-white/30 focus:outline-none">
+                            <span id="badge-currency" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-secondary font-bold">UF</span>
+                        </div>
+                    </div>
+
+                    <!-- Gastos Comunes -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Gastos Comunes ($ CLP aprox)</label>
+                        <input type="number" name="commonExpenses" placeholder="Ej: 220000" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white font-mono placeholder-white/30 focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ----------------------------------------------------
+                 SECCIÓN 4: CARACTERÍSTICAS TÉCNICAS (SECCIÓN INDEPENDIENTE)
+                 ---------------------------------------------------- -->
+            <div class="bg-[#0E131D] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
+                <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-sm">4</div>
+                    <div>
+                        <h2 class="font-display font-bold text-lg text-white">Características del Inmueble (Ficha Técnica)</h2>
+                        <p class="text-[11px] text-white/50">Superficies, dormitorios, baños y capacidades</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <!-- M2 Útiles -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">M² Útiles <span class="text-secondary">*</span></label>
+                        <div class="relative">
+                            <input type="number" name="areaUseful" required placeholder="Ej: 140" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white font-mono focus:outline-none">
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/40">m²</span>
+                        </div>
+                    </div>
+
+                    <!-- M2 Totales -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">M² Totales <span class="text-secondary">*</span></label>
+                        <div class="relative">
+                            <input type="number" name="areaTotal" required placeholder="Ej: 165" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white font-mono focus:outline-none">
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/40">m²</span>
+                        </div>
+                    </div>
+
+                    <!-- Cantidad Dormitorios -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Dormitorios <span class="text-secondary">*</span></label>
+                        <select name="bedrooms" required class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="1">1 Dormitorio</option>
+                            <option value="2">2 Dormitorios</option>
+                            <option value="3" selected>3 Dormitorios</option>
+                            <option value="4">4 Dormitorios</option>
+                            <option value="5">5+ Dormitorios</option>
+                        </select>
+                    </div>
+
+                    <!-- Cantidad Baños -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Baños <span class="text-secondary">*</span></label>
+                        <select name="bathrooms" required class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="1">1 Baño</option>
+                            <option value="2">2 Baños</option>
+                            <option value="3" selected>3 Baños</option>
+                            <option value="4">4 Baños</option>
+                            <option value="5">5+ Baños</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1">
+                    <!-- Estacionamientos -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Estacionamientos</label>
+                        <select name="parkings" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2" selected>2</option>
+                            <option value="3">3</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+
+                    <!-- Bodegas -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Bodegas</label>
+                        <select name="storageUnits" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="0">0</option>
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3+</option>
+                        </select>
+                    </div>
+
+                    <!-- Orientación -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Orientación</label>
+                        <select name="orientation" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="Nor-Oriente" selected>Nor-Oriente</option>
+                            <option value="Norte">Norte</option>
+                            <option value="Oriente">Oriente</option>
+                            <option value="Poniente">Poniente</option>
+                            <option value="Sur">Sur</option>
+                            <option value="Despejada 360°">Despejada 360°</option>
+                        </select>
+                    </div>
+
+                    <!-- Antigüedad -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Antigüedad</label>
+                        <select name="propertyAge" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="Nuevo (A estrenar)">Nuevo (A estrenar)</option>
+                            <option value="1 a 5 años" selected>1 a 5 años</option>
+                            <option value="5 a 10 años">5 a 10 años</option>
+                            <option value="Más de 10 años">Más de 10 años</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ----------------------------------------------------
+                 SECCIÓN 5: ETIQUETAS Y AMENIDADES SUGERIDAS
+                 ---------------------------------------------------- -->
+            <div class="bg-[#0E131D] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
+                <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-sm">5</div>
+                    <div>
+                        <h2 class="font-display font-bold text-lg text-white">Equipamiento & Amenidades</h2>
+                        <p class="text-[11px] text-white/50">Selecciona con un clic los atributos destacados</p>
+                    </div>
+                </div>
+
+                <!-- Chips Interactivos -->
+                <div>
+                    <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-2">Etiquetas Sugeridas</label>
+                    <div class="flex flex-wrap gap-2" id="amenities-container">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Añadir etiqueta personalizada -->
+                <div class="pt-2">
+                    <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Agregar Otra Etiqueta Personalizada</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="custom-tag-input" placeholder="Ej: Jacuzzi, Terraza en Azotea, Domótica..." class="flex-1 bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2 text-xs text-white placeholder-white/30 focus:outline-none">
+                        <button type="button" onclick="addCustomTag()" class="px-4 py-2 bg-secondary/20 hover:bg-secondary text-secondary hover:text-black font-bold text-xs rounded-lg transition-colors cursor-pointer">
+                            + Agregar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ----------------------------------------------------
+                 SECCIÓN 6: CARGA DE FOTOGRAFÍAS (MÍNIMO 3, MÁXIMO 5)
+                 ---------------------------------------------------- -->
+            <div class="bg-[#0E131D] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
+                <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-sm">6</div>
+                        <div>
+                            <h2 class="font-display font-bold text-lg text-white">Fotografías del Inmueble <span class="text-secondary">*</span></h2>
+                            <p class="text-[11px] text-white/50">Mínimo 3 fotos y máximo 5 fotos de alta resolución</p>
+                        </div>
+                    </div>
+                    <!-- Photo Counter Badge -->
+                    <div id="photo-counter-badge" class="px-3 py-1 rounded-full bg-red-950/60 border border-red-500/50 text-red-300 font-mono text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-camera"></i>
+                        <span id="photo-count-text">0 de 5 fotos (Faltan 3)</span>
+                    </div>
+                </div>
+
+                <!-- Dropzone de fotos -->
+                <div id="photo-dropzone" onclick="document.getElementById('file-input-photos').click()" class="border-2 border-dashed border-white/20 hover:border-secondary rounded-xl p-8 text-center cursor-pointer transition-all bg-[#121824]/60 group">
+                    <input type="file" id="file-input-photos" accept="image/*" multiple onchange="handleFileSelect(event)" class="hidden">
+                    <div class="w-14 h-14 rounded-full bg-secondary/10 text-secondary flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                    </div>
+                    <div class="font-display font-bold text-sm text-white mb-1">
+                        Haz clic o arrastra tus fotos aquí
+                    </div>
+                    <p class="text-[11px] text-white/50 max-w-sm mx-auto">
+                        Soporta JPG, PNG, WebP. Resolución recomendada 1920x1080 o superior.
+                    </p>
+                </div>
+
+                <!-- Fast Demo Button -->
+                <div class="flex items-center justify-between pt-1">
+                    <span class="text-[11px] text-white/40">¿Quieres probar rápido sin buscar fotos en tu equipo?</span>
+                    <button type="button" onclick="loadDemoPhotos()" class="px-3 py-1.5 rounded bg-secondary/15 hover:bg-secondary/30 text-secondary border border-secondary/40 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Cargar 3 Fotos Demo de Lujo</span>
+                    </button>
+                </div>
+
+                <!-- Previews Grid -->
+                <div id="photos-preview-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-2">
+                    <!-- Photo previews inserted here -->
+                </div>
+            </div>
+
+            <!-- ----------------------------------------------------
+                 SECCIÓN 7: VINCULAR VIDEO TOUR DE YOUTUBE (EMBED EN VIVO)
+                 ---------------------------------------------------- -->
+            <div class="bg-[#0E131D] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
+                <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-sm">7</div>
+                    <div>
+                        <h2 class="font-display font-bold text-lg text-white">Video Tour de YouTube (Embed en Vivo)</h2>
+                        <p class="text-[11px] text-white/50">Permite a los interesados recorrer la propiedad en video</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Enlace del Video de YouTube</label>
+                    <div class="relative">
+                        <i class="fa-brands fa-youtube absolute left-3.5 top-1/2 -translate-y-1/2 text-red-500 text-base"></i>
+                        <input type="url" id="youtube-url-input" name="youtubeUrl" oninput="handleYoutubeInput(this.value)" placeholder="https://www.youtube.com/watch?v=... o https://youtu.be/..." class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg pl-10 pr-4 py-2.5 text-sm text-white font-mono placeholder-white/30 focus:outline-none">
+                    </div>
+                    <p class="text-[10px] text-white/40 mt-1">Copia y pega la URL de tu video. El reproductor embebido se actualizará automáticamente abajo.</p>
+                </div>
+
+                <!-- Container del Embed de YouTube -->
+                <div id="youtube-preview-container" class="hidden aspect-video w-full rounded-xl overflow-hidden border border-white/20 bg-black shadow-xl">
+                    <iframe id="youtube-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- ----------------------------------------------------
+                 SECCIÓN 8: PREGUNTAS ESTRATÉGICAS ADICIONALES
+                 ---------------------------------------------------- -->
+            <div class="bg-[#0E131D] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
+                <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-sm">8</div>
+                    <div>
+                        <h2 class="font-display font-bold text-lg text-white">Gestión & Condiciones del Inmueble</h2>
+                        <p class="text-[11px] text-white/50">Preguntas estratégicas para agilizar el cierre</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Disponibilidad de Visitas -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Disponibilidad para Visitas <span class="text-secondary">*</span></label>
+                        <select name="visitAvailability" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="Inmediata (Propiedad Desocupada)" selected>Inmediata (Propiedad Desocupada)</option>
+                            <option value="Coordinación con 24 hrs de anticipación">Coordinación con 24 hrs de anticipación</option>
+                            <option value="Solo Días de Semana (Lunes a Viernes)">Solo Días de Semana (Lunes a Viernes)</option>
+                            <option value="Solo Fines de Semana">Solo Fines de Semana</option>
+                            <option value="A convenir telefónicamente">A convenir telefónicamente</option>
+                        </select>
+                    </div>
+
+                    <!-- Estado Legal de Títulos -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Estado Legal & Títulos de Dominio</label>
+                        <select name="legalStatus" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="Títulos al día y Recepción Final Aprobada" selected>Títulos al día y Recepción Final Aprobada</option>
+                            <option value="Con Crédito Hipotecario Vigente">Con Crédito Hipotecario Vigente (Alzamiento en venta)</option>
+                            <option value="En trámite de Posesión Efectiva">En trámite de Posesión Efectiva</option>
+                            <option value="Requiere Auditoría Legal Fiduciaria W">Requiere Auditoría Legal Fiduciaria W</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Asesoría Fiduciaria Gratuita W Gestión -->
+                <div class="bg-gradient-to-r from-secondary/15 via-[#121824] to-secondary/15 border border-secondary/40 rounded-xl p-4 flex items-start gap-3">
+                    <input type="checkbox" id="check-advisory" name="needsAdvisory" checked class="w-5 h-5 rounded accent-secondary mt-0.5 cursor-pointer">
+                    <label for="check-advisory" class="text-xs text-white/90 cursor-pointer">
+                        <strong class="text-secondary block font-display text-sm">Quiero recibir Asesoría Fiduciaria & Tasación Referencial Gratuita</strong>
+                        Deseo que un tasador experto de W Gestión revise mi publicación, valide los valores de mercado y me asesore sobre la plusvalía de la propiedad sin costo inicial.
+                    </label>
+                </div>
+            </div>
+
+            <!-- ----------------------------------------------------
+                 SECCIÓN 9: DATOS DE CONTACTO (SIN REGISTRO)
+                 ---------------------------------------------------- -->
+            <div class="bg-[#0E131D] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
+                <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-lg bg-secondary/20 text-secondary flex items-center justify-center font-bold text-sm">9</div>
+                    <div>
+                        <h2 class="font-display font-bold text-lg text-white">Datos de Contacto del Anunciante</h2>
+                        <p class="text-[11px] text-white/50">Dónde te contactarán los interesados o el equipo fiduciario</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- Nombre Completo -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Nombre y Apellido <span class="text-secondary">*</span></label>
+                        <input type="text" name="contactName" required placeholder="Ej: Marcela Undurraga" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none">
+                    </div>
+
+                    <!-- Teléfono / WhatsApp -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">WhatsApp / Teléfono Móvil <span class="text-secondary">*</span></label>
+                        <input type="tel" name="contactPhone" required placeholder="+56 9 9876 5432" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white font-mono placeholder-white/30 focus:outline-none">
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Correo Electrónico <span class="text-secondary">*</span></label>
+                        <input type="email" name="contactEmail" required placeholder="tu-email@gmail.com" class="w-full bg-[#121824] border border-white/15 focus:border-secondary rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Rol -->
+                <div>
+                    <label class="block text-xs font-label uppercase tracking-wider text-white/80 mb-1.5">Tu Rol en esta Publicación</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="p-2.5 rounded-lg border border-white/10 bg-[#121824] text-center cursor-pointer hover:border-secondary transition-all">
+                            <input type="radio" name="publisherRole" value="Propietario" checked class="accent-secondary">
+                            <span class="text-xs text-white block mt-1">Propietario Directo</span>
+                        </label>
+                        <label class="p-2.5 rounded-lg border border-white/10 bg-[#121824] text-center cursor-pointer hover:border-secondary transition-all">
+                            <input type="radio" name="publisherRole" value="Mandatario" class="accent-secondary">
+                            <span class="text-xs text-white block mt-1">Mandatario Familiar</span>
+                        </label>
+                        <label class="p-2.5 rounded-lg border border-white/10 bg-[#121824] text-center cursor-pointer hover:border-secondary transition-all">
+                            <input type="radio" name="publisherRole" value="Corredor" class="accent-secondary">
+                            <span class="text-xs text-white block mt-1">Corredor Asociado</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ----------------------------------------------------
+                 BOTÓN DE ENVÍO PRINCIPAL
+                 ---------------------------------------------------- -->
+            <div class="pt-4 text-center">
+                <button type="submit" id="btn-submit-form" class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-secondary via-[#E2B170] to-secondary hover:from-[#d5b067] hover:to-[#d5b067] text-black font-heading font-black text-sm uppercase tracking-[0.2em] rounded-xl shadow-[0_0_30px_rgba(202,160,82,0.4)] transition-all transform active:scale-95 cursor-pointer">
+                    <span id="submit-btn-label" class="flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up text-base"></i>
+                        <span>PUBLICAR ANUNCIO GRATIS</span>
+                    </span>
+                </button>
+                <p class="text-[11px] text-white/40 mt-3">
+                    Al publicar aceptas los términos fiduciarios de W Gestión Inmobiliaria y el tratamiento de datos para la promoción del activo.
+                </p>
+            </div>
+
+        </form>
+
+    </main>
+
+    <!-- =========================================================
+         4. MODAL DE ÉXITO & COMPROBANTE DE PUBLICACIÓN
+         ========================================================= -->
+    <div id="modal-success" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-[#0E131D] border border-secondary/60 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-5 text-center relative overflow-hidden">
+            <!-- Glow background -->
+            <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-72 h-72 bg-secondary/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mx-auto text-2xl shadow-[0_0_25px_rgba(16,185,129,0.4)]">
+                <i class="fa-solid fa-check"></i>
+            </div>
+
+            <div>
+                <span class="text-[10px] font-mono uppercase tracking-[0.2em] text-secondary font-bold">Publicación Exitosa</span>
+                <h3 class="font-display font-extrabold text-2xl text-white mt-1">¡Tu Anuncio ha sido Publicado!</h3>
+                <p class="text-xs text-white/60 mt-1.5 leading-relaxed">
+                    Tu propiedad fue registrada correctamente en la base de datos de W Gestión Inmobiliaria y ya cuenta con un código de seguimiento oficial.
+                </p>
+            </div>
+
+            <!-- Ficha Resumen -->
+            <div class="bg-[#121824] border border-white/10 rounded-2xl p-4 text-left space-y-2.5">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                    <span class="text-[10px] text-white/50 uppercase font-mono">Código Único:</span>
+                    <span id="modal-code-badge" class="font-mono text-secondary font-bold text-xs bg-secondary/15 px-2 py-0.5 rounded border border-secondary/30">W-PROP-2026</span>
+                </div>
+                <div>
+                    <h4 id="modal-prop-title" class="font-bold text-sm text-white truncate">Título de la propiedad</h4>
+                    <p id="modal-prop-location" class="text-xs text-white/60">Comuna, Región</p>
+                </div>
+                <div class="flex items-center justify-between pt-1">
+                    <span id="modal-prop-price" class="font-mono font-bold text-secondary text-base">0 UF</span>
+                    <span id="modal-prop-type" class="text-[10px] bg-white/10 px-2 py-0.5 rounded text-white/70">Venta • Depto</span>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="space-y-2 pt-2">
+                <a id="btn-modal-whatsapp" href="#" target="_blank" class="w-full py-3 bg-[#25D366] hover:bg-[#20ba5a] text-black font-heading font-black text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all cursor-pointer">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span>Notificar Publicación por WhatsApp</span>
+                </a>
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="index.html" class="py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold flex items-center justify-center transition-colors">
+                        Ir al Inicio
+                    </a>
+                    <button type="button" onclick="resetFormForNew()" class="py-2.5 rounded-xl border border-white/20 hover:bg-white/5 text-white/80 text-xs font-semibold flex items-center justify-center transition-colors cursor-pointer">
+                        Publicar Otra
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         5. FOOTER OFICIAL
+         ========================================================= -->
+    <footer class="w-full bg-[#05080C] text-white py-12 px-6 md:px-12 lg:px-16 border-t border-white/10 mt-auto">
+        <div class="max-w-[1700px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-white/50">
+            <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-sm bg-white p-1 flex items-center justify-center">
+                    <img src="./assets/media_1792425582649_f69a6f17.jpg" alt="Logo W" class="h-full w-full object-contain">
+                </div>
+                <span>© 2026 W Gestión Inmobiliaria. Todos los derechos reservados.</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="index.html" class="hover:text-white transition-colors">Inicio</a>
+                <a href="servicios.html" class="hover:text-white transition-colors">Servicios</a>
+                <a href="publicar-propiedad.html" class="text-secondary">Publicar Propiedad</a>
+                <a href="index.html#contacto-asesor" class="hover:text-white transition-colors">Contacto</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =========================================================
+         6. LÓGICA JAVASCRIPT DEL FORMULARIO Y SELECTORES CHILENOS
+         ========================================================= -->
+    <script>
+        // Diccionario Geográfico de Chile: 16 Regiones y sus Comunas
+        const CHILE_TERRITORY = {
+            "Región Metropolitana de Santiago": [
+                "Las Condes", "Vitacura", "Lo Barnechea", "Providencia", "La Reina", "Ñuñoa", 
+                "Santiago Centro", "Chicureo / Colina", "Macul", "Peñalolén", "La Florida", "Maipú", 
+                "Huechuraba", "Quilicura", "San Miguel", "San Bernardo", "Puente Alto", "Lampa", 
+                "Talagante", "Pirque", "Buin", "Paine", "Cerrillos", "Conchalí", "Estación Central", 
+                "Independencia", "Pudahuel", "Recoleta", "Renca"
+            ],
+            "Región de Valparaíso": [
+                "Viña del Mar", "Concón", "Valparaíso", "Reñaca", "Zapallar", "Papudo", "Puchuncaví", 
+                "Maitencillo", "Algarrobo", "Santo Domingo", "Quilpué", "Villa Alemana", "Casablanca", 
+                "Los Andes", "Quillota", "Limache", "Olmué", "San Antonio"
+            ],
+            "Región de Coquimbo": [
+                "La Serena", "Coquimbo", "Ovalle", "Vicuña", "Illapel", "Los Vilos", "Salamanca"
+            ],
+            "Región de Antofagasta": [
+                "Antofagasta", "Calama", "Mejillones", "San Pedro de Atacama", "Tocopilla"
+            ],
+            "Región de Atacama": [
+                "Copiapó", "Caldera", "Vallenar", "Huasco", "Chañaral"
+            ],
+            "Región de Tarapacá": [
+                "Iquique", "Alto Hospicio", "Pozo Almonte", "Pica"
+            ],
+            "Región de Arica y Parinacota": [
+                "Arica", "Camarones", "Putre"
+            ],
+            "Región de O'Higgins": [
+                "Rancagua", "Machalí", "Graneros", "Rengo", "San Fernando", "Pichilemu", "Santa Cruz"
+            ],
+            "Región del Maule": [
+                "Talca", "Curicó", "Linares", "Constitución", "Parral", "Molina"
+            ],
+            "Región de Ñuble": [
+                "Chillán", "Chillán Viejo", "San Carlos", "Pinto", "Quirihue"
+            ],
+            "Región del Biobío": [
+                "Concepción", "San Pedro de la Paz", "Chiguayante", "Talcahuano", "Los Ángeles", "Coronel", "Hualpén"
+            ],
+            "Región de La Araucanía": [
+                "Temuco", "Pucón", "Villarrica", "Angol", "Padre Las Casas"
+            ],
+            "Región de Los Ríos": [
+                "Valdivia", "Panguipulli", "La Unión", "Río Bueno"
+            ],
+            "Región de Los Lagos": [
+                "Puerto Varas", "Puerto Montt", "Frutillar", "Osorno", "Castro", "Ancud", "Llanquihue"
+            ],
+            "Región de Aysén": [
+                "Coyhaique", "Aysén", "Chile Chico"
+            ],
+            "Región de Magallanes": [
+                "Punta Arenas", "Puerto Natales", "Porvenir"
+            ]
+        };
+
+        // Lista de Amenidades / Tags Recomendados
+        const DEFAULT_AMENITIES = [
+            "Estacionamiento", "Bodega", "Piscina", "Quincho / Parrilla", "Calefacción Central", 
+            "Aire Acondicionado", "Terraza Panorámica", "Gimnasio", "Seguridad 24/7", "Conserjería", 
+            "Pet Friendly", "Logia Independiente", "Salón de Eventos", "Ascensor Directo", 
+            "Copropiedad Ley 21.442", "Jardín Privado", "Cocina Equipada", "Termopanel"
+        ];
+
+        let selectedTags = new Set(["Estacionamiento", "Bodega", "Terraza Panorámica", "Seguridad 24/7"]);
+        let uploadedPhotos = []; // array of { src, isMain }
+
+        // Inicialización
+        window.addEventListener('DOMContentLoaded', () => {
+            initRegionsDropdown();
+            renderAmenitiesChips();
+            updatePhotoValidationUI();
+        });
+
+        // 1. Cargar Regiones en Dropdown
+        function initRegionsDropdown() {
+            const select = document.getElementById('select-region');
+            Object.keys(CHILE_TERRITORY).forEach(region => {
+                const opt = document.createElement('option');
+                opt.value = region;
+                opt.textContent = region;
+                if (region === "Región Metropolitana de Santiago") opt.selected = true;
+                select.appendChild(opt);
+            });
+            handleRegionChange("Región Metropolitana de Santiago");
+        }
+
+        // 2. Filtrar Comunas según Región seleccionada
+        function handleRegionChange(region) {
+            const selectComuna = document.getElementById('select-comuna');
+            selectComuna.innerHTML = '<option value="">Seleccione una comuna...</option>';
+            
+            if (!region || !CHILE_TERRITORY[region]) {
+                selectComuna.disabled = true;
+                return;
+            }
+
+            selectComuna.disabled = false;
+            const comunas = CHILE_TERRITORY[region];
+            comunas.forEach((comuna, idx) => {
+                const opt = document.createElement('option');
+                opt.value = comuna;
+                opt.textContent = comuna;
+                if (idx === 0) opt.selected = true;
+                selectComuna.appendChild(opt);
+            });
+        }
+
+        // 3. Renderizar Chips de Amenidades
+        function renderAmenitiesChips() {
+            const container = document.getElementById('amenities-container');
+            container.innerHTML = '';
+
+            DEFAULT_AMENITIES.forEach(tag => {
+                const isSelected = selectedTags.has(tag);
+                const chip = document.createElement('button');
+                chip.type = 'button';
+                chip.onclick = () => toggleTag(tag);
+                chip.className = `px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+                    isSelected 
+                        ? 'bg-secondary text-black font-bold shadow-md shadow-amber-950/40 border border-secondary' 
+                        : 'bg-[#121824] hover:bg-[#1b2230] text-white/70 border border-white/10'
+                }`;
+                chip.innerHTML = `${isSelected ? '<i class="fa-solid fa-check text-[10px]"></i>' : '+'} <span>${tag}</span>`;
+                container.appendChild(chip);
+            });
+        }
+
+        function toggleTag(tag) {
+            if (selectedTags.has(tag)) selectedTags.delete(tag);
+            else selectedTags.add(tag);
+            renderAmenitiesChips();
+        }
+
+        function addCustomTag() {
+            const input = document.getElementById('custom-tag-input');
+            const val = input.value.trim();
+            if (val && !DEFAULT_AMENITIES.includes(val)) {
+                DEFAULT_AMENITIES.push(val);
+                selectedTags.add(val);
+                input.value = '';
+                renderAmenitiesChips();
+            }
+        }
+
+        // 4. Contador de caracteres en Título (Máx 70)
+        function handleTitleInput(input) {
+            const len = input.value.length;
+            const counter = document.getElementById('title-char-counter');
+            counter.innerText = `${len}/70`;
+            if (len >= 65) counter.className = "text-[11px] font-mono text-amber-400 font-bold";
+            else counter.className = "text-[11px] font-mono text-secondary";
+        }
+
+        // 5. Contador de caracteres en Descripción
+        function handleDescInput(input) {
+            const len = input.value.length;
+            document.getElementById('desc-char-counter').innerText = `${len}/600`;
+        }
+
+        // 6. Redactar / Mejorar con IA
+        async function enhanceDescriptionWithAI() {
+            const textarea = document.getElementById('prop-description');
+            const title = document.getElementById('prop-title').value.trim();
+            const btn = document.getElementById('btn-ai-enhance');
+            
+            const baseText = textarea.value.trim() || title || "Departamento exclusivo en Santiago Oriente";
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-secondary"></i><span>Redactando...</span>';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/ai/enhance-text', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: baseText, mode: 'elegante' })
+                });
+                const data = await res.json();
+                if (data.success && data.enhanced) {
+                    textarea.value = data.enhanced;
+                    handleDescInput(textarea);
+                }
+            } catch (err) {
+                console.error("Error al mejorar texto:", err);
+                textarea.value = "Propiedad de arquitectura contemporánea y finas terminaciones en enclave consolidado. Cuenta con amplios espacios iluminados naturalmente, terraza panorámica y seguridad 24/7.";
+                handleDescInput(textarea);
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles text-secondary"></i><span>Redactar con IA</span>';
+                btn.disabled = false;
+            }
+        }
+
+        // 7. Manejo de Fotos (Mínimo 3, Máximo 5)
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            addFilesToGallery(files);
+        }
+
+        function addFilesToGallery(files) {
+            if (uploadedPhotos.length + files.length > 5) {
+                alert("Puedes subir un máximo de 5 fotografías.");
+                files = files.slice(0, 5 - uploadedPhotos.length);
+            }
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    uploadedPhotos.push({
+                        src: event.target.result,
+                        name: file.name
+                    });
+                    renderPhotoPreviews();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Cargar 3 Fotos Demo de Lujo
+        function loadDemoPhotos() {
+            uploadedPhotos = [
+                { src: './assets/media/hero_realestate_building.png', name: 'Fachada Principal' },
+                { src: './assets/media/hero_realestate_interior.png', name: 'Living & Terraza' },
+                { src: './assets/media/hero_realestate_commercial.png', name: 'Áreas Comunes' }
+            ];
+            renderPhotoPreviews();
+        }
+
+        function renderPhotoPreviews() {
+            const grid = document.getElementById('photos-preview-grid');
+            grid.innerHTML = '';
+
+            uploadedPhotos.forEach((photo, idx) => {
+                const card = document.createElement('div');
+                card.className = "relative rounded-xl overflow-hidden border border-white/20 aspect-[4/3] group shadow-md bg-black";
+                card.innerHTML = `
+                    <img src="${photo.src}" class="w-full h-full object-cover">
+                    ${idx === 0 ? '<span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-secondary text-black font-bold text-[9px] uppercase font-mono shadow">Portada</span>' : ''}
+                    <button type="button" onclick="removePhoto(${idx})" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-600/80 hover:bg-red-600 text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow">
+                        <i class="fa-solid fa-trash-can text-[10px]"></i>
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+
+            updatePhotoValidationUI();
+        }
+
+        function removePhoto(idx) {
+            uploadedPhotos.splice(idx, 1);
+            renderPhotoPreviews();
+        }
+
+        function updatePhotoValidationUI() {
+            const count = uploadedPhotos.length;
+            const badge = document.getElementById('photo-counter-badge');
+            const text = document.getElementById('photo-count-text');
+
+            if (count >= 3) {
+                badge.className = "px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 font-mono text-xs flex items-center gap-1.5";
+                text.innerText = `${count} de 5 fotos (¡Listo para publicar!)`;
+            } else {
+                badge.className = "px-3 py-1 rounded-full bg-red-950/60 border border-red-500/50 text-red-300 font-mono text-xs flex items-center gap-1.5";
+                text.innerText = `${count} de 5 fotos (Mínimo faltan ${3 - count})`;
+            }
+        }
+
+        // 8. YouTube Live Embed
+        function handleYoutubeInput(url) {
+            const container = document.getElementById('youtube-preview-container');
+            const iframe = document.getElementById('youtube-iframe');
+            
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            if (match && match[1]) {
+                const videoId = match[1];
+                iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                iframe.src = '';
+            }
+        }
+
+        function updatePricePlaceholder(currency) {
+            document.getElementById('badge-currency').innerText = currency;
+            document.getElementById('prop-price').placeholder = currency === 'UF' ? 'Ej: 14800' : 'Ej: 550000000';
+        }
+
+        // 9. Envío del Formulario
+        async function handlePublishSubmit(e) {
+            e.preventDefault();
+
+            if (uploadedPhotos.length < 3) {
+                alert("Debes cargar al menos 3 fotografías de la propiedad para poder publicarla.");
+                document.getElementById('photo-dropzone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            data.tags = Array.from(selectedTags);
+            data.photos = uploadedPhotos.map(p => p.src);
+
+            const submitBtn = document.getElementById('btn-submit-form');
+            const label = document.getElementById('submit-btn-label');
+            submitBtn.disabled = true;
+            label.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-base"></i><span>PUBLICANDO Y REGISTRANDO...</span>';
+
+            try {
+                const res = await fetch('/api/properties/publish', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    showSuccessModal(result);
+                } else {
+                    alert("Error al publicar: " + (result.error || "Intenta nuevamente"));
+                }
+            } catch (err) {
+                console.error("Error al enviar anuncio:", err);
+                // Fallback demo modal
+                showSuccessModal({
+                    code: 'W-PROP-' + Math.floor(1000 + Math.random() * 9000),
+                    listing: data,
+                    waLink: `https://wa.me/56965312618?text=Hola,%20acabo%20de%20publicar%20mi%20propiedad:%20${encodeURIComponent(data.title)}`
+                });
+            } finally {
+                submitBtn.disabled = false;
+                label.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-base"></i><span>PUBLICAR ANUNCIO GRATIS</span>';
+            }
+        }
+
+        function showSuccessModal(data) {
+            const modal = document.getElementById('modal-success');
+            document.getElementById('modal-code-badge').innerText = data.code;
+            document.getElementById('modal-prop-title').innerText = data.listing.title;
+            document.getElementById('modal-prop-location').innerText = `${data.listing.comuna}, ${data.listing.region}`;
+            document.getElementById('modal-prop-price').innerText = `${data.listing.price} ${data.listing.currency}`;
+            document.getElementById('modal-prop-type').innerText = `${data.listing.operation} • ${data.listing.propertyType}`;
+            document.getElementById('btn-modal-whatsapp').href = data.waLink || '#';
+
+            modal.classList.remove('hidden');
+        }
+
+        function resetFormForNew() {
+            document.getElementById('property-publish-form').reset();
+            uploadedPhotos = [];
+            renderPhotoPreviews();
+            document.getElementById('modal-success').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

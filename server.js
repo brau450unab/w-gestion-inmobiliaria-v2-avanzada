@@ -135,6 +135,67 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // --- API: Publish Property Listing (Público sin registro) ---
+  if (pathname === '/api/properties/publish' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const propertyData = JSON.parse(body);
+        const DATA_DIR = path.join(__dirname, 'data');
+        if (!fs.existsSync(DATA_DIR)) {
+          fs.mkdirSync(DATA_DIR, { recursive: true });
+        }
+        const ANUNCIOS_FILE = path.join(DATA_DIR, 'anuncios.json');
+        let anuncios = [];
+        if (fs.existsSync(ANUNCIOS_FILE)) {
+          try {
+            anuncios = JSON.parse(fs.readFileSync(ANUNCIOS_FILE, 'utf8'));
+          } catch(e) { anuncios = []; }
+        }
+
+        const idCode = 'W-PROP-' + Math.floor(1000 + Math.random() * 9000);
+        const newListing = {
+          id: idCode,
+          createdAt: new Date().toISOString(),
+          status: 'Activo',
+          ...propertyData
+        };
+
+        anuncios.unshift(newListing);
+        fs.writeFileSync(ANUNCIOS_FILE, JSON.stringify(anuncios, null, 2), 'utf8');
+
+        // Formulate WhatsApp message to broker
+        const whatsAppPhone = '56965312618';
+        const waMsg = `*Nuevo Anuncio Publicado (W Gestión)*\n` +
+          `• *Código:* ${idCode}\n` +
+          `• *Título:* ${propertyData.title || 'Sin título'}\n` +
+          `• *Operación:* ${propertyData.operation || 'Venta'}\n` +
+          `• *Tipo:* ${propertyData.propertyType || 'Inmueble'}\n` +
+          `• *Ubicación:* ${propertyData.comuna || ''}, ${propertyData.region || ''}\n` +
+          `• *Precio:* ${propertyData.price || ''} ${propertyData.currency || 'UF'}\n` +
+          `• *Contacto:* ${propertyData.contactName || ''} (${propertyData.contactPhone || ''})\n` +
+          `• *Fotos:* ${(propertyData.photos || []).length} cargadas\n` +
+          `• *Asesoría W Gestión:* ${propertyData.needsAdvisory ? 'SÍ (Solicitada)' : 'No'}`;
+
+        const waLink = `https://wa.me/${whatsAppPhone}?text=${encodeURIComponent(waMsg)}`;
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: true,
+          code: idCode,
+          listing: newListing,
+          waLink: waLink,
+          message: 'Anuncio recibido y registrado exitosamente.'
+        }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
+  }
+
   // --- API: Autosave draft ---
   if (pathname === '/api/autosave' && req.method === 'POST') {
     let body = '';
@@ -359,6 +420,7 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`=======================================================`);
   console.log(`🚀 Servidor W Gestión Inmobiliaria V2 activo:`);
   console.log(`👉 Landing Page: http://localhost:${PORT}/`);
+  console.log(`👉 Publicar Propiedad (Abierto): http://localhost:${PORT}/publicar-propiedad.html`);
   console.log(`👉 Editor Visual Modo Dual: http://localhost:${PORT}/intranet.html`);
   console.log(`=======================================================`);
 });
