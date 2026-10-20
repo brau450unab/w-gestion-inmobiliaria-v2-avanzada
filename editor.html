@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elementor Visual Builder — W Gestión Inmobiliaria</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Montserrat, Playfair Display, Roboto, Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 Free CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --el-bg-dark: #1b1e22;
+            --el-bg-panel: #26292c;
+            --el-bg-header: #1e2124;
+            --el-bg-input: #15171a;
+            --el-border: #393d41;
+            --el-accent: #92003B;
+            --el-accent-hover: #b8004b;
+            --el-gold: #D4AF37;
+            --el-gold-hover: #f1cf6b;
+            --el-green: #39b54a;
+            --el-green-hover: #2ea13e;
+            --el-blue: #0073aa;
+            --el-text: #ffffff;
+            --el-text-muted: #a4afb7;
+        }
+
+        body {
+            font-family: 'Roboto', 'Inter', sans-serif;
+            background-color: var(--el-bg-dark);
+            color: var(--el-text);
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-heading { font-family: 'Montserrat', sans-serif; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+
+        /* Custom Scrollbar for Elementor Panels */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--el-bg-header); }
+        ::-webkit-scrollbar-thumb { background: var(--el-border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555d65; }
+
+        /* Viewport Canvas Containers */
+        .canvas-desktop { width: 100%; height: 100%; border-radius: 0; box-shadow: none; border: none; }
+        .canvas-tablet { width: 768px; height: calc(100% - 24px); border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,0.85); border: 10px solid #2d3136; margin: 12px auto; }
+        .canvas-mobile { width: 390px; height: calc(100% - 24px); border-radius: 26px; box-shadow: 0 10px 40px rgba(0,0,0,0.85); border: 12px solid #2d3136; margin: 12px auto; }
+
+        /* Elementor Tab Active styles */
+        .el-tab-active {
+            border-bottom: 2px solid var(--el-gold);
+            color: var(--el-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        /* Draggable Navigator */
+        #navigator-window {
+            cursor: move;
+        }
+        #navigator-body {
+            cursor: default;
+        }
+
+        /* Toast animation */
+        @keyframes toastSlide {
+            0% { transform: translateY(100px); opacity: 0; }
+            15% { transform: translateY(0); opacity: 1; }
+            85% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(100px); opacity: 0; }
+        }
+        .toast-active {
+            animation: toastSlide 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen w-screen overflow-hidden text-xs">
+
+    <!-- 1. TOP ELEMENTOR APPLICATION HEADER BAR -->
+    <header class="h-12 bg-[#1e2124] border-b border-[#393d41] flex items-center justify-between px-3 z-40 shrink-0">
+        <!-- Logo & Branding -->
+        <div class="flex items-center gap-3">
+            <!-- Iconic Elementor 'E' mark + W Gestion -->
+            <a href="./index.html" class="flex items-center gap-2 group cursor-pointer" title="Ir al Sitio Web Oficial">
+                <div class="w-7 h-7 rounded bg-gradient-to-br from-[#92003B] to-[#D4AF37] flex items-center justify-center font-heading font-black text-white text-base shadow group-hover:scale-105 transition-transform">
+                    E
+                </div>
+                <div class="flex flex-col leading-none">
+                    <span class="font-heading font-extrabold text-[12px] text-white tracking-wide flex items-center gap-1.5">
+                        ELEMENTOR <span class="text-[#D4AF37] font-semibold text-[10px]">BUILDER</span>
+                    </span>
+                    <span class="text-[9px] text-[#a4afb7]">W Gestión Inmobiliaria • V2 Avanzada</span>
+                </div>
+            </a>
+
+            <div class="h-5 w-px bg-[#393d41] mx-1"></div>
+
+            <!-- Page Title / Document Badge -->
+            <div class="flex items-center gap-1.5 bg-[#15171a] px-2.5 py-1 rounded border border-[#393d41]">
+                <i class="fa-solid fa-file-code text-[#D4AF37] text-[11px]"></i>
+                <span class="text-white font-medium text-[11px]" id="current-doc-label">index.html (Landing Principal)</span>
+                <span id="save-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse ml-1" title="Sincronizado"></span>
+            </div>
+        </div>
+
+        <!-- Center: Responsive Mode Switcher (Iconic Elementor) -->
+        <div class="flex items-center bg-[#15171a] p-1 rounded-md border border-[#393d41] gap-1">
+            <button onclick="setCanvasViewport('desktop')" id="btn-device-desktop" class="px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" title="Modo Escritorio (100%)">
+                <i class="fa-solid fa-desktop text-xs"></i>
+                <span class="hidden md:inline text-[11px] font-medium">Escritorio</span>
+            </button>
+            <button onclick="setCanvasViewport('tablet')" id="btn-device-tablet" class="px-2.5 py-1 rounded text-[#a4afb7] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" title="Modo Tablet (768px)">
+                <i class="fa-solid fa-tablet-screen-button text-xs"></i>
+                <span class="hidden md:inline text-[11px] font-medium">Tablet</span>
+            </button>
+            <button onclick="setCanvasViewport('mobile')" id="btn-device-mobile" class="px-2.5 py-1 rounded text-[#a4afb7] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" title="Modo Móvil (390px)">
+                <i class="fa-solid fa-mobile-screen text-xs"></i>
+                <span class="hidden md:inline text-[11px] font-medium">Móvil</span>
+            </button>
+        </div>
+
+        <!-- Right: Actions, Navigator, History, Preview, and PUBLISH/UPDATE -->
+        <div class="flex items-center gap-2">
+            <!-- Navigator Tree Toggle -->
+            <button onclick="toggleNavigator()" id="btn-toggle-navigator" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Abrir Árbol de Navegación de Elementor">
+                <i class="fa-solid fa-layer-group text-xs text-[#D4AF37]"></i>
+                <span class="hidden lg:inline text-[11px]">Navegador</span>
+            </button>
+
+            <!-- History Toggle -->
+            <button onclick="toggleHistoryModal()" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Historial de Acciones y Revisiones">
+                <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+                <span class="hidden lg:inline text-[11px]">Historial</span>
+            </button>
+
+            <!-- Live Site Preview -->
+            <a href="./index.html" target="_blank" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Abrir Vista Previa en Pestaña Nueva">
+                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                <span class="hidden sm:inline text-[11px]">Ver Web</span>
+            </a>
+
+            <!-- The Iconic Elementor Green / Gold ACTUALIZAR Button -->
+            <button onclick="publishChanges()" id="btn-publish" class="h-8 px-4 rounded bg-[#39b54a] hover:bg-[#2ea13e] text-white font-heading font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-950/40 transition-transform active:scale-95 cursor-pointer">
+                <i class="fa-solid fa-floppy-disk text-xs" id="publish-icon"></i>
+                <span id="publish-label">ACTUALIZAR</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 2. MAIN WORKSPACE: LEFT ELEMENTOR SIDEBAR DOCK + CENTRAL VISUAL CANVAS -->
+    <div class="flex flex-1 overflow-hidden relative">
+
+        <!-- ============================================== -->
+        <!-- LEFT SIDEBAR: THE ICONIC ELEMENTOR PANEL       -->
+        <!-- ============================================== -->
+        <aside id="elementor-sidebar" class="w-80 md:w-88 bg-[#26292c] border-r border-[#393d41] flex flex-col shrink-0 z-30 shadow-2xl relative">
+            
+            <!-- Sidebar Sub-Header: Burger Menu, Mode switcher, Close/Back -->
+            <div class="h-10 bg-[#1e2124] border-b border-[#393d41] flex items-center justify-between px-3">
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleSiteSettingsModal()" class="w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Ajustes Globales del Sitio">
+                        <i class="fa-solid fa-bars text-sm"></i>
+                    </button>
+                    <span id="sidebar-header-title" class="font-heading font-bold text-white text-xs uppercase tracking-wide">
+                        ELEMENTOS
+                    </span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <button onclick="switchSidebarView('widgets')" id="btn-view-widgets" class="w-7 h-7 rounded bg-[#32363b] text-[#D4AF37] flex items-center justify-center transition-colors cursor-pointer" title="Catálogo de Widgets">
+                        <i class="fa-solid fa-th-large text-xs"></i>
+                    </button>
+                    <button onclick="switchSidebarView('inspector')" id="btn-view-inspector" class="w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Inspector del Elemento">
+                        <i class="fa-solid fa-sliders text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW A: WIDGET DRAWER (Catálogo de Elementos Elementor) -->
+            <div id="view-widgets" class="flex-1 flex flex-col overflow-hidden">
+                <!-- Search Box -->
+                <div class="p-2.5 bg-[#1e2124] border-b border-[#393d41]">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#a4afb7] text-xs"></i>
+                        <input type="text" id="widget-search" oninput="filterWidgets(this.value)" placeholder="Buscar elemento o widget..." class="w-full bg-[#15171a] border border-[#393d41] rounded px-3 pl-8 py-1.5 text-xs text-white placeholder-[#717b82] focus:outline-none focus:border-[#D4AF37] transition-colors">
+                    </div>
+                </div>
+
+                <!-- Widgets Scrollable Area -->
+                <div class="flex-1 overflow-y-auto p-3 space-y-4">
+                    
+                    <!-- CATEGORÍA 1: ELEMENTOR BÁSICOS -->
+                    <div class="widget-category" data-cat="basico">
+                        <div class="flex items-center justify-between text-[#a4afb7] font-heading font-bold text-[10px] uppercase tracking-wider mb-2">
+                            <span>Básico</span>
+                            <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <!-- Widget: Encabezado -->
+                            <div onclick="insertWidget('heading')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-heading text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[10px] font-medium text-white">Encabezado</span>
+                            </div>
+                            <!-- Widget: Editor de Texto -->
+                            <div onclick="insertWidget('text')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-paragraph text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[10px] font-medium text-white">Texto</span>
+                            </div>
+                            <!-- Widget: Imagen -->
+                            <div onclick="insertWidget('image')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-image text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[10px] font-medium text-white">Imagen</span>
+                            </div>
+                            <!-- Widget: Botón CTA -->
+                            <div onclick="insertWidget('button')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-hand-pointer text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[10px] font-medium text-white">Botón</span>
+                            </div>
+                            <!-- Widget: Divisor -->
+                            <div onclick="insertWidget('divider')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-minus text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[10px] font-medium text-white">Divisor</span>
+                            </div>
+                            <!-- Widget: Espaciador -->
+                            <div onclick="insertWidget('spacer')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-arrows-up-down text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[10px] font-medium text-white">Espaciador</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORÍA 2: PRO & GESTIÓN INMOBILIARIA -->
+                    <div class="widget-category" data-cat="pro">
+                        <div class="flex items-center justify-between text-[#a4afb7] font-heading font-bold text-[10px] uppercase tracking-wider mb-2">
+                            <span>Pro & Inmobiliario</span>
+                            <span class="bg-[#92003B] text-white text-[9px] font-extrabold px-1.5 py-0.2 rounded">PRO</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <!-- Widget: Ficha Inmueble -->
+                            <div onclick="insertWidget('property_card')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-building text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[11px] font-semibold text-white">Ficha Inmueble</span>
+                                <span class="text-[9px] text-[#a4afb7]">UF, m², Dorm, Baños</span>
+                            </div>
+                            <!-- Widget: Pestañas de Servicios -->
+                            <div onclick="insertWidget('service_tabs')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-table-columns text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[11px] font-semibold text-white">Pestañas Servicios</span>
+                                <span class="text-[9px] text-[#a4afb7]">Venta / Arriendo / Coprop</span>
+                            </div>
+                            <!-- Widget: Calculadora Hipotecaria -->
+                            <div onclick="insertWidget('calculator')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-calculator text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[11px] font-semibold text-white">Calculadora UF</span>
+                                <span class="text-[9px] text-[#a4afb7]">Simulador dividendo CLP</span>
+                            </div>
+                            <!-- Widget: Flujo Fiduciario (6 Fases) -->
+                            <div onclick="insertWidget('procedure_steps')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-diagram-project text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[11px] font-semibold text-white">Flujo 6 Fases</span>
+                                <span class="text-[9px] text-[#a4afb7]">Procedimiento fiduciario</span>
+                            </div>
+                            <!-- Widget: Formulario de Contacto -->
+                            <div onclick="insertWidget('contact_form')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-solid fa-envelope-open-text text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[11px] font-semibold text-white">Formulario Contacto</span>
+                                <span class="text-[9px] text-[#a4afb7]">Captación & Tasación</span>
+                            </div>
+                            <!-- Widget: Concierge WhatsApp -->
+                            <div onclick="insertWidget('whatsapp_concierge')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                                <i class="fa-brands fa-whatsapp text-emerald-400 text-lg group-hover:scale-110 transition-transform"></i>
+                                <span class="text-[11px] font-semibold text-white">Botón Concierge</span>
+                                <span class="text-[9px] text-[#a4afb7]">WhatsApp flotante</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- VIEW B: ELEMENTOR 3-TAB INSPECTOR (Contenido, Estilo, Avanzado) -->
+            <div id="view-inspector" class="flex-1 flex flex-col overflow-hidden hidden">
+                
+                <!-- Inspector Header with Element Name & Back -->
+                <div class="p-3 bg-[#1e2124] border-b border-[#393d41] flex items-center justify-between">
+                    <div class="flex items-center gap-2 truncate">
+                        <button onclick="switchSidebarView('widgets')" class="text-[#a4afb7] hover:text-white p-1" title="Volver al catálogo">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <div class="flex flex-col truncate">
+                            <span class="text-[10px] text-[#D4AF37] font-mono font-bold uppercase" id="insp-tag-type">H1 • ENCABEZADO</span>
+                            <span class="text-white font-bold text-xs truncate max-w-[180px]" id="insp-element-name">Encabezado Principal</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="duplicateActiveElement()" class="text-[#a4afb7] hover:text-white p-1 text-xs" title="Duplicar">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                        <button onclick="deleteActiveElement()" class="text-red-400 hover:text-red-300 p-1 text-xs" title="Eliminar">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- The 3 Classic Elementor Tabs -->
+                <div class="flex border-b border-[#393d41] bg-[#1e2124] text-[11px] font-semibold">
+                    <button onclick="switchElementorTab('content')" id="tab-btn-content" class="flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-pen-to-square"></i> <span>Contenido</span>
+                    </button>
+                    <button onclick="switchElementorTab('style')" id="tab-btn-style" class="flex-1 py-2.5 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-brush"></i> <span>Estilo</span>
+                    </button>
+                    <button onclick="switchElementorTab('advanced')" id="tab-btn-advanced" class="flex-1 py-2.5 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-sliders"></i> <span>Avanzado</span>
+                    </button>
+                </div>
+
+                <!-- TAB 1: CONTENIDO -->
+                <div id="el-panel-content" class="flex-1 overflow-y-auto p-3.5 space-y-4">
+                    
+                    <!-- Control: Texto / Título -->
+                    <div id="ctrl-text-group" class="space-y-1.5">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Texto del Elemento</label>
+                        <textarea id="ctrl-input-text" rows="3" oninput="updateActiveElementText(this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37] leading-relaxed"></textarea>
+                    </div>
+
+                    <!-- Control: Enlace URL -->
+                    <div id="ctrl-link-group" class="space-y-1.5">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Enlace (URL / WhatsApp)</label>
+                        <input type="text" id="ctrl-input-link" oninput="updateActiveElementLink(this.value)" placeholder="https://... o #contacto" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
+                    </div>
+
+                    <!-- Control: Imagen SRC -->
+                    <div id="ctrl-image-group" class="space-y-1.5 hidden">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Ruta de Imagen (URL / Local)</label>
+                        <input type="text" id="ctrl-input-image" oninput="updateActiveElementImage(this.value)" placeholder="./assets/media/..." class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
+                    </div>
+
+                    <!-- Control: Alineación de Texto -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Alineación</label>
+                        <div class="grid grid-cols-4 gap-1 bg-[#15171a] p-1 rounded border border-[#393d41]">
+                            <button onclick="updateActiveElementStyle('textAlign', 'left')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c]"><i class="fa-solid fa-align-left"></i></button>
+                            <button onclick="updateActiveElementStyle('textAlign', 'center')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c]"><i class="fa-solid fa-align-center"></i></button>
+                            <button onclick="updateActiveElementStyle('textAlign', 'right')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c]"><i class="fa-solid fa-align-right"></i></button>
+                            <button onclick="updateActiveElementStyle('textAlign', 'justify')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c]"><i class="fa-solid fa-align-justify"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Control: Etiqueta HTML -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Etiqueta HTML</label>
+                        <select id="ctrl-select-tag" onchange="changeHtmlTag(this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
+                            <option value="H1">H1 — Título Principal</option>
+                            <option value="H2">H2 — Título de Sección</option>
+                            <option value="H3">H3 — Subtítulo</option>
+                            <option value="P">P — Párrafo</option>
+                            <option value="DIV">DIV — Contenedor</option>
+                            <option value="SPAN">SPAN — Texto en línea</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- TAB 2: ESTILO -->
+                <div id="el-panel-style" class="flex-1 overflow-y-auto p-3.5 space-y-4 hidden">
+                    
+                    <!-- Color de Texto -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Color de Texto</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="ctrl-color-text" oninput="updateActiveElementStyle('color', this.value)" class="w-8 h-8 rounded border border-[#393d41] bg-transparent cursor-pointer">
+                            <input type="text" id="ctrl-hex-text" oninput="updateActiveElementStyle('color', this.value)" placeholder="#D4AF37" class="flex-1 bg-[#15171a] border border-[#393d41] rounded px-2.5 py-1.5 text-white font-mono text-xs">
+                        </div>
+                        <!-- Paleta de Marca Rápida -->
+                        <div class="flex items-center gap-1.5 pt-1">
+                            <button onclick="updateActiveElementStyle('color', '#D4AF37')" class="w-4 h-4 rounded-full bg-[#D4AF37] border border-white/20" title="Oro Inmobiliario"></button>
+                            <button onclick="updateActiveElementStyle('color', '#FFFFFF')" class="w-4 h-4 rounded-full bg-white border border-gray-400" title="Blanco"></button>
+                            <button onclick="updateActiveElementStyle('color', '#94A3B8')" class="w-4 h-4 rounded-full bg-[#94A3B8] border border-white/20" title="Gris"></button>
+                            <button onclick="updateActiveElementStyle('color', '#10B981')" class="w-4 h-4 rounded-full bg-[#10B981] border border-white/20" title="Verde Éxito"></button>
+                            <button onclick="updateActiveElementStyle('color', '#050608')" class="w-4 h-4 rounded-full bg-[#050608] border border-white/20" title="Negro"></button>
+                        </div>
+                    </div>
+
+                    <!-- Tipografía: Familia & Tamaño -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Familia Tipográfica</label>
+                        <select id="ctrl-font-family" onchange="updateActiveElementStyle('fontFamily', this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
+                            <option value="'Montserrat', sans-serif">Montserrat (Moderna Geométrica)</option>
+                            <option value="'Playfair Display', serif">Playfair Display (Lujosa Editorial)</option>
+                            <option value="'Inter', sans-serif">Inter (Limpia UI)</option>
+                            <option value="'Roboto', sans-serif">Roboto (Estándar)</option>
+                        </select>
+                    </div>
+
+                    <!-- Tamaño de Fuente (Slider) -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[#a4afb7] text-[11px]">
+                            <span>Tamaño de Fuente</span>
+                            <span id="label-font-size" class="text-white font-mono">16px</span>
+                        </div>
+                        <input type="range" id="ctrl-font-size" min="10" max="80" value="16" oninput="document.getElementById('label-font-size').innerText = this.value + 'px'; updateActiveElementStyle('fontSize', this.value + 'px');" class="w-full accent-[#D4AF37]">
+                    </div>
+
+                    <!-- Peso Tipográfico -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Grosor (Font Weight)</label>
+                        <select id="ctrl-font-weight" onchange="updateActiveElementStyle('fontWeight', this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
+                            <option value="400">Regular (400)</option>
+                            <option value="500">Medium (500)</option>
+                            <option value="600">Semibold (600)</option>
+                            <option value="700">Bold (700)</option>
+                            <option value="800">Extra Bold (800)</option>
+                            <option value="900">Black (900)</option>
+                        </select>
+                    </div>
+
+                    <!-- Color de Fondo -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Color de Fondo</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="ctrl-color-bg" oninput="updateActiveElementStyle('backgroundColor', this.value)" class="w-8 h-8 rounded border border-[#393d41] bg-transparent cursor-pointer">
+                            <input type="text" id="ctrl-hex-bg" oninput="updateActiveElementStyle('backgroundColor', this.value)" placeholder="transparent" class="flex-1 bg-[#15171a] border border-[#393d41] rounded px-2.5 py-1.5 text-white font-mono text-xs">
+                        </div>
+                    </div>
+
+                    <!-- Radio de Esquinas (Border Radius) -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[#a4afb7] text-[11px]">
+                            <span>Radio de Borde (Redondeo)</span>
+                            <span id="label-border-radius" class="text-white font-mono">8px</span>
+                        </div>
+                        <input type="range" id="ctrl-border-radius" min="0" max="50" value="8" oninput="document.getElementById('label-border-radius').innerText = this.value + 'px'; updateActiveElementStyle('borderRadius', this.value + 'px');" class="w-full accent-[#D4AF37]">
+                    </div>
+
+                </div>
+
+                <!-- TAB 3: AVANZADO -->
+                <div id="el-panel-advanced" class="flex-1 overflow-y-auto p-3.5 space-y-4 hidden">
+                    
+                    <!-- Margen Cuádruple -->
+                    <div class="space-y-2">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Margen Exterior (px)</label>
+                        <div class="grid grid-cols-4 gap-1 text-center">
+                            <div>
+                                <span class="text-[9px] text-[#717b82]">ARR</span>
+                                <input type="number" id="ctrl-margin-top" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-[#717b82]">DER</span>
+                                <input type="number" id="ctrl-margin-right" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-[#717b82]">ABA</span>
+                                <input type="number" id="ctrl-margin-bottom" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-[#717b82]">IZQ</span>
+                                <input type="number" id="ctrl-margin-left" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Relleno (Padding) Cuádruple -->
+                    <div class="space-y-2">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Relleno Interior / Padding (px)</label>
+                        <div class="grid grid-cols-4 gap-1 text-center">
+                            <div>
+                                <span class="text-[9px] text-[#717b82]">ARR</span>
+                                <input type="number" id="ctrl-pad-top" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-[#717b82]">DER</span>
+                                <input type="number" id="ctrl-pad-right" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-[#717b82]">ABA</span>
+                                <input type="number" id="ctrl-pad-bottom" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-[#717b82]">IZQ</span>
+                                <input type="number" id="ctrl-pad-left" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Efectos de Entrada / Animaciones -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Efecto de Animación (Anime.js)</label>
+                        <select id="ctrl-animation" onchange="applyAnimation(this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
+                            <option value="none">Sin animación</option>
+                            <option value="fadeIn">Fade In (Aparición sutil)</option>
+                            <option value="slideUp">Slide Up (Desplazamiento ascendente)</option>
+                            <option value="slideRight">Slide Right (Desde la izquierda)</option>
+                            <option value="zoomIn">Zoom In (Enfoque cinematográfico)</option>
+                        </select>
+                    </div>
+
+                    <!-- Clases CSS personalizadas -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Clases CSS Adicionales</label>
+                        <input type="text" id="ctrl-custom-classes" oninput="updateActiveElementClasses(this.value)" placeholder="shadow-xl backdrop-blur-md..." class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Bottom Dock Footer: Elementor Settings, Navigator, History, Responsive, Save -->
+            <div class="h-10 bg-[#1e2124] border-t border-[#393d41] flex items-center justify-between px-3 text-[#a4afb7]">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSiteSettingsModal()" class="hover:text-white cursor-pointer" title="Ajustes de Página">
+                        <i class="fa-solid fa-gear text-xs"></i>
+                    </button>
+                    <button onclick="toggleNavigator()" class="hover:text-white cursor-pointer" title="Navegador de Capas">
+                        <i class="fa-solid fa-layer-group text-xs"></i>
+                    </button>
+                    <button onclick="toggleHistoryModal()" class="hover:text-white cursor-pointer" title="Historial de Acciones">
+                        <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+                    </button>
+                    <button onclick="cycleViewport()" class="hover:text-white cursor-pointer" title="Modo Adaptable">
+                        <i class="fa-solid fa-mobile-screen-button text-xs"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+                        <i class="fa-solid fa-cloud-arrow-up text-[9px]"></i> Auto-Sync
+                    </span>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- ============================================== -->
+        <!-- CENTRAL VISUAL CANVAS PREVIEW (LIVE IFRAME)   -->
+        <!-- ============================================== -->
+        <main class="flex-1 bg-[#121417] flex items-center justify-center relative overflow-hidden p-0">
+            
+            <!-- Canvas Container Frame with Responsive Mode classes -->
+            <div id="canvas-wrapper" class="canvas-desktop transition-all duration-300 relative overflow-hidden bg-black flex flex-col">
+                <iframe id="preview-frame" src="./index.html" class="w-full h-full border-0" onload="initializeCanvasIntegration()"></iframe>
+            </div>
+
+            <!-- Floating Quick Action Bar over Canvas (Selected element toolbar) -->
+            <div id="canvas-floating-bar" class="hidden absolute z-50 bg-[#1e2124] border border-[#D4AF37] shadow-2xl rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-white">
+                <span id="floating-badge-label" class="bg-[#D4AF37] text-black font-extrabold text-[9px] px-1.5 py-0.5 rounded font-mono uppercase">
+                    WIDGET
+                </span>
+                <div class="h-3.5 w-px bg-[#393d41]"></div>
+                <button onclick="editActiveElementFromCanvas()" class="hover:text-[#D4AF37] text-xs px-1 cursor-pointer" title="Editar en Panel">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+                <button onclick="duplicateActiveElement()" class="hover:text-[#D4AF37] text-xs px-1 cursor-pointer" title="Duplicar">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+                <button onclick="moveActiveElement('up')" class="hover:text-[#D4AF37] text-xs px-1 cursor-pointer" title="Mover Arriba">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
+                <button onclick="moveActiveElement('down')" class="hover:text-[#D4AF37] text-xs px-1 cursor-pointer" title="Mover Abajo">
+                    <i class="fa-solid fa-arrow-down"></i>
+                </button>
+                <button onclick="deleteActiveElement()" class="text-red-400 hover:text-red-300 text-xs px-1 cursor-pointer" title="Eliminar">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+
+        </main>
+
+        <!-- ============================================== -->
+        <!-- FLOATING DRAGGABLE NAVIGATOR MODAL (ELEMENTOR) -->
+        <!-- ============================================== -->
+        <div id="navigator-window" class="hidden absolute top-16 right-6 w-72 bg-[#1e2124] border border-[#393d41] rounded-xl shadow-2xl z-50 flex flex-col overflow-hidden">
+            <!-- Navigator Header -->
+            <div class="h-9 bg-[#26292c] border-b border-[#393d41] px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-[#D4AF37] text-xs"></i>
+                    <span class="font-heading font-bold text-white text-xs uppercase tracking-wider">Navegador</span>
+                </div>
+                <button onclick="toggleNavigator()" class="text-[#a4afb7] hover:text-white cursor-pointer p-1">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+            <!-- Navigator Tree Body -->
+            <div id="navigator-body" class="max-h-96 overflow-y-auto p-2 space-y-1 text-[11px]">
+                <!-- Dynamic Tree nodes will be rendered here -->
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- HISTORY & REVISIONS MODAL                      -->
+        <!-- ============================================== -->
+        <div id="history-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-[#1e2124] border border-[#393d41] rounded-xl max-w-lg w-full p-5 shadow-2xl space-y-4">
+                <div class="flex items-center justify-between border-b border-[#393d41] pb-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-[#D4AF37] text-sm"></i>
+                        <h3 class="font-heading font-black text-white text-sm uppercase">Historial & Revisiones</h3>
+                    </div>
+                    <button onclick="toggleHistoryModal()" class="text-[#a4afb7] hover:text-white cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <!-- Revisions list from /api/revisions -->
+                <div id="history-revisions-list" class="max-h-72 overflow-y-auto space-y-2">
+                    <p class="text-[#a4afb7] text-center py-4">Cargando puntos de restauración...</p>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button onclick="toggleHistoryModal()" class="bg-[#26292c] hover:bg-[#32363b] text-white px-4 py-2 rounded text-xs font-semibold cursor-pointer">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SITE SETTINGS & TEMPLATES EXPORT MODAL         -->
+        <!-- ============================================== -->
+        <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-[#1e2124] border border-[#393d41] rounded-xl max-w-md w-full p-5 shadow-2xl space-y-4">
+                <div class="flex items-center justify-between border-b border-[#393d41] pb-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-[#D4AF37] text-sm"></i>
+                        <h3 class="font-heading font-black text-white text-sm uppercase">Ajustes del Sitio & Plantillas</h3>
+                    </div>
+                    <button onclick="toggleSiteSettingsModal()" class="text-[#a4afb7] hover:text-white cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="space-y-3">
+                    <button onclick="exportElementorTemplate()" class="w-full bg-[#26292c] hover:bg-[#32363b] text-white p-3 rounded-lg border border-[#393d41] flex items-center gap-3 text-left transition-colors cursor-pointer">
+                        <i class="fa-solid fa-file-export text-[#D4AF37] text-base"></i>
+                        <div>
+                            <div class="font-bold text-xs">Exportar Plantilla JSON</div>
+                            <div class="text-[10px] text-[#a4afb7]">Descargar estructura como template de Elementor</div>
+                        </div>
+                    </button>
+                    <button onclick="downloadCleanHTML()" class="w-full bg-[#26292c] hover:bg-[#32363b] text-white p-3 rounded-lg border border-[#393d41] flex items-center gap-3 text-left transition-colors cursor-pointer">
+                        <i class="fa-solid fa-download text-emerald-400 text-base"></i>
+                        <div>
+                            <div class="font-bold text-xs">Descargar index.html Limpio</div>
+                            <div class="text-[10px] text-[#a4afb7]">Código optimizado para producción o hosting estático</div>
+                        </div>
+                    </button>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button onclick="toggleSiteSettingsModal()" class="bg-[#26292c] hover:bg-[#32363b] text-white px-4 py-2 rounded text-xs font-semibold cursor-pointer">
+                        Listo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- NOTIFICATION TOAST NOTIFIER -->
+    <div id="elementor-toast" class="fixed bottom-6 right-6 z-50 bg-[#1e2124] border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 translate-y-28 transition-transform pointer-events-none">
+        <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-black">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div class="flex flex-col">
+            <span class="font-heading font-bold text-xs" id="toast-title">Página Actualizada</span>
+            <span class="text-[10px] text-[#a4afb7]" id="toast-message">Cambios publicados exitosamente en producción.</span>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- LOGIC SCRIPT: ELEMENTOR ENGINE CORE            -->
+    <!-- ============================================== -->
+    <script>
+        let selectedElement = null;
+        let selectedElementOriginalStyles = {};
+        let actionHistory = [];
+        let isSaving = false;
+
+        // Viewport Switcher
+        function setCanvasViewport(mode) {
+            const wrapper = document.getElementById('canvas-wrapper');
+            const btnDesk = document.getElementById('btn-device-desktop');
+            const btnTab = document.getElementById('btn-device-tablet');
+            const btnMob = document.getElementById('btn-device-mobile');
+
+            [btnDesk, btnTab, btnMob].forEach(b => {
+                b.className = "px-2.5 py-1 rounded text-[#a4afb7] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
+            });
+
+            if (mode === 'desktop') {
+                wrapper.className = "canvas-desktop transition-all duration-300 relative overflow-hidden bg-black flex flex-col";
+                btnDesk.className = "px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
+            } else if (mode === 'tablet') {
+                wrapper.className = "canvas-tablet transition-all duration-300 relative overflow-hidden bg-black flex flex-col";
+                btnTab.className = "px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
+            } else if (mode === 'mobile') {
+                wrapper.className = "canvas-mobile transition-all duration-300 relative overflow-hidden bg-black flex flex-col";
+                btnMob.className = "px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
+            }
+        }
+
+        function cycleViewport() {
+            const wrapper = document.getElementById('canvas-wrapper');
+            if (wrapper.classList.contains('canvas-desktop')) setCanvasViewport('tablet');
+            else if (wrapper.classList.contains('canvas-tablet')) setCanvasViewport('mobile');
+            else setCanvasViewport('desktop');
+        }
+
+        // Sidebar View Toggle (Widgets vs Inspector)
+        function switchSidebarView(view) {
+            const viewWidgets = document.getElementById('view-widgets');
+            const viewInspector = document.getElementById('view-inspector');
+            const btnWidgets = document.getElementById('btn-view-widgets');
+            const btnInspector = document.getElementById('btn-view-inspector');
+            const headerTitle = document.getElementById('sidebar-header-title');
+
+            if (view === 'widgets') {
+                viewWidgets.classList.remove('hidden');
+                viewInspector.classList.add('hidden');
+                btnWidgets.className = "w-7 h-7 rounded bg-[#32363b] text-[#D4AF37] flex items-center justify-center transition-colors cursor-pointer";
+                btnInspector.className = "w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center transition-colors cursor-pointer";
+                headerTitle.innerText = "ELEMENTOS";
+            } else {
+                viewWidgets.classList.add('hidden');
+                viewInspector.classList.remove('hidden');
+                btnInspector.className = "w-7 h-7 rounded bg-[#32363b] text-[#D4AF37] flex items-center justify-center transition-colors cursor-pointer";
+                btnWidgets.className = "w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center transition-colors cursor-pointer";
+                headerTitle.innerText = "EDITAR ELEMENTO";
+            }
+        }
+
+        // Elementor 3-Tab Switcher (Contenido, Estilo, Avanzado)
+        function switchElementorTab(tab) {
+            const pContent = document.getElementById('el-panel-content');
+            const pStyle = document.getElementById('el-panel-style');
+            const pAdvanced = document.getElementById('el-panel-advanced');
+            const bContent = document.getElementById('tab-btn-content');
+            const bStyle = document.getElementById('tab-btn-style');
+            const bAdvanced = document.getElementById('tab-btn-advanced');
+
+            [pContent, pStyle, pAdvanced].forEach(p => p.classList.add('hidden'));
+            [bContent, bStyle, bAdvanced].forEach(b => {
+                b.className = "flex-1 py-2.5 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer";
+            });
+
+            if (tab === 'content') {
+                pContent.classList.remove('hidden');
+                bContent.className = "flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
+            } else if (tab === 'style') {
+                pStyle.classList.remove('hidden');
+                bStyle.className = "flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
+            } else if (tab === 'advanced') {
+                pAdvanced.classList.remove('hidden');
+                bAdvanced.className = "flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
+            }
+        }
+
+        // Filter Widgets
+        function filterWidgets(query) {
+            query = query.toLowerCase().trim();
+            const cards = document.querySelectorAll('.widget-card');
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        // ==============================================
+        // CANVAS INTEGRATION & ELEMENT SELECTION
+        // ==============================================
+        function getIframeDoc() {
+            const frame = document.getElementById('preview-frame');
+            return frame.contentDocument || frame.contentWindow.document;
+        }
+
+        function initializeCanvasIntegration() {
+            try {
+                const doc = getIframeDoc();
+                if (!doc) return;
+
+                // Inject Elementor Selection Styles into the iframe
+                let style = doc.getElementById('elementor-editor-injected-styles');
+                if (!style) {
+                    style = doc.createElement('style');
+                    style.id = 'elementor-editor-injected-styles';
+                    style.innerHTML = `
+                        .elementor-hovered-element {
+                            outline: 2px dashed #0073aa !important;
+                            outline-offset: -2px !important;
+                            cursor: pointer !important;
+                        }
+                        .elementor-selected-element {
+                            outline: 3px solid #D4AF37 !important;
+                            outline-offset: -2px !important;
+                            position: relative !important;
+                        }
+                        [contenteditable="true"] {
+                            outline: 2px solid #39b54a !important;
+                            background: rgba(57, 181, 74, 0.08) !important;
+                        }
+                    `;
+                    doc.head.appendChild(style);
+                }
+
+                // Add Hover & Click Listeners to canvas elements
+                doc.body.addEventListener('mouseover', (e) => {
+                    const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, img, section, .card-propiedad, [data-el-widget]');
+                    if (target && target !== selectedElement) {
+                        target.classList.add('elementor-hovered-element');
+                    }
+                });
+
+                doc.body.addEventListener('mouseout', (e) => {
+                    const target = e.target.closest('.elementor-hovered-element');
+                    if (target) {
+                        target.classList.remove('elementor-hovered-element');
+                    }
+                });
+
+                // Select on Click
+                doc.body.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, img, section, .card-propiedad, [data-el-widget]') || e.target;
+                    selectCanvasElement(target);
+                });
+
+                // Enable Inline ContentEditable on Double Click (Classic Elementor UX)
+                doc.body.addEventListener('dblclick', (e) => {
+                    const target = e.target.closest('h1, h2, h3, p, a, button, span');
+                    if (target) {
+                        target.setAttribute('contenteditable', 'true');
+                        target.focus();
+                        target.addEventListener('blur', () => {
+                            target.removeAttribute('contenteditable');
+                            document.getElementById('ctrl-input-text').value = target.innerText;
+                            recordHistory(`Edición inline de ${target.tagName}`);
+                        }, { once: true });
+                    }
+                });
+
+                // Populate Navigator Tree
+                refreshNavigatorTree();
+
+            } catch (err) {
+                console.error("No se pudo inyectar el script del canvas:", err);
+            }
+        }
+
+        // Select an element from the canvas
+        function selectCanvasElement(el) {
+            const doc = getIframeDoc();
+            if (selectedElement) {
+                selectedElement.classList.remove('elementor-selected-element');
+            }
+
+            selectedElement = el;
+            selectedElement.classList.remove('elementor-hovered-element');
+            selectedElement.classList.add('elementor-selected-element');
+
+            // Switch to Inspector view
+            switchSidebarView('inspector');
+            switchElementorTab('content');
+
+            // Update Inspector labels
+            const tagName = el.tagName.toUpperCase();
+            document.getElementById('insp-tag-type').innerText = `${tagName} • WIDGET`;
+            document.getElementById('insp-element-name').innerText = el.id || el.getAttribute('aria-label') || el.className.split(' ')[0] || tagName;
+
+            // Populate Content Tab inputs
+            const textGroup = document.getElementById('ctrl-text-group');
+            const linkGroup = document.getElementById('ctrl-link-group');
+            const imageGroup = document.getElementById('ctrl-image-group');
+
+            if (tagName === 'IMG') {
+                imageGroup.classList.remove('hidden');
+                textGroup.classList.add('hidden');
+                document.getElementById('ctrl-input-image').value = el.getAttribute('src') || '';
+            } else {
+                imageGroup.classList.add('hidden');
+                textGroup.classList.remove('hidden');
+                document.getElementById('ctrl-input-text').value = el.innerText || el.textContent;
+            }
+
+            if (tagName === 'A' || el.hasAttribute('href')) {
+                linkGroup.classList.remove('hidden');
+                document.getElementById('ctrl-input-link').value = el.getAttribute('href') || '';
+            } else {
+                linkGroup.classList.add('hidden');
+            }
+
+            // Populate Style inputs
+            const computed = window.getComputedStyle(el);
+            document.getElementById('ctrl-font-size').value = parseInt(computed.fontSize) || 16;
+            document.getElementById('label-font-size').innerText = computed.fontSize;
+            document.getElementById('ctrl-hex-text').value = computed.color;
+            document.getElementById('ctrl-font-weight').value = computed.fontWeight || '400';
+            document.getElementById('ctrl-select-tag').value = tagName;
+
+            // Position Floating Bar near element
+            positionFloatingBar(el);
+        }
+
+        function positionFloatingBar(el) {
+            const bar = document.getElementById('canvas-floating-bar');
+            const rect = el.getBoundingClientRect();
+            const frameRect = document.getElementById('preview-frame').getBoundingClientRect();
+
+            bar.classList.remove('hidden');
+            bar.style.top = Math.max(10, frameRect.top + rect.top - 42) + 'px';
+            bar.style.left = Math.max(10, frameRect.left + rect.left) + 'px';
+            document.getElementById('floating-badge-label').innerText = el.tagName;
+        }
+
+        // ==============================================
+        // ELEMENT MUTATIONS & BIDIRECTIONAL SYNC
+        // ==============================================
+        function updateActiveElementText(val) {
+            if (!selectedElement) return;
+            selectedElement.innerText = val;
+            recordHistory(`Actualizado texto de ${selectedElement.tagName}`);
+        }
+
+        function updateActiveElementLink(val) {
+            if (!selectedElement) return;
+            selectedElement.setAttribute('href', val);
+        }
+
+        function updateActiveElementImage(val) {
+            if (!selectedElement) return;
+            selectedElement.setAttribute('src', val);
+        }
+
+        function updateActiveElementStyle(prop, val) {
+            if (!selectedElement) return;
+            selectedElement.style[prop] = val;
+            recordHistory(`Estilo ${prop}: ${val}`);
+        }
+
+        function updateMarginPadding() {
+            if (!selectedElement) return;
+            const mt = document.getElementById('ctrl-margin-top').value || 0;
+            const mr = document.getElementById('ctrl-margin-right').value || 0;
+            const mb = document.getElementById('ctrl-margin-bottom').value || 0;
+            const ml = document.getElementById('ctrl-margin-left').value || 0;
+            selectedElement.style.margin = `${mt}px ${mr}px ${mb}px ${ml}px`;
+
+            const pt = document.getElementById('ctrl-pad-top').value || 0;
+            const pr = document.getElementById('ctrl-pad-right').value || 0;
+            const pb = document.getElementById('ctrl-pad-bottom').value || 0;
+            const pl = document.getElementById('ctrl-pad-left').value || 0;
+            selectedElement.style.padding = `${pt}px ${pr}px ${pb}px ${pl}px`;
+        }
+
+        function applyAnimation(anim) {
+            if (!selectedElement) return;
+            selectedElement.setAttribute('data-animation', anim);
+            showToast("Animación Asignada", `Efecto ${anim} configurado para este elemento.`);
+        }
+
+        function updateActiveElementClasses(classes) {
+            if (!selectedElement) return;
+            selectedElement.className = classes;
+        }
+
+        function duplicateActiveElement() {
+            if (!selectedElement) return;
+            const clone = selectedElement.cloneNode(true);
+            clone.classList.remove('elementor-selected-element');
+            selectedElement.parentNode.insertBefore(clone, selectedElement.nextSibling);
+            selectCanvasElement(clone);
+            showToast("Elemento Duplicado", "Se ha creado una copia exacta en la página.");
+            refreshNavigatorTree();
+        }
+
+        function deleteActiveElement() {
+            if (!selectedElement) return;
+            const parent = selectedElement.parentNode;
+            selectedElement.remove();
+            selectedElement = null;
+            document.getElementById('canvas-floating-bar').classList.add('hidden');
+            switchSidebarView('widgets');
+            showToast("Elemento Eliminado", "El elemento ha sido retirado del lienzo.");
+            refreshNavigatorTree();
+        }
+
+        function moveActiveElement(dir) {
+            if (!selectedElement || !selectedElement.parentNode) return;
+            const parent = selectedElement.parentNode;
+            if (dir === 'up' && selectedElement.previousElementSibling) {
+                parent.insertBefore(selectedElement, selectedElement.previousElementSibling);
+            } else if (dir === 'down' && selectedElement.nextElementSibling) {
+                parent.insertBefore(selectedElement.nextElementSibling, selectedElement);
+            }
+            positionFloatingBar(selectedElement);
+            refreshNavigatorTree();
+        }
+
+        function editActiveElementFromCanvas() {
+            switchSidebarView('inspector');
+        }
+
+        // ==============================================
+        // INSERT NEW ELEMENTOR WIDGETS
+        // ==============================================
+        function insertWidget(type) {
+            const doc = getIframeDoc();
+            if (!doc) return;
+
+            const targetContainer = selectedElement ? (selectedElement.closest('section, div') || doc.body) : doc.body;
+            let newEl;
+
+            switch (type) {
+                case 'heading':
+                    newEl = doc.createElement('h2');
+                    newEl.className = 'text-3xl font-heading font-extrabold text-white my-4';
+                    newEl.innerText = 'Nuevo Encabezado Elementor';
+                    break;
+                case 'text':
+                    newEl = doc.createElement('p');
+                    newEl.className = 'text-sm text-gray-300 leading-relaxed my-2';
+                    newEl.innerText = 'Escribe aquí tu descripción o texto inmobiliario personalizado con formato visual.';
+                    break;
+                case 'button':
+                    newEl = doc.createElement('a');
+                    newEl.href = '#contacto';
+                    newEl.className = 'inline-flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b89320] text-black font-heading font-black px-6 py-3 rounded-lg text-xs uppercase tracking-wider transition-all shadow-md my-2';
+                    newEl.innerText = 'AGENDAR ASESORÍA DIRECTA';
+                    break;
+                case 'divider':
+                    newEl = doc.createElement('div');
+                    newEl.className = 'h-px w-full bg-[#D4AF37]/30 my-6';
+                    break;
+                case 'spacer':
+                    newEl = doc.createElement('div');
+                    newEl.className = 'w-full h-12 my-2';
+                    break;
+                case 'property_card':
+                    newEl = doc.createElement('div');
+                    newEl.className = 'card-propiedad bg-[#0c0e14] border border-[#D4AF37]/30 rounded-2xl p-5 my-4 max-w-sm';
+                    newEl.innerHTML = `
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" class="w-full h-44 object-cover rounded-xl mb-3">
+                        <div class="text-[#D4AF37] font-bold text-xs uppercase">Viña del Mar • Residencial</div>
+                        <h4 class="text-white font-heading font-bold text-base my-1">Nueva Residencia Auditada</h4>
+                        <div class="flex items-center justify-between text-xs text-gray-400 my-2">
+                            <span>185 m²</span> • <span>3 Dorms</span> • <span>3 Baños</span>
+                        </div>
+                        <div class="text-lg font-heading font-black text-white">UF 14.500</div>
+                    `;
+                    break;
+                default:
+                    newEl = doc.createElement('div');
+                    newEl.className = 'p-4 bg-gray-900 border border-gray-700 rounded-lg text-white my-3';
+                    newEl.innerText = `Widget ${type} insertado`;
+            }
+
+            targetContainer.appendChild(newEl);
+            selectCanvasElement(newEl);
+            showToast("Widget Añadido", `Se insertó el elemento ${type} en la página.`);
+            refreshNavigatorTree();
+        }
+
+        // ==============================================
+        // NAVIGATOR TREE & HISTORY
+        // ==============================================
+        function toggleNavigator() {
+            const nav = document.getElementById('navigator-window');
+            nav.classList.toggle('hidden');
+            if (!nav.classList.contains('hidden')) {
+                refreshNavigatorTree();
+            }
+        }
+
+        function refreshNavigatorTree() {
+            const doc = getIframeDoc();
+            const body = document.getElementById('navigator-body');
+            if (!doc || !body) return;
+
+            body.innerHTML = '';
+            const sections = doc.querySelectorAll('header, section, footer, [id^="seccion"], [data-el-section]');
+
+            sections.forEach((sec, idx) => {
+                const title = sec.getAttribute('aria-label') || sec.id || sec.tagName.toLowerCase();
+                const node = document.createElement('div');
+                node.className = "flex items-center justify-between p-2 rounded hover:bg-[#26292c] text-white cursor-pointer group";
+                node.innerHTML = `
+                    <div class="flex items-center gap-2 truncate">
+                        <i class="fa-solid fa-folder text-[#D4AF37] text-xs"></i>
+                        <span class="font-medium truncate">${idx + 1}. ${title}</span>
+                    </div>
+                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="toggleVisibility(event, '${sec.id || ''}')" class="p-1 hover:text-[#D4AF37] text-[10px]"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                `;
+                node.onclick = () => {
+                    sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    selectCanvasElement(sec);
+                };
+                body.appendChild(node);
+            });
+        }
+
+        function recordHistory(desc) {
+            actionHistory.push({ desc, time: new Date().toLocaleTimeString() });
+            const dot = document.getElementById('save-status-dot');
+            dot.className = "w-2 h-2 rounded-full bg-amber-400 animate-ping ml-1";
+            dot.title = "Cambios sin publicar";
+        }
+
+        async function toggleHistoryModal() {
+            const modal = document.getElementById('history-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                loadServerRevisions();
+            }
+        }
+
+        async function loadServerRevisions() {
+            const container = document.getElementById('history-revisions-list');
+            container.innerHTML = '<p class="text-[#a4afb7] text-center py-4">Consultando historial en el servidor...</p>';
+            try {
+                const res = await fetch('/api/revisions');
+                const data = await res.json();
+                if (data.success && data.revisions.length > 0) {
+                    container.innerHTML = data.revisions.map(rev => `
+                        <div class="flex items-center justify-between p-3 bg-[#15171a] border border-[#393d41] rounded-lg">
+                            <div>
+                                <div class="text-white font-bold text-xs">${rev.filename}</div>
+                                <div class="text-[10px] text-[#a4afb7]">${new Date(rev.createdAt).toLocaleString()} • ${(rev.size / 1024).toFixed(1)} KB</div>
+                            </div>
+                            <button onclick="restoreBackup('${rev.filename}')" class="bg-[#26292c] hover:bg-[#D4AF37] hover:text-black text-white px-2.5 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer">
+                                Restaurar
+                            </button>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p class="text-[#a4afb7] text-center py-4">No hay revisiones previas registradas.</p>';
+                }
+            } catch (err) {
+                container.innerHTML = `<p class="text-red-400 text-center py-4">Error al cargar historial: ${err.message}</p>`;
+            }
+        }
+
+        async function restoreBackup(filename) {
+            if (!confirm(`¿Deseas restaurar la versión ${filename}?`)) return;
+            try {
+                const res = await fetch('/api/restore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ backupFileName: filename, target: 'index.html' })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast("Versión Restaurada", filename);
+                    document.getElementById('preview-frame').src = './index.html?r=' + Date.now();
+                    toggleHistoryModal();
+                }
+            } catch (err) {
+                alert("Error al restaurar: " + err.message);
+            }
+        }
+
+        function toggleSiteSettingsModal() {
+            document.getElementById('settings-modal').classList.toggle('hidden');
+        }
+
+        // ==============================================
+        // PUBLISH & PERSISTENCE TO SERVER (/api/save)
+        // ==============================================
+        async function publishChanges() {
+            if (isSaving) return;
+            isSaving = true;
+
+            const doc = getIframeDoc();
+            if (!doc) return;
+
+            // Deselect any element to clean editor styles before serialization
+            if (selectedElement) {
+                selectedElement.classList.remove('elementor-selected-element');
+            }
+            document.getElementById('canvas-floating-bar').classList.add('hidden');
+
+            // Remove editor-specific injected stylesheet
+            const injected = doc.getElementById('elementor-editor-injected-styles');
+            if (injected) injected.remove();
+
+            // Extract serialized HTML
+            const fullHtml = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+
+            // Re-inject the styles for continuous editing
+            initializeCanvasIntegration();
+
+            const btn = document.getElementById('btn-publish');
+            const icon = document.getElementById('publish-icon');
+            const label = document.getElementById('publish-label');
+
+            icon.className = "fa-solid fa-spinner fa-spin text-xs";
+            label.innerText = "PUBLICANDO...";
+
+            try {
+                const response = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        html: fullHtml,
+                        filename: 'index.html'
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showToast("¡Página Publicada!", "Los cambios se guardaron y están activos en http://localhost:3600");
+                    const dot = document.getElementById('save-status-dot');
+                    dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse ml-1";
+                    dot.title = "Sincronizado con producción";
+                } else {
+                    alert("Error al guardar: " + result.error);
+                }
+            } catch (err) {
+                alert("Error de conexión al servidor: " + err.message);
+            } finally {
+                isSaving = false;
+                icon.className = "fa-solid fa-floppy-disk text-xs";
+                label.innerText = "ACTUALIZAR";
+            }
+        }
+
+        // Download Clean HTML Directly
+        function downloadCleanHTML() {
+            const doc = getIframeDoc();
+            const clean = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+            const blob = new Blob([clean], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index-elementor-export.html';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("HTML Exportado", "Archivo index-elementor-export.html descargado.");
+        }
+
+        // Export Elementor JSON Template
+        function exportElementorTemplate() {
+            const template = {
+                title: "W Gestión Inmobiliaria Landing Page",
+                version: "2.0.0",
+                engine: "Elementor Visual Builder Replica",
+                author: "Antigravity & Braulio",
+                date: new Date().toISOString(),
+                content: getIframeDoc().body.innerHTML
+            };
+            const blob = new Blob([JSON.stringify(template, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'w-gestion-elementor-template.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Plantilla Exportada", "Template JSON compatible generado.");
+        }
+
+        // Toast Notification Trigger
+        function showToast(title, msg) {
+            const toast = document.getElementById('elementor-toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('translate-y-28');
+            setTimeout(() => {
+                toast.classList.add('translate-y-28');
+            }, 3500);
+        }
+
+        // Keyboard Shortcut: Ctrl+S / Cmd+S to Publish
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                publishChanges();
+            }
+        });
+    </script>
+</body>
+</html>
