@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elementor Visual Builder — W Gestión Inmobiliaria</title>
+    <title>Elementor Visual Builder Pro — W Gestión Inmobiliaria</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Montserrat, Playfair Display, Roboto, Inter -->
@@ -60,15 +60,27 @@
             background: rgba(212, 175, 55, 0.05);
         }
 
-        /* Draggable Navigator */
-        #navigator-window { cursor: move; }
-        #navigator-body { cursor: default; }
+        /* Draggable Widget Visual cues */
+        .widget-card[draggable="true"] {
+            cursor: grab;
+        }
+        .widget-card[draggable="true"]:active {
+            cursor: grabbing;
+        }
+        .widget-dragging {
+            opacity: 0.45;
+            transform: scale(0.95);
+            border-color: var(--el-gold) !important;
+        }
 
         /* Timeline Action Item Active */
         .action-item-current {
             border-left: 3px solid var(--el-gold);
             background-color: rgba(212, 175, 55, 0.1);
         }
+
+        #navigator-window { cursor: move; }
+        #navigator-body { cursor: default; }
     </style>
 </head>
 <body class="flex flex-col h-screen w-screen overflow-hidden text-xs">
@@ -77,7 +89,7 @@
     <div id="recovery-banner" class="hidden bg-gradient-to-r from-amber-950 via-[#26292c] to-amber-950 border-b border-amber-600/70 px-4 py-2 z-50 flex items-center justify-between text-xs text-amber-200 shadow-xl">
         <div class="flex items-center gap-2.5">
             <i class="fa-solid fa-triangle-exclamation text-amber-400 text-sm animate-bounce"></i>
-            <span><strong>Borrador no publicado detectado:</strong> Existe un guardado automático reciente en tu navegador. ¿Deseas restaurarlo para no perder tus cambios?</span>
+            <span><strong>Borrador no publicado detectado:</strong> Existe un guardado automático reciente en tu navegador. ¿Deseas restaurarlo?</span>
         </div>
         <div class="flex items-center gap-2">
             <button onclick="restoreAutosaveDraft()" class="bg-[#D4AF37] hover:bg-[#b89320] text-black font-heading font-black px-3 py-1 rounded text-[11px] uppercase tracking-wider transition-colors cursor-pointer">
@@ -99,9 +111,9 @@
                 </div>
                 <div class="flex flex-col leading-none">
                     <span class="font-heading font-extrabold text-[12px] text-white tracking-wide flex items-center gap-1.5">
-                        ELEMENTOR <span class="text-[#D4AF37] font-semibold text-[10px]">BUILDER</span>
+                        ELEMENTOR <span class="text-[#D4AF37] font-semibold text-[10px]">BUILDER PRO</span>
                     </span>
-                    <span class="text-[9px] text-[#a4afb7]">W Gestión Inmobiliaria • V2 Avanzada</span>
+                    <span class="text-[9px] text-[#a4afb7]">Drag & Drop Visual • W Gestión Inmobiliaria</span>
                 </div>
             </a>
 
@@ -207,89 +219,134 @@
                 </div>
             </div>
 
-            <!-- VIEW A: WIDGET DRAWER (Catálogo de Elementos Elementor) -->
+            <!-- VIEW A: WIDGET DRAWER (Catálogo de Elementos Elementor con Drag & Drop) -->
             <div id="view-widgets" class="flex-1 flex flex-col overflow-hidden">
-                <!-- Search Box -->
-                <div class="p-2.5 bg-[#1e2124] border-b border-[#393d41]">
+                <!-- Search Box + Drag Hint -->
+                <div class="p-2.5 bg-[#1e2124] border-b border-[#393d41] space-y-1.5">
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#a4afb7] text-xs"></i>
                         <input type="text" id="widget-search" oninput="filterWidgets(this.value)" placeholder="Buscar elemento o widget..." class="w-full bg-[#15171a] border border-[#393d41] rounded px-3 pl-8 py-1.5 text-xs text-white placeholder-[#717b82] focus:outline-none focus:border-[#D4AF37] transition-colors">
+                    </div>
+                    <div class="flex items-center justify-between text-[10px] text-[#D4AF37] font-mono px-1">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-hand-back-fist"></i> Arrastra al lienzo para soltar</span>
+                        <span class="text-[#a4afb7]">o haz clic</span>
                     </div>
                 </div>
 
                 <!-- Widgets Scrollable Area -->
                 <div class="flex-1 overflow-y-auto p-3 space-y-4">
                     
-                    <!-- CATEGORÍA 1: ELEMENTOR BÁSICOS -->
+                    <!-- CATEGORÍA 1: ELEMENTOR BÁSICOS (DRAGGABLE) -->
                     <div class="widget-category" data-cat="basico">
                         <div class="flex items-center justify-between text-[#a4afb7] font-heading font-bold text-[10px] uppercase tracking-wider mb-2">
                             <span>Básico</span>
                             <i class="fa-solid fa-chevron-down text-[9px]"></i>
                         </div>
                         <div class="grid grid-cols-3 gap-2">
-                            <div onclick="insertWidget('heading')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Widget: Encabezado -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'heading')" onclick="insertWidget('heading')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-heading text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Encabezado</span>
                             </div>
-                            <div onclick="insertWidget('text')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Widget: Editor de Texto -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'text')" onclick="insertWidget('text')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-paragraph text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Texto</span>
                             </div>
-                            <div onclick="insertWidget('image')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Widget: Imagen -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'image')" onclick="insertWidget('image')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-image text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Imagen</span>
                             </div>
-                            <div onclick="insertWidget('button')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Widget: Botón CTA -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'button')" onclick="insertWidget('button')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-hand-pointer text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Botón</span>
                             </div>
-                            <div onclick="insertWidget('divider')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Widget: Divisor -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'divider')" onclick="insertWidget('divider')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-minus text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Divisor</span>
                             </div>
-                            <div onclick="insertWidget('spacer')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Widget: Espaciador -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'spacer')" onclick="insertWidget('spacer')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-arrows-up-down text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Espaciador</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- CATEGORÍA 2: PRO & GESTIÓN INMOBILIARIA -->
+                    <!-- CATEGORÍA 2: PRO & GESTIÓN INMOBILIARIA (DRAGGABLE) -->
                     <div class="widget-category" data-cat="pro">
                         <div class="flex items-center justify-between text-[#a4afb7] font-heading font-bold text-[10px] uppercase tracking-wider mb-2">
                             <span>Pro & Inmobiliario</span>
                             <span class="bg-[#92003B] text-white text-[9px] font-extrabold px-1.5 py-0.2 rounded">PRO</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            <div onclick="insertWidget('property_card')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Ficha Inmueble -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'property_card')" onclick="insertWidget('property_card')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-building text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Ficha Inmueble</span>
                                 <span class="text-[9px] text-[#a4afb7]">UF, m², Dorm, Baños</span>
                             </div>
-                            <div onclick="insertWidget('service_tabs')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Pestañas de Servicios -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'service_tabs')" onclick="insertWidget('service_tabs')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-table-columns text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Pestañas Servicios</span>
                                 <span class="text-[9px] text-[#a4afb7]">Venta / Arriendo / Coprop</span>
                             </div>
-                            <div onclick="insertWidget('calculator')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Calculadora Hipotecaria -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'calculator')" onclick="insertWidget('calculator')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-calculator text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Calculadora UF</span>
                                 <span class="text-[9px] text-[#a4afb7]">Simulador dividendo CLP</span>
                             </div>
-                            <div onclick="insertWidget('procedure_steps')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Flujo Fiduciario -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'procedure_steps')" onclick="insertWidget('procedure_steps')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-diagram-project text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Flujo 6 Fases</span>
                                 <span class="text-[9px] text-[#a4afb7]">Procedimiento fiduciario</span>
                             </div>
-                            <div onclick="insertWidget('contact_form')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Formulario Contacto -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'contact_form')" onclick="insertWidget('contact_form')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-solid fa-envelope-open-text text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Formulario Contacto</span>
                                 <span class="text-[9px] text-[#a4afb7]">Captación & Tasación</span>
                             </div>
-                            <div onclick="insertWidget('whatsapp_concierge')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
+                            <!-- Botón Concierge -->
+                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'whatsapp_concierge')" onclick="insertWidget('whatsapp_concierge')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
                                 <i class="fa-brands fa-whatsapp text-emerald-400 text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Botón Concierge</span>
                                 <span class="text-[9px] text-[#a4afb7]">WhatsApp flotante</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORÍA 3: ESTRUCTURA & CONTENEDORES (PRESETS) -->
+                    <div class="widget-category" data-cat="estructura">
+                        <div class="flex items-center justify-between text-[#a4afb7] font-heading font-bold text-[10px] uppercase tracking-wider mb-2">
+                            <span>Estructura Flex / Columnas</span>
+                            <i class="fa-solid fa-layer-group text-[9px] text-[#D4AF37]"></i>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div onclick="insertStructure(1)" class="bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2 text-center cursor-pointer transition-all">
+                                <div class="w-full h-5 bg-[#2d3136] rounded mb-1 border border-dashed border-[#a4afb7]"></div>
+                                <span class="text-[9px] text-white">1 Columna</span>
+                            </div>
+                            <div onclick="insertStructure(2)" class="bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2 text-center cursor-pointer transition-all">
+                                <div class="grid grid-cols-2 gap-1 h-5 mb-1">
+                                    <div class="bg-[#2d3136] rounded border border-dashed border-[#a4afb7]"></div>
+                                    <div class="bg-[#2d3136] rounded border border-dashed border-[#a4afb7]"></div>
+                                </div>
+                                <span class="text-[9px] text-white">2 Columnas</span>
+                            </div>
+                            <div onclick="insertStructure(3)" class="bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2 text-center cursor-pointer transition-all">
+                                <div class="grid grid-cols-3 gap-0.5 h-5 mb-1">
+                                    <div class="bg-[#2d3136] rounded border border-dashed border-[#a4afb7]"></div>
+                                    <div class="bg-[#2d3136] rounded border border-dashed border-[#a4afb7]"></div>
+                                    <div class="bg-[#2d3136] rounded border border-dashed border-[#a4afb7]"></div>
+                                </div>
+                                <span class="text-[9px] text-white">3 Columnas</span>
                             </div>
                         </div>
                     </div>
@@ -307,7 +364,7 @@
                             <i class="fa-solid fa-arrow-left"></i>
                         </button>
                         <div class="flex flex-col truncate">
-                            <span class="text-[10px] text-[#D4AF37] font-mono font-bold uppercase" id="insp-tag-type">H1 • ENCABEZADO</span>
+                            <span class="text-[10px] text-[#D4AF37] font-mono font-bold uppercase" id="insp-tag-type">H1 • WIDGET</span>
                             <span class="text-white font-bold text-xs truncate max-w-[180px]" id="insp-element-name">Encabezado Principal</span>
                         </div>
                     </div>
@@ -538,11 +595,14 @@
                 <iframe id="preview-frame" src="./index.html" class="w-full h-full border-0" onload="initializeCanvasIntegration()"></iframe>
             </div>
 
-            <!-- Floating Quick Action Bar over Canvas (Selected element toolbar) -->
+            <!-- Floating Quick Action Bar over Canvas (Selected element toolbar with Drag Handle) -->
             <div id="canvas-floating-bar" class="hidden absolute z-50 bg-[#1e2124] border border-[#D4AF37] shadow-2xl rounded-lg px-2.5 py-1.5 flex items-center gap-2 text-white">
-                <span id="floating-badge-label" class="bg-[#D4AF37] text-black font-extrabold text-[9px] px-1.5 py-0.5 rounded font-mono uppercase">
-                    WIDGET
-                </span>
+                <div draggable="true" ondragstart="handleCanvasElementDragStart(event)" class="cursor-grab hover:text-[#D4AF37] px-1 flex items-center gap-1" title="Arrastrar para mover de posición">
+                    <i class="fa-solid fa-grip-vertical text-[#D4AF37]"></i>
+                    <span id="floating-badge-label" class="bg-[#D4AF37] text-black font-extrabold text-[9px] px-1.5 py-0.5 rounded font-mono uppercase">
+                        WIDGET
+                    </span>
+                </div>
                 <div class="h-3.5 w-px bg-[#393d41]"></div>
                 <button onclick="editActiveElementFromCanvas()" class="hover:text-[#D4AF37] text-xs px-1 cursor-pointer" title="Editar en Panel">
                     <i class="fa-solid fa-pen"></i>
@@ -596,7 +656,6 @@
         <!-- ELEMENTOR 2-TAB HISTORY DRAWER: ACCIONES VS REVISIONES  -->
         <!-- ======================================================= -->
         <div id="history-drawer" class="hidden fixed inset-y-0 right-0 w-96 bg-[#1e2124] border-l border-[#393d41] shadow-2xl z-50 flex flex-col overflow-hidden">
-            <!-- Header -->
             <div class="h-12 bg-[#26292c] border-b border-[#393d41] px-4 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-clock-rotate-left text-[#D4AF37] text-sm"></i>
@@ -607,7 +666,6 @@
                 </button>
             </div>
 
-            <!-- Two Tabs: Acciones vs Revisiones -->
             <div class="flex border-b border-[#393d41] bg-[#1a1d20] text-xs font-semibold">
                 <button onclick="switchHistoryTab('actions')" id="hist-tab-btn-actions" class="flex-1 py-3 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer">
                     <i class="fa-solid fa-list-check"></i> <span>Acciones (<span id="hist-actions-badge">0</span>)</span>
@@ -617,7 +675,6 @@
                 </button>
             </div>
 
-            <!-- PESTAÑA A: ACCIONES DE LA SESIÓN (Línea de Tiempo con Deshacer Instantáneo) -->
             <div id="hist-panel-actions" class="flex-1 overflow-y-auto p-3 space-y-2">
                 <div class="text-[11px] text-[#a4afb7] bg-[#15171a] p-2.5 rounded border border-[#393d41] mb-2 flex items-center justify-between">
                     <span>Haz clic en cualquier acción para rebobinar el diseño.</span>
@@ -625,12 +682,9 @@
                         <i class="fa-solid fa-arrow-rotate-left"></i> Deshacer
                     </button>
                 </div>
-                <div id="actions-timeline-list" class="space-y-1">
-                    <!-- Dynamic timeline items -->
-                </div>
+                <div id="actions-timeline-list" class="space-y-1"></div>
             </div>
 
-            <!-- PESTAÑA B: REVISIONES Y PUNTOS DE CONTROL DEL SERVIDOR -->
             <div id="hist-panel-revisions" class="flex-1 overflow-y-auto p-3 space-y-3 hidden">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] text-[#a4afb7] uppercase font-bold">Puntos Guardados</span>
@@ -702,21 +756,22 @@
         </div>
     </div>
 
-    <!-- ============================================== -->
-    <!-- LOGIC SCRIPT: STATE ENGINE & CHANGE MANAGEMENT -->
-    <!-- ============================================== -->
+    <!-- ============================================================== -->
+    <!-- LOGIC SCRIPT: STATE ENGINE, DRAG & DROP & ELEMENTOR INTERACTION -->
+    <!-- ============================================================== -->
     <script>
         let selectedElement = null;
         let isSaving = false;
         let hasUnsavedChanges = false;
         let autosaveTimer = null;
         let undoToastTimer = null;
+        let draggedWidgetType = null;
+        let isDraggingFromCanvas = false;
 
         // Undo & Redo Memento Stacks (Max 60 steps)
         const MAX_HISTORY = 60;
         let undoStack = [];
         let redoStack = [];
-        let actionHistoryLog = [];
 
         function getIframeDoc() {
             const frame = document.getElementById('preview-frame');
@@ -727,14 +782,17 @@
             const doc = getIframeDoc();
             if (!doc) return '';
 
-            // Clone to avoid modifying active canvas
             const cloneDoc = doc.documentElement.cloneNode(true);
             const injected = cloneDoc.querySelector('#elementor-editor-injected-styles');
             if (injected) injected.remove();
 
-            // Remove any selection or hover classes
-            cloneDoc.querySelectorAll('.elementor-selected-element, .elementor-hovered-element').forEach(el => {
-                el.classList.remove('elementor-selected-element', 'elementor-hovered-element');
+            // Remove visual helper indicators and add-section buttons
+            cloneDoc.querySelectorAll('.elementor-selected-element, .elementor-hovered-element, .elementor-drop-indicator, .elementor-add-section-wrapper').forEach(el => {
+                if (el.classList.contains('elementor-add-section-wrapper') || el.classList.contains('elementor-drop-indicator')) {
+                    el.remove();
+                } else {
+                    el.classList.remove('elementor-selected-element', 'elementor-hovered-element');
+                }
             });
             cloneDoc.querySelectorAll('[contenteditable]').forEach(el => {
                 el.removeAttribute('contenteditable');
@@ -750,9 +808,11 @@
             const doc = getIframeDoc();
             if (!doc || !doc.body) return;
 
+            // Remove temporary indicators before snapshotting
+            doc.querySelectorAll('.elementor-drop-indicator').forEach(el => el.remove());
+
             const htmlSnapshot = doc.body.innerHTML;
 
-            // Push current state onto undoStack
             undoStack.push({
                 title: actionTitle,
                 icon: icon,
@@ -764,29 +824,18 @@
                 undoStack.shift();
             }
 
-            // Clearing redoStack on new user action
             redoStack = [];
-
-            // Add to session actions log
-            actionHistoryLog.push({
-                title: actionTitle,
-                icon: icon,
-                time: new Date().toLocaleTimeString(),
-                stackIndex: undoStack.length - 1
-            });
-
             updateUndoRedoUI();
             scheduleAutosave();
             hasUnsavedChanges = true;
         }
 
         function undoAction() {
-            if (undoStack.length <= 1) return; // Keep initial baseline state
+            if (undoStack.length <= 1) return;
 
             const doc = getIframeDoc();
             if (!doc) return;
 
-            // Pop the current state and push onto redoStack
             const currentState = undoStack.pop();
             redoStack.push({
                 title: currentState.title,
@@ -795,11 +844,9 @@
                 bodyHtml: doc.body.innerHTML
             });
 
-            // Restore the previous state
             const targetState = undoStack[undoStack.length - 1];
             doc.body.innerHTML = targetState.bodyHtml;
 
-            // Re-initialize integration and clear selection
             initializeCanvasIntegration();
             selectedElement = null;
             document.getElementById('canvas-floating-bar').classList.add('hidden');
@@ -807,7 +854,7 @@
 
             updateUndoRedoUI();
             scheduleAutosave();
-            showToast("Acción Deshecha (Undo)", `Se restauró el estado: "${targetState.title}"`);
+            showToast("Acción Deshecha (Undo)", `Se restauró: "${targetState.title}"`);
         }
 
         function redoAction() {
@@ -816,10 +863,7 @@
             const doc = getIframeDoc();
             if (!doc) return;
 
-            // Pop from redoStack
             const targetState = redoStack.pop();
-
-            // Push current state to undoStack
             undoStack.push({
                 title: targetState.title,
                 icon: targetState.icon,
@@ -827,7 +871,6 @@
                 bodyHtml: doc.body.innerHTML
             });
 
-            // Restore
             doc.body.innerHTML = targetState.bodyHtml;
             initializeCanvasIntegration();
             selectedElement = null;
@@ -843,7 +886,6 @@
             const doc = getIframeDoc();
             if (!doc) return;
 
-            // Slice stack up to that point
             const targetState = undoStack[index];
             undoStack = undoStack.slice(0, index + 1);
             redoStack = [];
@@ -879,8 +921,6 @@
             badgeRedo.classList.toggle('hidden', redoStack.length === 0);
 
             histBadge.innerText = undoStack.length;
-
-            // Refresh actions timeline list
             renderActionsTimeline();
         }
 
@@ -911,7 +951,7 @@
         }
 
         // ==============================================
-        // AUTOSAVE ENGINE (DEBOUNCED + CRASH PROTECTION)
+        // AUTOSAVE ENGINE
         // ==============================================
         function scheduleAutosave() {
             const statusIcon = document.getElementById('autosave-status-icon');
@@ -929,15 +969,11 @@
             const cleanHtml = getCleanCanvasHTML();
             if (!cleanHtml) return;
 
-            // 1. Save to LocalStorage for instant browser restore
             try {
                 localStorage.setItem('w_gestion_autosave_html', cleanHtml);
                 localStorage.setItem('w_gestion_autosave_time', Date.now().toString());
-            } catch (e) {
-                console.warn("LocalStorage lleno o deshabilitado:", e);
-            }
+            } catch (e) {}
 
-            // 2. Save silently to server endpoint /api/autosave
             try {
                 const res = await fetch('/api/autosave', {
                     method: 'POST',
@@ -952,23 +988,17 @@
                     statusText.innerText = `Autoguardado (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`;
                     statusText.className = "text-sky-300 text-[11px] font-mono";
                 }
-            } catch (err) {
-                console.warn("Autosave en servidor no disponible:", err);
-            }
+            } catch (err) {}
         }
 
-        // Check if there is an uncommitted autosave draft on launch
         async function checkAutosaveOnLoad() {
             try {
                 const res = await fetch('/api/autosave');
                 const data = await res.json();
                 if (data.success && data.exists) {
-                    const banner = document.getElementById('recovery-banner');
-                    banner.classList.remove('hidden');
+                    document.getElementById('recovery-banner').classList.remove('hidden');
                 }
-            } catch (e) {
-                // Ignore if offline
-            }
+            } catch (e) {}
         }
 
         async function restoreAutosaveDraft() {
@@ -981,7 +1011,7 @@
                     doc.write(data.html);
                     doc.close();
                     document.getElementById('recovery-banner').classList.add('hidden');
-                    showToast("Borrador Restaurado", "Se han recuperado tus cambios guardados automáticamente.");
+                    showToast("Borrador Restaurado", "Se han recuperado tus cambios automáticos.");
                     setTimeout(initializeCanvasIntegration, 500);
                 }
             } catch (err) {
@@ -996,32 +1026,498 @@
         }
 
         // ==============================================
-        // SAFE DELETION GUARD WITH FLOATING RESTORE TOAST
+        // DRAG & DROP ENGINE (HTML5 DRAG API INTEGRATION)
         // ==============================================
+        function handleWidgetDragStart(e, widgetType) {
+            draggedWidgetType = widgetType;
+            isDraggingFromCanvas = false;
+            e.dataTransfer.setData('text/plain', widgetType);
+            e.dataTransfer.effectAllowed = 'copyMove';
+
+            // Add visual dragging class
+            e.currentTarget.classList.add('widget-dragging');
+        }
+
+        function handleCanvasElementDragStart(e) {
+            if (!selectedElement) return;
+            isDraggingFromCanvas = true;
+            draggedWidgetType = 'canvas-element';
+            e.dataTransfer.setData('text/plain', 'canvas-element');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        document.addEventListener('dragend', (e) => {
+            document.querySelectorAll('.widget-dragging').forEach(el => el.classList.remove('widget-dragging'));
+            removeDropIndicators();
+            draggedWidgetType = null;
+            isDraggingFromCanvas = false;
+        });
+
+        function removeDropIndicators() {
+            const doc = getIframeDoc();
+            if (!doc) return;
+            doc.querySelectorAll('.elementor-drop-indicator').forEach(el => el.remove());
+            doc.querySelectorAll('.elementor-drop-zone-active').forEach(el => el.classList.remove('elementor-drop-zone-active'));
+        }
+
+        function setupCanvasDragAndDropListeners(doc) {
+            let activeDropTarget = null;
+            let dropPosition = 'after'; // 'before', 'after', or 'inside'
+
+            doc.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = isDraggingFromCanvas ? 'move' : 'copy';
+
+                const target = e.target.closest('section, div.card-propiedad, h1, h2, h3, p, a, div.elementor-column-dropzone, div[data-el-container]');
+                if (!target || target.classList.contains('elementor-drop-indicator')) return;
+
+                activeDropTarget = target;
+                const rect = target.getBoundingClientRect();
+                const offsetY = e.clientY - rect.top;
+
+                removeDropIndicators();
+
+                // If dropping directly inside an empty column dropzone
+                if (target.classList.contains('elementor-column-dropzone')) {
+                    dropPosition = 'inside';
+                    target.classList.add('elementor-drop-zone-active');
+                    return;
+                }
+
+                // Determine if dropping before or after
+                dropPosition = (offsetY < rect.height / 2) ? 'before' : 'after';
+
+                const indicator = doc.createElement('div');
+                indicator.className = 'elementor-drop-indicator';
+                indicator.style.cssText = `
+                    height: 4px;
+                    width: 100%;
+                    background: linear-gradient(90deg, #D4AF37, #39b54a);
+                    box-shadow: 0 0 10px rgba(212, 175, 55, 0.9);
+                    border-radius: 2px;
+                    margin: 8px 0;
+                    pointer-events: none;
+                `;
+
+                if (dropPosition === 'before') {
+                    target.parentNode.insertBefore(indicator, target);
+                } else {
+                    target.parentNode.insertBefore(indicator, target.nextSibling);
+                }
+            });
+
+            doc.addEventListener('dragleave', (e) => {
+                if (e.relatedTarget === null || e.clientX <= 0 || e.clientY <= 0) {
+                    removeDropIndicators();
+                }
+            });
+
+            doc.addEventListener('drop', (e) => {
+                e.preventDefault();
+                removeDropIndicators();
+
+                if (!draggedWidgetType) return;
+
+                if (isDraggingFromCanvas && selectedElement) {
+                    // Reordering existing element
+                    if (activeDropTarget && activeDropTarget !== selectedElement) {
+                        pushState(`Mover [${selectedElement.tagName}]`, 'fa-arrows-up-down-left-right');
+                        if (dropPosition === 'before') {
+                            activeDropTarget.parentNode.insertBefore(selectedElement, activeDropTarget);
+                        } else if (dropPosition === 'inside') {
+                            activeDropTarget.appendChild(selectedElement);
+                        } else {
+                            activeDropTarget.parentNode.insertBefore(selectedElement, activeDropTarget.nextSibling);
+                        }
+                        positionFloatingBar(selectedElement);
+                        showToast("Elemento Reubicado", "El elemento ha sido movido a su nueva posición.");
+                        refreshNavigatorTree();
+                    }
+                } else {
+                    // Dropping a brand new widget from the palette
+                    const newElement = createWidgetElement(draggedWidgetType, doc);
+                    if (!newElement) return;
+
+                    pushState(`Arrastrar y Soltar [${draggedWidgetType}]`, 'fa-hand-back-fist');
+
+                    if (activeDropTarget) {
+                        if (dropPosition === 'before') {
+                            activeDropTarget.parentNode.insertBefore(newElement, activeDropTarget);
+                        } else if (dropPosition === 'inside') {
+                            activeDropTarget.innerHTML = ''; // replace empty dropzone placeholder
+                            activeDropTarget.appendChild(newElement);
+                        } else {
+                            activeDropTarget.parentNode.insertBefore(newElement, activeDropTarget.nextSibling);
+                        }
+                    } else {
+                        doc.body.appendChild(newElement);
+                    }
+
+                    selectCanvasElement(newElement);
+                    showToast("Widget Insertado por Drag & Drop", `Se colocó el elemento ${draggedWidgetType} en el lienzo.`);
+                    refreshNavigatorTree();
+                }
+
+                draggedWidgetType = null;
+                isDraggingFromCanvas = false;
+            });
+        }
+
+        // ==============================================
+        // WIDGET CREATOR UTILITY
+        // ==============================================
+        function createWidgetElement(type, doc) {
+            let el;
+            switch (type) {
+                case 'heading':
+                    el = doc.createElement('h2');
+                    el.className = 'text-3xl font-heading font-extrabold text-white my-4';
+                    el.innerText = 'Nuevo Título Elementor';
+                    break;
+                case 'text':
+                    el = doc.createElement('p');
+                    el.className = 'text-sm text-gray-300 leading-relaxed my-2';
+                    el.innerText = 'Escribe aquí tu descripción inmobiliaria personalizada con formato y estilo visual.';
+                    break;
+                case 'button':
+                    el = doc.createElement('a');
+                    el.href = '#contacto';
+                    el.className = 'inline-flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b89320] text-black font-heading font-black px-6 py-3 rounded-lg text-xs uppercase tracking-wider transition-all shadow-md my-2';
+                    el.innerText = 'AGENDAR ASESORÍA DIRECTA';
+                    break;
+                case 'image':
+                    el = doc.createElement('img');
+                    el.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
+                    el.className = 'w-full h-72 object-cover rounded-xl my-4 shadow-xl border border-white/10';
+                    break;
+                case 'divider':
+                    el = doc.createElement('div');
+                    el.className = 'h-px w-full bg-[#D4AF37]/30 my-6';
+                    break;
+                case 'spacer':
+                    el = doc.createElement('div');
+                    el.className = 'w-full h-12 my-2';
+                    break;
+                case 'property_card':
+                    el = doc.createElement('div');
+                    el.className = 'card-propiedad bg-[#0c0e14] border border-[#D4AF37]/30 rounded-2xl p-5 my-4 max-w-sm shadow-xl';
+                    el.innerHTML = `
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" class="w-full h-44 object-cover rounded-xl mb-3">
+                        <div class="text-[#D4AF37] font-bold text-xs uppercase">Viña del Mar • Residencial</div>
+                        <h4 class="text-white font-heading font-bold text-base my-1">Nueva Residencia Exclusiva</h4>
+                        <div class="flex items-center justify-between text-xs text-gray-400 my-2">
+                            <span>185 m²</span> • <span>3 Dorms</span> • <span>3 Baños</span>
+                        </div>
+                        <div class="text-lg font-heading font-black text-white">UF 14.500</div>
+                    `;
+                    break;
+                case 'calculator':
+                    el = doc.createElement('div');
+                    el.className = 'p-6 bg-[#0c0e14] border border-[#D4AF37]/40 rounded-2xl my-6 max-w-md';
+                    el.innerHTML = `
+                        <h4 class="text-white font-heading font-bold text-sm uppercase text-[#D4AF37] mb-2"><i class="fa-solid fa-calculator mr-2"></i> Simulador de Dividendo Inmobiliario</h4>
+                        <div class="space-y-3 text-xs">
+                            <div><label class="text-gray-400">Valor de Propiedad (UF):</label><input type="text" value="12.500 UF" class="w-full bg-black/60 border border-gray-700 rounded p-2 text-white"></div>
+                            <div><label class="text-gray-400">Pie Inicial (20%):</label><input type="text" value="2.500 UF" class="w-full bg-black/60 border border-gray-700 rounded p-2 text-white"></div>
+                            <div class="p-3 bg-[#D4AF37]/10 rounded border border-[#D4AF37]/30 text-white font-bold">Dividendo estimado: $1.380.000 CLP / mes</div>
+                        </div>
+                    `;
+                    break;
+                case 'whatsapp_concierge':
+                    el = doc.createElement('div');
+                    el.className = 'my-4 p-4 bg-emerald-950/40 border border-emerald-600/50 rounded-xl flex items-center justify-between';
+                    el.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <i class="fa-brands fa-whatsapp text-2xl text-emerald-400"></i>
+                            <div><div class="text-white font-bold text-xs">Atención Ejecutiva Inmediata</div><div class="text-[10px] text-gray-400">Respuesta promedio en menos de 15 minutos</div></div>
+                        </div>
+                        <a href="https://wa.me/56900000000" class="bg-emerald-500 hover:bg-emerald-600 text-black font-black px-4 py-2 rounded-lg text-xs uppercase">Contactar</a>
+                    `;
+                    break;
+                default:
+                    el = doc.createElement('div');
+                    el.className = 'p-4 bg-gray-900 border border-gray-700 rounded-lg text-white my-3';
+                    el.innerText = `Widget ${type} insertado`;
+            }
+            return el;
+        }
+
+        function insertWidget(type) {
+            const doc = getIframeDoc();
+            if (!doc) return;
+            const newEl = createWidgetElement(type, doc);
+            const targetContainer = selectedElement ? (selectedElement.closest('section, div') || doc.body) : doc.body;
+
+            pushState(`Insertar [${type}]`, 'fa-plus');
+            targetContainer.appendChild(newEl);
+            selectCanvasElement(newEl);
+            showToast("Widget Insertado", `Se añadió ${type} en el lienzo.`);
+            refreshNavigatorTree();
+        }
+
+        // ==============================================
+        // PRESET COLUMN STRUCTURES (1, 2, 3 COLUMNS)
+        // ==============================================
+        function insertStructure(cols) {
+            const doc = getIframeDoc();
+            if (!doc) return;
+
+            pushState(`Nueva Estructura de ${cols} Columna(s)`, 'fa-table-columns');
+
+            const section = doc.createElement('section');
+            section.className = 'py-12 px-6 border-y border-white/5 bg-[#090b0e] my-8';
+            section.setAttribute('data-el-section', 'true');
+
+            let gridCols = cols === 1 ? 'grid-cols-1' : (cols === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3');
+            let columnsHTML = '';
+
+            for (let i = 0; i < cols; i++) {
+                columnsHTML += `
+                    <div class="elementor-column-dropzone border-2 border-dashed border-[#D4AF37]/30 hover:border-[#39b54a] bg-[#D4AF37]/5 rounded-xl p-8 flex flex-col items-center justify-center text-center gap-2 transition-colors cursor-pointer min-h-[140px]">
+                        <i class="fa-solid fa-cloud-arrow-down text-[#D4AF37] text-xl"></i>
+                        <span class="text-white font-bold text-xs">Columna ${i + 1}</span>
+                        <span class="text-[10px] text-gray-400">Arrastra aquí cualquier widget</span>
+                    </div>
+                `;
+            }
+
+            section.innerHTML = `
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid ${gridCols} gap-6">
+                        ${columnsHTML}
+                    </div>
+                </div>
+            `;
+
+            doc.body.appendChild(section);
+            selectCanvasElement(section);
+            showToast("Estructura Creada", `Se insertó sección con ${cols} columna(s). Puedes arrastrar widgets dentro.`);
+            refreshNavigatorTree();
+        }
+
+        // ==============================================
+        // CANVAS INTEGRATION & ELEMENT HIGHLIGHTS
+        // ==============================================
+        function initializeCanvasIntegration() {
+            try {
+                const doc = getIframeDoc();
+                if (!doc || !doc.body) return;
+
+                if (undoStack.length === 0) {
+                    undoStack.push({
+                        title: 'Inicio de Edición',
+                        icon: 'fa-flag',
+                        time: new Date().toLocaleTimeString(),
+                        bodyHtml: doc.body.innerHTML
+                    });
+                    updateUndoRedoUI();
+                }
+
+                // Injected CSS for canvas selection and drag-drop cues
+                let style = doc.getElementById('elementor-editor-injected-styles');
+                if (!style) {
+                    style = doc.createElement('style');
+                    style.id = 'elementor-editor-injected-styles';
+                    style.innerHTML = `
+                        .elementor-hovered-element {
+                            outline: 2px dashed #0073aa !important;
+                            outline-offset: -2px !important;
+                            cursor: pointer !important;
+                        }
+                        .elementor-selected-element {
+                            outline: 3px solid #D4AF37 !important;
+                            outline-offset: -2px !important;
+                            position: relative !important;
+                        }
+                        [contenteditable="true"] {
+                            outline: 2px solid #39b54a !important;
+                            background: rgba(57, 181, 74, 0.08) !important;
+                        }
+                        .elementor-drop-zone-active {
+                            border-color: #39b54a !important;
+                            background: rgba(57, 181, 74, 0.12) !important;
+                        }
+                    `;
+                    doc.head.appendChild(style);
+                }
+
+                // Setup Drag and Drop listeners on the iframe
+                setupCanvasDragAndDropListeners(doc);
+
+                // Hover
+                doc.body.addEventListener('mouseover', (e) => {
+                    const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, img, section, .card-propiedad, [data-el-widget]');
+                    if (target && target !== selectedElement) {
+                        target.classList.add('elementor-hovered-element');
+                    }
+                });
+
+                doc.body.addEventListener('mouseout', (e) => {
+                    const target = e.target.closest('.elementor-hovered-element');
+                    if (target) {
+                        target.classList.remove('elementor-hovered-element');
+                    }
+                });
+
+                // Click to Select
+                doc.body.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, img, section, .card-propiedad, [data-el-widget]') || e.target;
+                    selectCanvasElement(target);
+                });
+
+                // Double Click to Edit Inline
+                doc.body.addEventListener('dblclick', (e) => {
+                    const target = e.target.closest('h1, h2, h3, p, a, button, span');
+                    if (target) {
+                        pushState(`Edición Inline de [${target.tagName}]`, 'fa-pen-to-square');
+                        target.setAttribute('contenteditable', 'true');
+                        target.focus();
+                        target.addEventListener('blur', () => {
+                            target.removeAttribute('contenteditable');
+                            document.getElementById('ctrl-input-text').value = target.innerText;
+                            scheduleAutosave();
+                        }, { once: true });
+                    }
+                });
+
+                refreshNavigatorTree();
+
+            } catch (err) {
+                console.error("Error al inicializar integración con el lienzo:", err);
+            }
+        }
+
+        function selectCanvasElement(el) {
+            if (selectedElement) {
+                selectedElement.classList.remove('elementor-selected-element');
+            }
+
+            selectedElement = el;
+            selectedElement.classList.remove('elementor-hovered-element');
+            selectedElement.classList.add('elementor-selected-element');
+
+            switchSidebarView('inspector');
+            switchElementorTab('content');
+
+            const tagName = el.tagName.toUpperCase();
+            document.getElementById('insp-tag-type').innerText = `${tagName} • WIDGET`;
+            document.getElementById('insp-element-name').innerText = el.id || el.getAttribute('aria-label') || el.className.split(' ')[0] || tagName;
+
+            const textGroup = document.getElementById('ctrl-text-group');
+            const linkGroup = document.getElementById('ctrl-link-group');
+            const imageGroup = document.getElementById('ctrl-image-group');
+
+            if (tagName === 'IMG') {
+                imageGroup.classList.remove('hidden');
+                textGroup.classList.add('hidden');
+                document.getElementById('ctrl-input-image').value = el.getAttribute('src') || '';
+            } else {
+                imageGroup.classList.add('hidden');
+                textGroup.classList.remove('hidden');
+                document.getElementById('ctrl-input-text').value = el.innerText || el.textContent;
+            }
+
+            if (tagName === 'A' || el.hasAttribute('href')) {
+                linkGroup.classList.remove('hidden');
+                document.getElementById('ctrl-input-link').value = el.getAttribute('href') || '';
+            } else {
+                linkGroup.classList.add('hidden');
+            }
+
+            const computed = window.getComputedStyle(el);
+            document.getElementById('ctrl-font-size').value = parseInt(computed.fontSize) || 16;
+            document.getElementById('label-font-size').innerText = computed.fontSize;
+            document.getElementById('ctrl-hex-text').value = computed.color;
+            document.getElementById('ctrl-font-weight').value = computed.fontWeight || '400';
+            document.getElementById('ctrl-select-tag').value = tagName;
+
+            positionFloatingBar(el);
+        }
+
+        function positionFloatingBar(el) {
+            const bar = document.getElementById('canvas-floating-bar');
+            const rect = el.getBoundingClientRect();
+            const frameRect = document.getElementById('preview-frame').getBoundingClientRect();
+
+            bar.classList.remove('hidden');
+            bar.style.top = Math.max(10, frameRect.top + rect.top - 42) + 'px';
+            bar.style.left = Math.max(10, frameRect.left + rect.left) + 'px';
+            document.getElementById('floating-badge-label').innerText = el.tagName;
+        }
+
+        function updateActiveElementText(val) {
+            if (!selectedElement) return;
+            pushState(`Texto [${selectedElement.tagName}]`, 'fa-pen');
+            selectedElement.innerText = val;
+        }
+
+        function updateActiveElementLink(val) {
+            if (!selectedElement) return;
+            pushState(`Enlace [${selectedElement.tagName}]`, 'fa-link');
+            selectedElement.setAttribute('href', val);
+        }
+
+        function updateActiveElementImage(val) {
+            if (!selectedElement) return;
+            pushState(`Imagen [${selectedElement.tagName}]`, 'fa-image');
+            selectedElement.setAttribute('src', val);
+        }
+
+        function updateActiveElementStyle(prop, val) {
+            if (!selectedElement) return;
+            pushState(`Estilo ${prop}: ${val}`, 'fa-brush');
+            selectedElement.style[prop] = val;
+        }
+
+        function updateMarginPadding() {
+            if (!selectedElement) return;
+            pushState(`Espaciado de [${selectedElement.tagName}]`, 'fa-arrows-up-down');
+            const mt = document.getElementById('ctrl-margin-top').value || 0;
+            const mr = document.getElementById('ctrl-margin-right').value || 0;
+            const mb = document.getElementById('ctrl-margin-bottom').value || 0;
+            const ml = document.getElementById('ctrl-margin-left').value || 0;
+            selectedElement.style.margin = `${mt}px ${mr}px ${mb}px ${ml}px`;
+
+            const pt = document.getElementById('ctrl-pad-top').value || 0;
+            const pr = document.getElementById('ctrl-pad-right').value || 0;
+            const pb = document.getElementById('ctrl-pad-bottom').value || 0;
+            const pl = document.getElementById('ctrl-pad-left').value || 0;
+            selectedElement.style.padding = `${pt}px ${pr}px ${pb}px ${pl}px`;
+        }
+
+        function duplicateActiveElement() {
+            if (!selectedElement) return;
+            pushState(`Duplicar [${selectedElement.tagName}]`, 'fa-copy');
+            const clone = selectedElement.cloneNode(true);
+            clone.classList.remove('elementor-selected-element');
+            selectedElement.parentNode.insertBefore(clone, selectedElement.nextSibling);
+            selectCanvasElement(clone);
+            showToast("Elemento Duplicado", "Copia creada en el lienzo.");
+            refreshNavigatorTree();
+        }
+
         function deleteActiveElement() {
             if (!selectedElement) return;
 
             const tagName = selectedElement.tagName;
             const elementDesc = selectedElement.id || selectedElement.className.split(' ')[0] || tagName;
 
-            // Prompt if deleting a major section
             if (tagName === 'SECTION' || tagName === 'HEADER' || tagName === 'FOOTER') {
-                if (!confirm(`¿Estás seguro de que deseas eliminar la sección completa "${elementDesc}"? Podrás deshacer la acción con Ctrl+Z.`)) {
+                if (!confirm(`¿Estás seguro de que deseas eliminar la sección "${elementDesc}"? Podrás deshacer la acción con Ctrl+Z.`)) {
                     return;
                 }
             }
 
-            // Record snapshot before deletion
             pushState(`Eliminado [${tagName}: ${elementDesc}]`, 'fa-trash-can');
 
-            // Perform deletion
             selectedElement.remove();
             selectedElement = null;
             document.getElementById('canvas-floating-bar').classList.add('hidden');
             switchSidebarView('widgets');
             refreshNavigatorTree();
 
-            // Trigger floating restore toast
             showUndoToast(`Se eliminó [${tagName}]. ¿Fue un error accidental?`);
         }
 
@@ -1039,8 +1535,38 @@
             clearTimeout(undoToastTimer);
         }
 
+        function moveActiveElement(dir) {
+            if (!selectedElement || !selectedElement.parentNode) return;
+            pushState(`Mover [${selectedElement.tagName}]`, dir === 'up' ? 'fa-arrow-up' : 'fa-arrow-down');
+            const parent = selectedElement.parentNode;
+            if (dir === 'up' && selectedElement.previousElementSibling) {
+                parent.insertBefore(selectedElement, selectedElement.previousElementSibling);
+            } else if (dir === 'down' && selectedElement.nextElementSibling) {
+                parent.insertBefore(selectedElement.nextElementSibling, selectedElement);
+            }
+            positionFloatingBar(selectedElement);
+            refreshNavigatorTree();
+        }
+
+        function editActiveElementFromCanvas() {
+            switchSidebarView('inspector');
+        }
+
+        function applyAnimation(anim) {
+            if (!selectedElement) return;
+            pushState(`Animación: ${anim}`, 'fa-wand-magic-sparkles');
+            selectedElement.setAttribute('data-animation', anim);
+            showToast("Animación Asignada", `Efecto ${anim} configurado.`);
+        }
+
+        function updateActiveElementClasses(classes) {
+            if (!selectedElement) return;
+            pushState(`Clases CSS modificadas`, 'fa-code');
+            selectedElement.className = classes;
+        }
+
         // ==============================================
-        // NAMED CHECKPOINTS & REVISIONS
+        // CHECKPOINTS & REVISIONS
         // ==============================================
         async function promptCreateCheckpoint() {
             const name = prompt("Nombre del Punto de Control (Checkpoint):", "Antes de modificar servicios");
@@ -1126,7 +1652,7 @@
         }
 
         async function restoreBackup(filename) {
-            if (!confirm(`¿Deseas restaurar la versión ${filename}? Se creará automáticamente un respaldo de seguridad del estado actual.`)) return;
+            if (!confirm(`¿Deseas restaurar la versión ${filename}? Se creará automáticamente un respaldo previo de seguridad.`)) return;
             try {
                 const res = await fetch('/api/restore', {
                     method: 'POST',
@@ -1142,298 +1668,6 @@
             } catch (err) {
                 alert("Error al restaurar: " + err.message);
             }
-        }
-
-        // ==============================================
-        // CANVAS INITIALIZATION & ELEMENTOR CONTROLS
-        // ==============================================
-        function initializeCanvasIntegration() {
-            try {
-                const doc = getIframeDoc();
-                if (!doc || !doc.body) return;
-
-                // Push initial state if undoStack is empty
-                if (undoStack.length === 0) {
-                    undoStack.push({
-                        title: 'Inicio de Edición',
-                        icon: 'fa-flag',
-                        time: new Date().toLocaleTimeString(),
-                        bodyHtml: doc.body.innerHTML
-                    });
-                    updateUndoRedoUI();
-                }
-
-                // Inject Selection Styles
-                let style = doc.getElementById('elementor-editor-injected-styles');
-                if (!style) {
-                    style = doc.createElement('style');
-                    style.id = 'elementor-editor-injected-styles';
-                    style.innerHTML = `
-                        .elementor-hovered-element {
-                            outline: 2px dashed #0073aa !important;
-                            outline-offset: -2px !important;
-                            cursor: pointer !important;
-                        }
-                        .elementor-selected-element {
-                            outline: 3px solid #D4AF37 !important;
-                            outline-offset: -2px !important;
-                            position: relative !important;
-                        }
-                        [contenteditable="true"] {
-                            outline: 2px solid #39b54a !important;
-                            background: rgba(57, 181, 74, 0.08) !important;
-                        }
-                    `;
-                    doc.head.appendChild(style);
-                }
-
-                // Hover listeners
-                doc.body.addEventListener('mouseover', (e) => {
-                    const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, img, section, .card-propiedad, [data-el-widget]');
-                    if (target && target !== selectedElement) {
-                        target.classList.add('elementor-hovered-element');
-                    }
-                });
-
-                doc.body.addEventListener('mouseout', (e) => {
-                    const target = e.target.closest('.elementor-hovered-element');
-                    if (target) {
-                        target.classList.remove('elementor-hovered-element');
-                    }
-                });
-
-                // Selection on Click
-                doc.body.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, img, section, .card-propiedad, [data-el-widget]') || e.target;
-                    selectCanvasElement(target);
-                });
-
-                // Inline editing on Double Click
-                doc.body.addEventListener('dblclick', (e) => {
-                    const target = e.target.closest('h1, h2, h3, p, a, button, span');
-                    if (target) {
-                        pushState(`Edición Inline de [${target.tagName}]`, 'fa-pen-to-square');
-                        target.setAttribute('contenteditable', 'true');
-                        target.focus();
-                        target.addEventListener('blur', () => {
-                            target.removeAttribute('contenteditable');
-                            document.getElementById('ctrl-input-text').value = target.innerText;
-                            scheduleAutosave();
-                        }, { once: true });
-                    }
-                });
-
-                refreshNavigatorTree();
-
-            } catch (err) {
-                console.error("Error al inicializar integración con el lienzo:", err);
-            }
-        }
-
-        function selectCanvasElement(el) {
-            if (selectedElement) {
-                selectedElement.classList.remove('elementor-selected-element');
-            }
-
-            selectedElement = el;
-            selectedElement.classList.remove('elementor-hovered-element');
-            selectedElement.classList.add('elementor-selected-element');
-
-            switchSidebarView('inspector');
-            switchElementorTab('content');
-
-            const tagName = el.tagName.toUpperCase();
-            document.getElementById('insp-tag-type').innerText = `${tagName} • WIDGET`;
-            document.getElementById('insp-element-name').innerText = el.id || el.getAttribute('aria-label') || el.className.split(' ')[0] || tagName;
-
-            const textGroup = document.getElementById('ctrl-text-group');
-            const linkGroup = document.getElementById('ctrl-link-group');
-            const imageGroup = document.getElementById('ctrl-image-group');
-
-            if (tagName === 'IMG') {
-                imageGroup.classList.remove('hidden');
-                textGroup.classList.add('hidden');
-                document.getElementById('ctrl-input-image').value = el.getAttribute('src') || '';
-            } else {
-                imageGroup.classList.add('hidden');
-                textGroup.classList.remove('hidden');
-                document.getElementById('ctrl-input-text').value = el.innerText || el.textContent;
-            }
-
-            if (tagName === 'A' || el.hasAttribute('href')) {
-                linkGroup.classList.remove('hidden');
-                document.getElementById('ctrl-input-link').value = el.getAttribute('href') || '';
-            } else {
-                linkGroup.classList.add('hidden');
-            }
-
-            const computed = window.getComputedStyle(el);
-            document.getElementById('ctrl-font-size').value = parseInt(computed.fontSize) || 16;
-            document.getElementById('label-font-size').innerText = computed.fontSize;
-            document.getElementById('ctrl-hex-text').value = computed.color;
-            document.getElementById('ctrl-font-weight').value = computed.fontWeight || '400';
-            document.getElementById('ctrl-select-tag').value = tagName;
-
-            positionFloatingBar(el);
-        }
-
-        function positionFloatingBar(el) {
-            const bar = document.getElementById('canvas-floating-bar');
-            const rect = el.getBoundingClientRect();
-            const frameRect = document.getElementById('preview-frame').getBoundingClientRect();
-
-            bar.classList.remove('hidden');
-            bar.style.top = Math.max(10, frameRect.top + rect.top - 42) + 'px';
-            bar.style.left = Math.max(10, frameRect.left + rect.left) + 'px';
-            document.getElementById('floating-badge-label').innerText = el.tagName;
-        }
-
-        // ==============================================
-        // ELEMENT MUTATIONS & AUTO-SNAPSHOT WRAPPERS
-        // ==============================================
-        function updateActiveElementText(val) {
-            if (!selectedElement) return;
-            pushState(`Texto [${selectedElement.tagName}]: "${val.slice(0, 20)}..."`, 'fa-pen');
-            selectedElement.innerText = val;
-        }
-
-        function updateActiveElementLink(val) {
-            if (!selectedElement) return;
-            pushState(`Enlace [${selectedElement.tagName}]`, 'fa-link');
-            selectedElement.setAttribute('href', val);
-        }
-
-        function updateActiveElementImage(val) {
-            if (!selectedElement) return;
-            pushState(`Imagen [${selectedElement.tagName}]`, 'fa-image');
-            selectedElement.setAttribute('src', val);
-        }
-
-        function updateActiveElementStyle(prop, val) {
-            if (!selectedElement) return;
-            pushState(`Estilo ${prop}: ${val}`, 'fa-brush');
-            selectedElement.style[prop] = val;
-        }
-
-        function updateMarginPadding() {
-            if (!selectedElement) return;
-            pushState(`Espaciado de [${selectedElement.tagName}]`, 'fa-arrows-up-down');
-            const mt = document.getElementById('ctrl-margin-top').value || 0;
-            const mr = document.getElementById('ctrl-margin-right').value || 0;
-            const mb = document.getElementById('ctrl-margin-bottom').value || 0;
-            const ml = document.getElementById('ctrl-margin-left').value || 0;
-            selectedElement.style.margin = `${mt}px ${mr}px ${mb}px ${ml}px`;
-
-            const pt = document.getElementById('ctrl-pad-top').value || 0;
-            const pr = document.getElementById('ctrl-pad-right').value || 0;
-            const pb = document.getElementById('ctrl-pad-bottom').value || 0;
-            const pl = document.getElementById('ctrl-pad-left').value || 0;
-            selectedElement.style.padding = `${pt}px ${pr}px ${pb}px ${pl}px`;
-        }
-
-        function duplicateActiveElement() {
-            if (!selectedElement) return;
-            pushState(`Duplicar [${selectedElement.tagName}]`, 'fa-copy');
-            const clone = selectedElement.cloneNode(true);
-            clone.classList.remove('elementor-selected-element');
-            selectedElement.parentNode.insertBefore(clone, selectedElement.nextSibling);
-            selectCanvasElement(clone);
-            showToast("Elemento Duplicado", "Se ha creado una copia exacta en la página.");
-            refreshNavigatorTree();
-        }
-
-        function moveActiveElement(dir) {
-            if (!selectedElement || !selectedElement.parentNode) return;
-            pushState(`Mover [${selectedElement.tagName}]`, dir === 'up' ? 'fa-arrow-up' : 'fa-arrow-down');
-            const parent = selectedElement.parentNode;
-            if (dir === 'up' && selectedElement.previousElementSibling) {
-                parent.insertBefore(selectedElement, selectedElement.previousElementSibling);
-            } else if (dir === 'down' && selectedElement.nextElementSibling) {
-                parent.insertBefore(selectedElement.nextElementSibling, selectedElement);
-            }
-            positionFloatingBar(selectedElement);
-            refreshNavigatorTree();
-        }
-
-        function editActiveElementFromCanvas() {
-            switchSidebarView('inspector');
-        }
-
-        function applyAnimation(anim) {
-            if (!selectedElement) return;
-            pushState(`Animación: ${anim}`, 'fa-wand-magic-sparkles');
-            selectedElement.setAttribute('data-animation', anim);
-            showToast("Animación Asignada", `Efecto ${anim} configurado.`);
-        }
-
-        function updateActiveElementClasses(classes) {
-            if (!selectedElement) return;
-            pushState(`Clases CSS modificadas`, 'fa-code');
-            selectedElement.className = classes;
-        }
-
-        // ==============================================
-        // INSERT WIDGETS
-        // ==============================================
-        function insertWidget(type) {
-            const doc = getIframeDoc();
-            if (!doc) return;
-
-            pushState(`Insertar Widget [${type}]`, 'fa-plus');
-
-            const targetContainer = selectedElement ? (selectedElement.closest('section, div') || doc.body) : doc.body;
-            let newEl;
-
-            switch (type) {
-                case 'heading':
-                    newEl = doc.createElement('h2');
-                    newEl.className = 'text-3xl font-heading font-extrabold text-white my-4';
-                    newEl.innerText = 'Nuevo Encabezado Elementor';
-                    break;
-                case 'text':
-                    newEl = doc.createElement('p');
-                    newEl.className = 'text-sm text-gray-300 leading-relaxed my-2';
-                    newEl.innerText = 'Escribe aquí tu descripción o texto inmobiliario personalizado con formato visual.';
-                    break;
-                case 'button':
-                    newEl = doc.createElement('a');
-                    newEl.href = '#contacto';
-                    newEl.className = 'inline-flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b89320] text-black font-heading font-black px-6 py-3 rounded-lg text-xs uppercase tracking-wider transition-all shadow-md my-2';
-                    newEl.innerText = 'AGENDAR ASESORÍA DIRECTA';
-                    break;
-                case 'divider':
-                    newEl = doc.createElement('div');
-                    newEl.className = 'h-px w-full bg-[#D4AF37]/30 my-6';
-                    break;
-                case 'spacer':
-                    newEl = doc.createElement('div');
-                    newEl.className = 'w-full h-12 my-2';
-                    break;
-                case 'property_card':
-                    newEl = doc.createElement('div');
-                    newEl.className = 'card-propiedad bg-[#0c0e14] border border-[#D4AF37]/30 rounded-2xl p-5 my-4 max-w-sm';
-                    newEl.innerHTML = `
-                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" class="w-full h-44 object-cover rounded-xl mb-3">
-                        <div class="text-[#D4AF37] font-bold text-xs uppercase">Viña del Mar • Residencial</div>
-                        <h4 class="text-white font-heading font-bold text-base my-1">Nueva Residencia Auditada</h4>
-                        <div class="flex items-center justify-between text-xs text-gray-400 my-2">
-                            <span>185 m²</span> • <span>3 Dorms</span> • <span>3 Baños</span>
-                        </div>
-                        <div class="text-lg font-heading font-black text-white">UF 14.500</div>
-                    `;
-                    break;
-                default:
-                    newEl = doc.createElement('div');
-                    newEl.className = 'p-4 bg-gray-900 border border-gray-700 rounded-lg text-white my-3';
-                    newEl.innerText = `Widget ${type} insertado`;
-            }
-
-            targetContainer.appendChild(newEl);
-            selectCanvasElement(newEl);
-            showToast("Widget Añadido", `Se insertó el elemento ${type} en la página.`);
-            refreshNavigatorTree();
         }
 
         // ==============================================
@@ -1459,7 +1693,7 @@
                     body: JSON.stringify({
                         html: cleanHtml,
                         filename: 'index.html',
-                        label: 'Publicación Manual desde Elementor'
+                        label: 'Publicación Manual desde Elementor Pro'
                     })
                 });
 
@@ -1488,7 +1722,6 @@
             }
         }
 
-        // Viewport Switcher
         function setCanvasViewport(mode) {
             const wrapper = document.getElementById('canvas-wrapper');
             const btnDesk = document.getElementById('btn-device-desktop');
@@ -1627,8 +1860,8 @@
         function exportElementorTemplate() {
             const template = {
                 title: "W Gestión Inmobiliaria Landing Page",
-                version: "2.1.0",
-                engine: "Elementor Visual Builder Replica",
+                version: "2.2.0",
+                engine: "Elementor Visual Builder Pro (Drag & Drop)",
                 date: new Date().toISOString(),
                 content: getCleanCanvasHTML()
             };
@@ -1639,7 +1872,7 @@
             a.download = 'w-gestion-elementor-template.json';
             a.click();
             URL.revokeObjectURL(url);
-            showToast("Plantilla Exportada", "Template JSON compatible generado.");
+            showToast("Plantilla Exportada", "Template JSON generado.");
         }
 
         function showToast(title, msg) {
@@ -1653,29 +1886,22 @@
         }
 
         // ==============================================
-        // KEYBOARD SHORTCUTS (CTRL+Z, CTRL+Y, CTRL+S)
+        // KEYBOARD SHORTCUTS
         // ==============================================
         window.addEventListener('keydown', (e) => {
             const isCtrl = e.ctrlKey || e.metaKey;
-
-            // Undo: Ctrl + Z (without Shift)
             if (isCtrl && e.key.toLowerCase() === 'z' && !e.shiftKey) {
                 e.preventDefault();
                 undoAction();
-            }
-            // Redo: Ctrl + Y OR Ctrl + Shift + Z
-            else if (isCtrl && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) {
+            } else if (isCtrl && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) {
                 e.preventDefault();
                 redoAction();
-            }
-            // Save: Ctrl + S
-            else if (isCtrl && e.key.toLowerCase() === 's') {
+            } else if (isCtrl && e.key.toLowerCase() === 's') {
                 e.preventDefault();
                 publishChanges();
             }
         });
 
-        // Warn before leaving with unsaved work
         window.addEventListener('beforeunload', (e) => {
             if (hasUnsavedChanges) {
                 e.preventDefault();
@@ -1683,7 +1909,6 @@
             }
         });
 
-        // Check for autosave on startup
         window.addEventListener('DOMContentLoaded', checkAutosaveOnLoad);
     </script>
 </body>
