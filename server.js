@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3600;
 const BACKUPS_DIR = path.join(__dirname, 'backups');
+const AUTOSAVE_FILE = path.join(BACKUPS_DIR, 'autosave-draft.html');
 
 if (!fs.existsSync(BACKUPS_DIR)) {
   fs.mkdirSync(BACKUPS_DIR, { recursive: true });
@@ -32,7 +33,7 @@ const server = http.createServer((req, res) => {
   const urlObj = new URL(req.url, `http://${req.headers.host}`);
   const pathname = urlObj.pathname;
 
-  // Enable CORS
+  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -43,14 +44,98 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // --- API: Save HTML from Elementor Editor ---
+  // --- API: Autosave draft ---
+  if (pathname === '/api/autosave' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body);
+        const { html } = payload;
+        if (!html) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'HTML ausente' }));
+          return;
+        }
+
+        fs.writeFileSync(AUTOSAVE_FILE, html, 'utf8');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: true,
+          timestamp: new Date().toISOString(),
+          message: 'Borrador guardado automáticamente.'
+        }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // --- API: Get Autosave Draft ---
+  if (pathname === '/api/autosave' && req.method === 'GET') {
+    if (fs.existsSync(AUTOSAVE_FILE)) {
+      const stats = fs.statSync(AUTOSAVE_FILE);
+      const html = fs.readFileSync(AUTOSAVE_FILE, 'utf8');
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        success: true,
+        exists: true,
+        updatedAt: stats.mtime,
+        size: stats.size,
+        html: html
+      }));
+    } else {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, exists: false }));
+    }
+    return;
+  }
+
+  // --- API: Create Named Checkpoint ---
+  if (pathname === '/api/create-checkpoint' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const { name = 'Punto de Control', html } = JSON.parse(body);
+        if (!html) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'HTML requerido' }));
+          return;
+        }
+
+        const safeName = name.replace(/[^a-zA-Z0-9_\-\s]/g, '').trim().replace(/\s+/g, '_');
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const fileName = `checkpoint-${safeName}-${timestamp}.html`;
+        const filePath = path.join(BACKUPS_DIR, fileName);
+
+        fs.writeFileSync(filePath, html, 'utf8');
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: true,
+          checkpoint: fileName,
+          timestamp: new Date().toISOString(),
+          message: `Punto de control "${name}" guardado exitosamente.`
+        }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // --- API: Save & Publish HTML from Elementor Editor ---
   if (pathname === '/api/save' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
       try {
         const payload = JSON.parse(body);
-        const { html, filename = 'index.html' } = payload;
+        const { html, filename = 'index.html', label = 'Publicación Manual' } = payload;
 
         if (!html || typeof html !== 'string') {
           res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -58,9 +143,9 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        // 1. Create timestamped backup of current file
+        // 1. Create timestamped backup of current file before overwriting
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        const backupFileName = `backup-${path.parse(filename).name}-${timestamp}.html`;
+        const backupFileName = `revision-${timestamp}.html`;
         const backupFilePath = path.join(BACKUPS_DIR, backupFileName);
 
         const targetFilePath = path.join(__dirname, filename);
@@ -75,7 +160,12 @@ const server = http.createServer((req, res) => {
           fs.writeFileSync(mirrorPath, html, 'utf8');
         }
 
-        console.log(`[API /api/save] ✅ Archivo ${filename} actualizado con éxito. Respaldo creado: ${backupFileName}`);
+        // Remove old autosave draft once explicitly published
+        if (fs.existsSync(AUTOSAVE_FILE)) {
+          fs.unlinkSync(AUTOSAVE_FILE);
+        }
+
+        console.log(`[API /api/save] ✅ Archivo ${filename} actualizado. Respaldo creado: ${backupFileName}`);
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
@@ -93,15 +183,18 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // --- API: List Revisions / Backups ---
+  // --- API: List Revisions & Checkpoints ---
   if (pathname === '/api/revisions' && req.method === 'GET') {
     try {
       const files = fs.readdirSync(BACKUPS_DIR)
-        .filter(f => f.endsWith('.html'))
+        .filter(f => f.endsWith('.html') && f !== 'autosave-draft.html')
         .map(name => {
           const stats = fs.statSync(path.join(BACKUPS_DIR, name));
+          const isCheckpoint = name.startsWith('checkpoint-');
           return {
             filename: name,
+            type: isCheckpoint ? 'checkpoint' : 'revision',
+            title: isCheckpoint ? name.replace(/^checkpoint-/, '').replace(/-[0-9T\-_]+Z?\.html$/, '').replace(/_/g, ' ') : 'Revisión de Publicación',
             createdAt: stats.mtime,
             size: stats.size
           };
@@ -117,7 +210,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // --- API: Restore Backup ---
+  // --- API: Restore Backup or Checkpoint ---
   if (pathname === '/api/restore' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => body += chunk);
@@ -131,8 +224,15 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        const content = fs.readFileSync(backupFilePath, 'utf8');
+        // Before restoring, take a safety backup of current state
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const safetyBackup = path.join(BACKUPS_DIR, `safety-before-restore-${timestamp}.html`);
         const targetPath = path.join(__dirname, target);
+        if (fs.existsSync(targetPath)) {
+          fs.copyFileSync(targetPath, safetyBackup);
+        }
+
+        const content = fs.readFileSync(backupFilePath, 'utf8');
         fs.writeFileSync(targetPath, content, 'utf8');
         if (target === 'index.html') {
           fs.writeFileSync(path.join(__dirname, 'landing.html'), content, 'utf8');

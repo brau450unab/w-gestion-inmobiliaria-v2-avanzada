@@ -21,7 +21,6 @@
             --el-bg-input: #15171a;
             --el-border: #393d41;
             --el-accent: #92003B;
-            --el-accent-hover: #b8004b;
             --el-gold: #D4AF37;
             --el-gold-hover: #f1cf6b;
             --el-green: #39b54a;
@@ -62,32 +61,38 @@
         }
 
         /* Draggable Navigator */
-        #navigator-window {
-            cursor: move;
-        }
-        #navigator-body {
-            cursor: default;
-        }
+        #navigator-window { cursor: move; }
+        #navigator-body { cursor: default; }
 
-        /* Toast animation */
-        @keyframes toastSlide {
-            0% { transform: translateY(100px); opacity: 0; }
-            15% { transform: translateY(0); opacity: 1; }
-            85% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(100px); opacity: 0; }
-        }
-        .toast-active {
-            animation: toastSlide 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        /* Timeline Action Item Active */
+        .action-item-current {
+            border-left: 3px solid var(--el-gold);
+            background-color: rgba(212, 175, 55, 0.1);
         }
     </style>
 </head>
 <body class="flex flex-col h-screen w-screen overflow-hidden text-xs">
 
+    <!-- RECOVERY BANNER: Shown if uncommitted Autosave Draft is detected -->
+    <div id="recovery-banner" class="hidden bg-gradient-to-r from-amber-950 via-[#26292c] to-amber-950 border-b border-amber-600/70 px-4 py-2 z-50 flex items-center justify-between text-xs text-amber-200 shadow-xl">
+        <div class="flex items-center gap-2.5">
+            <i class="fa-solid fa-triangle-exclamation text-amber-400 text-sm animate-bounce"></i>
+            <span><strong>Borrador no publicado detectado:</strong> Existe un guardado automático reciente en tu navegador. ¿Deseas restaurarlo para no perder tus cambios?</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="restoreAutosaveDraft()" class="bg-[#D4AF37] hover:bg-[#b89320] text-black font-heading font-black px-3 py-1 rounded text-[11px] uppercase tracking-wider transition-colors cursor-pointer">
+                Restaurar Borrador
+            </button>
+            <button onclick="discardAutosaveDraft()" class="bg-[#1e2124] hover:bg-[#32363b] text-gray-300 px-2.5 py-1 rounded text-[11px] border border-[#393d41] transition-colors cursor-pointer">
+                Descartar
+            </button>
+        </div>
+    </div>
+
     <!-- 1. TOP ELEMENTOR APPLICATION HEADER BAR -->
     <header class="h-12 bg-[#1e2124] border-b border-[#393d41] flex items-center justify-between px-3 z-40 shrink-0">
         <!-- Logo & Branding -->
         <div class="flex items-center gap-3">
-            <!-- Iconic Elementor 'E' mark + W Gestion -->
             <a href="./index.html" class="flex items-center gap-2 group cursor-pointer" title="Ir al Sitio Web Oficial">
                 <div class="w-7 h-7 rounded bg-gradient-to-br from-[#92003B] to-[#D4AF37] flex items-center justify-center font-heading font-black text-white text-base shadow group-hover:scale-105 transition-transform">
                     E
@@ -102,11 +107,25 @@
 
             <div class="h-5 w-px bg-[#393d41] mx-1"></div>
 
-            <!-- Page Title / Document Badge -->
+            <!-- UNDO / REDO DEDICATED HEADER BUTTONS (DESHACER / REHACER) -->
+            <div class="flex items-center bg-[#15171a] p-0.5 rounded border border-[#393d41]">
+                <button onclick="undoAction()" id="btn-undo" disabled class="px-2 py-1 rounded text-[#a4afb7] hover:text-white disabled:opacity-40 disabled:hover:text-[#a4afb7] flex items-center gap-1 transition-colors cursor-pointer" title="Deshacer (Ctrl + Z)">
+                    <i class="fa-solid fa-arrow-rotate-left text-xs"></i>
+                    <span class="hidden xl:inline text-[10px] font-medium">Deshacer</span>
+                    <span id="badge-undo-count" class="hidden text-[9px] px-1 py-0.2 bg-[#26292c] rounded font-mono text-[#D4AF37]">0</span>
+                </button>
+                <div class="h-3.5 w-px bg-[#393d41]"></div>
+                <button onclick="redoAction()" id="btn-redo" disabled class="px-2 py-1 rounded text-[#a4afb7] hover:text-white disabled:opacity-40 disabled:hover:text-[#a4afb7] flex items-center gap-1 transition-colors cursor-pointer" title="Rehacer (Ctrl + Y)">
+                    <i class="fa-solid fa-arrow-rotate-right text-xs"></i>
+                    <span class="hidden xl:inline text-[10px] font-medium">Rehacer</span>
+                    <span id="badge-redo-count" class="hidden text-[9px] px-1 py-0.2 bg-[#26292c] rounded font-mono text-[#D4AF37]">0</span>
+                </button>
+            </div>
+
+            <!-- Status Badge: Autosave / Published state -->
             <div class="flex items-center gap-1.5 bg-[#15171a] px-2.5 py-1 rounded border border-[#393d41]">
-                <i class="fa-solid fa-file-code text-[#D4AF37] text-[11px]"></i>
-                <span class="text-white font-medium text-[11px]" id="current-doc-label">index.html (Landing Principal)</span>
-                <span id="save-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse ml-1" title="Sincronizado"></span>
+                <span id="autosave-status-icon" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span id="autosave-status-text" class="text-white text-[11px] font-mono">Borrador al día</span>
             </div>
         </div>
 
@@ -126,28 +145,34 @@
             </button>
         </div>
 
-        <!-- Right: Actions, Navigator, History, Preview, and PUBLISH/UPDATE -->
+        <!-- Right: Navigator, History, Checkpoint, Preview, and PUBLISH/UPDATE -->
         <div class="flex items-center gap-2">
             <!-- Navigator Tree Toggle -->
-            <button onclick="toggleNavigator()" id="btn-toggle-navigator" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Abrir Árbol de Navegación de Elementor">
+            <button onclick="toggleNavigator()" id="btn-toggle-navigator" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Árbol de Navegación de Capas">
                 <i class="fa-solid fa-layer-group text-xs text-[#D4AF37]"></i>
                 <span class="hidden lg:inline text-[11px]">Navegador</span>
             </button>
 
-            <!-- History Toggle -->
-            <button onclick="toggleHistoryModal()" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Historial de Acciones y Revisiones">
-                <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+            <!-- History Toggle with 2 Tabs (Acciones & Revisiones) -->
+            <button onclick="openHistoryDrawer('actions')" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Historial de Acciones y Revisiones">
+                <i class="fa-solid fa-clock-rotate-left text-xs text-amber-400"></i>
                 <span class="hidden lg:inline text-[11px]">Historial</span>
             </button>
 
+            <!-- Create Named Checkpoint Button -->
+            <button onclick="promptCreateCheckpoint()" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Crear Punto de Control Guardado con Nombre">
+                <i class="fa-solid fa-bookmark text-xs text-[#D4AF37]"></i>
+                <span class="hidden xl:inline text-[11px]">Checkpoint</span>
+            </button>
+
             <!-- Live Site Preview -->
-            <a href="./index.html" target="_blank" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Abrir Vista Previa en Pestaña Nueva">
+            <a href="./index.html" target="_blank" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Abrir Sitio Web en Nueva Pestaña">
                 <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                 <span class="hidden sm:inline text-[11px]">Ver Web</span>
             </a>
 
-            <!-- The Iconic Elementor Green / Gold ACTUALIZAR Button -->
-            <button onclick="publishChanges()" id="btn-publish" class="h-8 px-4 rounded bg-[#39b54a] hover:bg-[#2ea13e] text-white font-heading font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-950/40 transition-transform active:scale-95 cursor-pointer">
+            <!-- The Iconic Elementor Green ACTUALIZAR / PUBLICAR Button -->
+            <button onclick="publishChanges()" id="btn-publish" class="h-8 px-4 rounded bg-[#39b54a] hover:bg-[#2ea13e] text-white font-heading font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-950/40 transition-transform active:scale-95 cursor-pointer" title="Publicar en Producción (Ctrl + S)">
                 <i class="fa-solid fa-floppy-disk text-xs" id="publish-icon"></i>
                 <span id="publish-label">ACTUALIZAR</span>
             </button>
@@ -202,32 +227,26 @@
                             <i class="fa-solid fa-chevron-down text-[9px]"></i>
                         </div>
                         <div class="grid grid-cols-3 gap-2">
-                            <!-- Widget: Encabezado -->
                             <div onclick="insertWidget('heading')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-heading text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Encabezado</span>
                             </div>
-                            <!-- Widget: Editor de Texto -->
                             <div onclick="insertWidget('text')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-paragraph text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Texto</span>
                             </div>
-                            <!-- Widget: Imagen -->
                             <div onclick="insertWidget('image')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-image text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Imagen</span>
                             </div>
-                            <!-- Widget: Botón CTA -->
                             <div onclick="insertWidget('button')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-hand-pointer text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Botón</span>
                             </div>
-                            <!-- Widget: Divisor -->
                             <div onclick="insertWidget('divider')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-minus text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Divisor</span>
                             </div>
-                            <!-- Widget: Espaciador -->
                             <div onclick="insertWidget('spacer')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-arrows-up-down text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[10px] font-medium text-white">Espaciador</span>
@@ -242,37 +261,31 @@
                             <span class="bg-[#92003B] text-white text-[9px] font-extrabold px-1.5 py-0.2 rounded">PRO</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            <!-- Widget: Ficha Inmueble -->
                             <div onclick="insertWidget('property_card')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-building text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Ficha Inmueble</span>
                                 <span class="text-[9px] text-[#a4afb7]">UF, m², Dorm, Baños</span>
                             </div>
-                            <!-- Widget: Pestañas de Servicios -->
                             <div onclick="insertWidget('service_tabs')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-table-columns text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Pestañas Servicios</span>
                                 <span class="text-[9px] text-[#a4afb7]">Venta / Arriendo / Coprop</span>
                             </div>
-                            <!-- Widget: Calculadora Hipotecaria -->
                             <div onclick="insertWidget('calculator')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-calculator text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Calculadora UF</span>
                                 <span class="text-[9px] text-[#a4afb7]">Simulador dividendo CLP</span>
                             </div>
-                            <!-- Widget: Flujo Fiduciario (6 Fases) -->
                             <div onclick="insertWidget('procedure_steps')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-diagram-project text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Flujo 6 Fases</span>
                                 <span class="text-[9px] text-[#a4afb7]">Procedimiento fiduciario</span>
                             </div>
-                            <!-- Widget: Formulario de Contacto -->
                             <div onclick="insertWidget('contact_form')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-solid fa-envelope-open-text text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Formulario Contacto</span>
                                 <span class="text-[9px] text-[#a4afb7]">Captación & Tasación</span>
                             </div>
-                            <!-- Widget: Concierge WhatsApp -->
                             <div onclick="insertWidget('whatsapp_concierge')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer transition-all group">
                                 <i class="fa-brands fa-whatsapp text-emerald-400 text-lg group-hover:scale-110 transition-transform"></i>
                                 <span class="text-[11px] font-semibold text-white">Botón Concierge</span>
@@ -323,26 +336,21 @@
 
                 <!-- TAB 1: CONTENIDO -->
                 <div id="el-panel-content" class="flex-1 overflow-y-auto p-3.5 space-y-4">
-                    
-                    <!-- Control: Texto / Título -->
                     <div id="ctrl-text-group" class="space-y-1.5">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Texto del Elemento</label>
                         <textarea id="ctrl-input-text" rows="3" oninput="updateActiveElementText(this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37] leading-relaxed"></textarea>
                     </div>
 
-                    <!-- Control: Enlace URL -->
                     <div id="ctrl-link-group" class="space-y-1.5">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Enlace (URL / WhatsApp)</label>
                         <input type="text" id="ctrl-input-link" oninput="updateActiveElementLink(this.value)" placeholder="https://... o #contacto" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
                     </div>
 
-                    <!-- Control: Imagen SRC -->
                     <div id="ctrl-image-group" class="space-y-1.5 hidden">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Ruta de Imagen (URL / Local)</label>
                         <input type="text" id="ctrl-input-image" oninput="updateActiveElementImage(this.value)" placeholder="./assets/media/..." class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
                     </div>
 
-                    <!-- Control: Alineación de Texto -->
                     <div class="space-y-1.5">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Alineación</label>
                         <div class="grid grid-cols-4 gap-1 bg-[#15171a] p-1 rounded border border-[#393d41]">
@@ -353,7 +361,6 @@
                         </div>
                     </div>
 
-                    <!-- Control: Etiqueta HTML -->
                     <div class="space-y-1.5">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Etiqueta HTML</label>
                         <select id="ctrl-select-tag" onchange="changeHtmlTag(this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
@@ -365,30 +372,25 @@
                             <option value="SPAN">SPAN — Texto en línea</option>
                         </select>
                     </div>
-
                 </div>
 
                 <!-- TAB 2: ESTILO -->
                 <div id="el-panel-style" class="flex-1 overflow-y-auto p-3.5 space-y-4 hidden">
-                    
-                    <!-- Color de Texto -->
                     <div class="space-y-1.5">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Color de Texto</label>
                         <div class="flex items-center gap-2">
                             <input type="color" id="ctrl-color-text" oninput="updateActiveElementStyle('color', this.value)" class="w-8 h-8 rounded border border-[#393d41] bg-transparent cursor-pointer">
                             <input type="text" id="ctrl-hex-text" oninput="updateActiveElementStyle('color', this.value)" placeholder="#D4AF37" class="flex-1 bg-[#15171a] border border-[#393d41] rounded px-2.5 py-1.5 text-white font-mono text-xs">
                         </div>
-                        <!-- Paleta de Marca Rápida -->
                         <div class="flex items-center gap-1.5 pt-1">
                             <button onclick="updateActiveElementStyle('color', '#D4AF37')" class="w-4 h-4 rounded-full bg-[#D4AF37] border border-white/20" title="Oro Inmobiliario"></button>
                             <button onclick="updateActiveElementStyle('color', '#FFFFFF')" class="w-4 h-4 rounded-full bg-white border border-gray-400" title="Blanco"></button>
                             <button onclick="updateActiveElementStyle('color', '#94A3B8')" class="w-4 h-4 rounded-full bg-[#94A3B8] border border-white/20" title="Gris"></button>
-                            <button onclick="updateActiveElementStyle('color', '#10B981')" class="w-4 h-4 rounded-full bg-[#10B981] border border-white/20" title="Verde Éxito"></button>
+                            <button onclick="updateActiveElementStyle('color', '#10B981')" class="w-4 h-4 rounded-full bg-[#10B981] border border-white/20" title="Verde"></button>
                             <button onclick="updateActiveElementStyle('color', '#050608')" class="w-4 h-4 rounded-full bg-[#050608] border border-white/20" title="Negro"></button>
                         </div>
                     </div>
 
-                    <!-- Tipografía: Familia & Tamaño -->
                     <div class="space-y-1.5">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Familia Tipográfica</label>
                         <select id="ctrl-font-family" onchange="updateActiveElementStyle('fontFamily', this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
@@ -399,7 +401,6 @@
                         </select>
                     </div>
 
-                    <!-- Tamaño de Fuente (Slider) -->
                     <div class="space-y-1">
                         <div class="flex justify-between text-[#a4afb7] text-[11px]">
                             <span>Tamaño de Fuente</span>
@@ -408,7 +409,6 @@
                         <input type="range" id="ctrl-font-size" min="10" max="80" value="16" oninput="document.getElementById('label-font-size').innerText = this.value + 'px'; updateActiveElementStyle('fontSize', this.value + 'px');" class="w-full accent-[#D4AF37]">
                     </div>
 
-                    <!-- Peso Tipográfico -->
                     <div class="space-y-1.5">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Grosor (Font Weight)</label>
                         <select id="ctrl-font-weight" onchange="updateActiveElementStyle('fontWeight', this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
@@ -421,7 +421,6 @@
                         </select>
                     </div>
 
-                    <!-- Color de Fondo -->
                     <div class="space-y-1.5">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Color de Fondo</label>
                         <div class="flex items-center gap-2">
@@ -430,7 +429,6 @@
                         </div>
                     </div>
 
-                    <!-- Radio de Esquinas (Border Radius) -->
                     <div class="space-y-1">
                         <div class="flex justify-between text-[#a4afb7] text-[11px]">
                             <span>Radio de Borde (Redondeo)</span>
@@ -438,13 +436,10 @@
                         </div>
                         <input type="range" id="ctrl-border-radius" min="0" max="50" value="8" oninput="document.getElementById('label-border-radius').innerText = this.value + 'px'; updateActiveElementStyle('borderRadius', this.value + 'px');" class="w-full accent-[#D4AF37]">
                     </div>
-
                 </div>
 
                 <!-- TAB 3: AVANZADO -->
                 <div id="el-panel-advanced" class="flex-1 overflow-y-auto p-3.5 space-y-4 hidden">
-                    
-                    <!-- Margen Cuádruple -->
                     <div class="space-y-2">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Margen Exterior (px)</label>
                         <div class="grid grid-cols-4 gap-1 text-center">
@@ -467,7 +462,6 @@
                         </div>
                     </div>
 
-                    <!-- Relleno (Padding) Cuádruple -->
                     <div class="space-y-2">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Relleno Interior / Padding (px)</label>
                         <div class="grid grid-cols-4 gap-1 text-center">
@@ -490,7 +484,6 @@
                         </div>
                     </div>
 
-                    <!-- Efectos de Entrada / Animaciones -->
                     <div class="space-y-1.5">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Efecto de Animación (Anime.js)</label>
                         <select id="ctrl-animation" onchange="applyAnimation(this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
@@ -502,26 +495,24 @@
                         </select>
                     </div>
 
-                    <!-- Clases CSS personalizadas -->
                     <div class="space-y-1.5">
                         <label class="block text-[#a4afb7] font-semibold text-[11px]">Clases CSS Adicionales</label>
                         <input type="text" id="ctrl-custom-classes" oninput="updateActiveElementClasses(this.value)" placeholder="shadow-xl backdrop-blur-md..." class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
                     </div>
-
                 </div>
 
             </div>
 
-            <!-- Bottom Dock Footer: Elementor Settings, Navigator, History, Responsive, Save -->
+            <!-- Bottom Dock Footer -->
             <div class="h-10 bg-[#1e2124] border-t border-[#393d41] flex items-center justify-between px-3 text-[#a4afb7]">
                 <div class="flex items-center gap-3">
-                    <button onclick="toggleSiteSettingsModal()" class="hover:text-white cursor-pointer" title="Ajustes de Página">
+                    <button onclick="toggleSiteSettingsModal()" class="hover:text-white cursor-pointer" title="Ajustes del Sitio">
                         <i class="fa-solid fa-gear text-xs"></i>
                     </button>
                     <button onclick="toggleNavigator()" class="hover:text-white cursor-pointer" title="Navegador de Capas">
                         <i class="fa-solid fa-layer-group text-xs"></i>
                     </button>
-                    <button onclick="toggleHistoryModal()" class="hover:text-white cursor-pointer" title="Historial de Acciones">
+                    <button onclick="openHistoryDrawer('actions')" class="hover:text-white cursor-pointer" title="Historial de Acciones">
                         <i class="fa-solid fa-clock-rotate-left text-xs"></i>
                     </button>
                     <button onclick="cycleViewport()" class="hover:text-white cursor-pointer" title="Modo Adaptable">
@@ -529,8 +520,8 @@
                     </button>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
-                        <i class="fa-solid fa-cloud-arrow-up text-[9px]"></i> Auto-Sync
+                    <span id="dock-autosave-indicator" class="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+                        <i class="fa-solid fa-shield-halved text-[9px]"></i> Autoguardado Activo
                     </span>
                 </div>
             </div>
@@ -565,8 +556,21 @@
                 <button onclick="moveActiveElement('down')" class="hover:text-[#D4AF37] text-xs px-1 cursor-pointer" title="Mover Abajo">
                     <i class="fa-solid fa-arrow-down"></i>
                 </button>
-                <button onclick="deleteActiveElement()" class="text-red-400 hover:text-red-300 text-xs px-1 cursor-pointer" title="Eliminar">
+                <button onclick="deleteActiveElement()" class="text-red-400 hover:text-red-300 text-xs px-1 cursor-pointer" title="Eliminar (con Deshacer seguro)">
                     <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+
+            <!-- FLOATING UNDO RECOVERY TOAST: Emergency Safety Net -->
+            <div id="undo-toast" class="hidden absolute bottom-6 z-50 bg-[#1e2124] border border-amber-500/80 shadow-2xl rounded-xl px-4 py-2.5 flex items-center gap-3 text-white">
+                <i class="fa-solid fa-trash-can text-amber-400 text-sm"></i>
+                <span id="undo-toast-text" class="text-xs">Elemento eliminado. ¿Fue un error?</span>
+                <button onclick="undoAction()" class="bg-[#D4AF37] hover:bg-[#b89320] text-black font-heading font-black px-3 py-1 rounded text-[11px] uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow">
+                    <i class="fa-solid fa-arrow-rotate-left text-xs"></i>
+                    <span>DESHACER (Ctrl+Z)</span>
+                </button>
+                <button onclick="hideUndoToast()" class="text-[#a4afb7] hover:text-white p-1 text-xs">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
@@ -576,7 +580,6 @@
         <!-- FLOATING DRAGGABLE NAVIGATOR MODAL (ELEMENTOR) -->
         <!-- ============================================== -->
         <div id="navigator-window" class="hidden absolute top-16 right-6 w-72 bg-[#1e2124] border border-[#393d41] rounded-xl shadow-2xl z-50 flex flex-col overflow-hidden">
-            <!-- Navigator Header -->
             <div class="h-9 bg-[#26292c] border-b border-[#393d41] px-3 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-layer-group text-[#D4AF37] text-xs"></i>
@@ -586,34 +589,57 @@
                     <i class="fa-solid fa-xmark text-xs"></i>
                 </button>
             </div>
-            <!-- Navigator Tree Body -->
-            <div id="navigator-body" class="max-h-96 overflow-y-auto p-2 space-y-1 text-[11px]">
-                <!-- Dynamic Tree nodes will be rendered here -->
-            </div>
+            <div id="navigator-body" class="max-h-96 overflow-y-auto p-2 space-y-1 text-[11px]"></div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- HISTORY & REVISIONS MODAL                      -->
-        <!-- ============================================== -->
-        <div id="history-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-[#1e2124] border border-[#393d41] rounded-xl max-w-lg w-full p-5 shadow-2xl space-y-4">
-                <div class="flex items-center justify-between border-b border-[#393d41] pb-3">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-[#D4AF37] text-sm"></i>
-                        <h3 class="font-heading font-black text-white text-sm uppercase">Historial & Revisiones</h3>
-                    </div>
-                    <button onclick="toggleHistoryModal()" class="text-[#a4afb7] hover:text-white cursor-pointer">
-                        <i class="fa-solid fa-xmark"></i>
+        <!-- ======================================================= -->
+        <!-- ELEMENTOR 2-TAB HISTORY DRAWER: ACCIONES VS REVISIONES  -->
+        <!-- ======================================================= -->
+        <div id="history-drawer" class="hidden fixed inset-y-0 right-0 w-96 bg-[#1e2124] border-l border-[#393d41] shadow-2xl z-50 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <div class="h-12 bg-[#26292c] border-b border-[#393d41] px-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-[#D4AF37] text-sm"></i>
+                    <span class="font-heading font-black text-white text-xs uppercase tracking-wider">Historial de Cambios</span>
+                </div>
+                <button onclick="closeHistoryDrawer()" class="text-[#a4afb7] hover:text-white cursor-pointer p-1">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Two Tabs: Acciones vs Revisiones -->
+            <div class="flex border-b border-[#393d41] bg-[#1a1d20] text-xs font-semibold">
+                <button onclick="switchHistoryTab('actions')" id="hist-tab-btn-actions" class="flex-1 py-3 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-list-check"></i> <span>Acciones (<span id="hist-actions-badge">0</span>)</span>
+                </button>
+                <button onclick="switchHistoryTab('revisions')" id="hist-tab-btn-revisions" class="flex-1 py-3 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-box-archive"></i> <span>Revisiones</span>
+                </button>
+            </div>
+
+            <!-- PESTAÑA A: ACCIONES DE LA SESIÓN (Línea de Tiempo con Deshacer Instantáneo) -->
+            <div id="hist-panel-actions" class="flex-1 overflow-y-auto p-3 space-y-2">
+                <div class="text-[11px] text-[#a4afb7] bg-[#15171a] p-2.5 rounded border border-[#393d41] mb-2 flex items-center justify-between">
+                    <span>Haz clic en cualquier acción para rebobinar el diseño.</span>
+                    <button onclick="undoAction()" class="text-[#D4AF37] font-bold hover:underline flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-rotate-left"></i> Deshacer
                     </button>
                 </div>
-                <!-- Revisions list from /api/revisions -->
-                <div id="history-revisions-list" class="max-h-72 overflow-y-auto space-y-2">
-                    <p class="text-[#a4afb7] text-center py-4">Cargando puntos de restauración...</p>
+                <div id="actions-timeline-list" class="space-y-1">
+                    <!-- Dynamic timeline items -->
                 </div>
-                <div class="flex justify-end pt-2">
-                    <button onclick="toggleHistoryModal()" class="bg-[#26292c] hover:bg-[#32363b] text-white px-4 py-2 rounded text-xs font-semibold cursor-pointer">
-                        Cerrar
+            </div>
+
+            <!-- PESTAÑA B: REVISIONES Y PUNTOS DE CONTROL DEL SERVIDOR -->
+            <div id="hist-panel-revisions" class="flex-1 overflow-y-auto p-3 space-y-3 hidden">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-[#a4afb7] uppercase font-bold">Puntos Guardados</span>
+                    <button onclick="promptCreateCheckpoint()" class="bg-[#D4AF37] hover:bg-[#b89320] text-black font-heading font-black px-2.5 py-1 rounded text-[10px] uppercase tracking-wider flex items-center gap-1 cursor-pointer">
+                        <i class="fa-solid fa-plus"></i> Nuevo Punto
                     </button>
+                </div>
+                <div id="server-revisions-list" class="space-y-2">
+                    <p class="text-[#a4afb7] text-center py-4">Cargando revisiones del servidor...</p>
                 </div>
             </div>
         </div>
@@ -633,6 +659,13 @@
                     </button>
                 </div>
                 <div class="space-y-3">
+                    <button onclick="promptCreateCheckpoint()" class="w-full bg-[#26292c] hover:bg-[#32363b] text-white p-3 rounded-lg border border-[#393d41] flex items-center gap-3 text-left transition-colors cursor-pointer">
+                        <i class="fa-solid fa-bookmark text-[#D4AF37] text-base"></i>
+                        <div>
+                            <div class="font-bold text-xs">Crear Punto de Control con Nombre</div>
+                            <div class="text-[10px] text-[#a4afb7]">Guardar un hito seguro antes de hacer cambios mayores</div>
+                        </div>
+                    </button>
                     <button onclick="exportElementorTemplate()" class="w-full bg-[#26292c] hover:bg-[#32363b] text-white p-3 rounded-lg border border-[#393d41] flex items-center gap-3 text-left transition-colors cursor-pointer">
                         <i class="fa-solid fa-file-export text-[#D4AF37] text-base"></i>
                         <div>
@@ -644,7 +677,7 @@
                         <i class="fa-solid fa-download text-emerald-400 text-base"></i>
                         <div>
                             <div class="font-bold text-xs">Descargar index.html Limpio</div>
-                            <div class="text-[10px] text-[#a4afb7]">Código optimizado para producción o hosting estático</div>
+                            <div class="text-[10px] text-[#a4afb7]">Código optimizado para producción</div>
                         </div>
                     </button>
                 </div>
@@ -670,117 +703,467 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- LOGIC SCRIPT: ELEMENTOR ENGINE CORE            -->
+    <!-- LOGIC SCRIPT: STATE ENGINE & CHANGE MANAGEMENT -->
     <!-- ============================================== -->
     <script>
         let selectedElement = null;
-        let selectedElementOriginalStyles = {};
-        let actionHistory = [];
         let isSaving = false;
+        let hasUnsavedChanges = false;
+        let autosaveTimer = null;
+        let undoToastTimer = null;
 
-        // Viewport Switcher
-        function setCanvasViewport(mode) {
-            const wrapper = document.getElementById('canvas-wrapper');
-            const btnDesk = document.getElementById('btn-device-desktop');
-            const btnTab = document.getElementById('btn-device-tablet');
-            const btnMob = document.getElementById('btn-device-mobile');
+        // Undo & Redo Memento Stacks (Max 60 steps)
+        const MAX_HISTORY = 60;
+        let undoStack = [];
+        let redoStack = [];
+        let actionHistoryLog = [];
 
-            [btnDesk, btnTab, btnMob].forEach(b => {
-                b.className = "px-2.5 py-1 rounded text-[#a4afb7] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
-            });
-
-            if (mode === 'desktop') {
-                wrapper.className = "canvas-desktop transition-all duration-300 relative overflow-hidden bg-black flex flex-col";
-                btnDesk.className = "px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
-            } else if (mode === 'tablet') {
-                wrapper.className = "canvas-tablet transition-all duration-300 relative overflow-hidden bg-black flex flex-col";
-                btnTab.className = "px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
-            } else if (mode === 'mobile') {
-                wrapper.className = "canvas-mobile transition-all duration-300 relative overflow-hidden bg-black flex flex-col";
-                btnMob.className = "px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
-            }
-        }
-
-        function cycleViewport() {
-            const wrapper = document.getElementById('canvas-wrapper');
-            if (wrapper.classList.contains('canvas-desktop')) setCanvasViewport('tablet');
-            else if (wrapper.classList.contains('canvas-tablet')) setCanvasViewport('mobile');
-            else setCanvasViewport('desktop');
-        }
-
-        // Sidebar View Toggle (Widgets vs Inspector)
-        function switchSidebarView(view) {
-            const viewWidgets = document.getElementById('view-widgets');
-            const viewInspector = document.getElementById('view-inspector');
-            const btnWidgets = document.getElementById('btn-view-widgets');
-            const btnInspector = document.getElementById('btn-view-inspector');
-            const headerTitle = document.getElementById('sidebar-header-title');
-
-            if (view === 'widgets') {
-                viewWidgets.classList.remove('hidden');
-                viewInspector.classList.add('hidden');
-                btnWidgets.className = "w-7 h-7 rounded bg-[#32363b] text-[#D4AF37] flex items-center justify-center transition-colors cursor-pointer";
-                btnInspector.className = "w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center transition-colors cursor-pointer";
-                headerTitle.innerText = "ELEMENTOS";
-            } else {
-                viewWidgets.classList.add('hidden');
-                viewInspector.classList.remove('hidden');
-                btnInspector.className = "w-7 h-7 rounded bg-[#32363b] text-[#D4AF37] flex items-center justify-center transition-colors cursor-pointer";
-                btnWidgets.className = "w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center transition-colors cursor-pointer";
-                headerTitle.innerText = "EDITAR ELEMENTO";
-            }
-        }
-
-        // Elementor 3-Tab Switcher (Contenido, Estilo, Avanzado)
-        function switchElementorTab(tab) {
-            const pContent = document.getElementById('el-panel-content');
-            const pStyle = document.getElementById('el-panel-style');
-            const pAdvanced = document.getElementById('el-panel-advanced');
-            const bContent = document.getElementById('tab-btn-content');
-            const bStyle = document.getElementById('tab-btn-style');
-            const bAdvanced = document.getElementById('tab-btn-advanced');
-
-            [pContent, pStyle, pAdvanced].forEach(p => p.classList.add('hidden'));
-            [bContent, bStyle, bAdvanced].forEach(b => {
-                b.className = "flex-1 py-2.5 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer";
-            });
-
-            if (tab === 'content') {
-                pContent.classList.remove('hidden');
-                bContent.className = "flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
-            } else if (tab === 'style') {
-                pStyle.classList.remove('hidden');
-                bStyle.className = "flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
-            } else if (tab === 'advanced') {
-                pAdvanced.classList.remove('hidden');
-                bAdvanced.className = "flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
-            }
-        }
-
-        // Filter Widgets
-        function filterWidgets(query) {
-            query = query.toLowerCase().trim();
-            const cards = document.querySelectorAll('.widget-card');
-            cards.forEach(card => {
-                const text = card.innerText.toLowerCase();
-                card.style.display = text.includes(query) ? 'flex' : 'none';
-            });
-        }
-
-        // ==============================================
-        // CANVAS INTEGRATION & ELEMENT SELECTION
-        // ==============================================
         function getIframeDoc() {
             const frame = document.getElementById('preview-frame');
             return frame.contentDocument || frame.contentWindow.document;
         }
 
+        function getCleanCanvasHTML() {
+            const doc = getIframeDoc();
+            if (!doc) return '';
+
+            // Clone to avoid modifying active canvas
+            const cloneDoc = doc.documentElement.cloneNode(true);
+            const injected = cloneDoc.querySelector('#elementor-editor-injected-styles');
+            if (injected) injected.remove();
+
+            // Remove any selection or hover classes
+            cloneDoc.querySelectorAll('.elementor-selected-element, .elementor-hovered-element').forEach(el => {
+                el.classList.remove('elementor-selected-element', 'elementor-hovered-element');
+            });
+            cloneDoc.querySelectorAll('[contenteditable]').forEach(el => {
+                el.removeAttribute('contenteditable');
+            });
+
+            return "<!DOCTYPE html>\n" + cloneDoc.outerHTML;
+        }
+
+        // ==============================================
+        // MEMENTO PATTERN: RECORDING ACTIONS FOR UNDO
+        // ==============================================
+        function pushState(actionTitle = 'Edición de diseño', icon = 'fa-pen') {
+            const doc = getIframeDoc();
+            if (!doc || !doc.body) return;
+
+            const htmlSnapshot = doc.body.innerHTML;
+
+            // Push current state onto undoStack
+            undoStack.push({
+                title: actionTitle,
+                icon: icon,
+                time: new Date().toLocaleTimeString(),
+                bodyHtml: htmlSnapshot
+            });
+
+            if (undoStack.length > MAX_HISTORY) {
+                undoStack.shift();
+            }
+
+            // Clearing redoStack on new user action
+            redoStack = [];
+
+            // Add to session actions log
+            actionHistoryLog.push({
+                title: actionTitle,
+                icon: icon,
+                time: new Date().toLocaleTimeString(),
+                stackIndex: undoStack.length - 1
+            });
+
+            updateUndoRedoUI();
+            scheduleAutosave();
+            hasUnsavedChanges = true;
+        }
+
+        function undoAction() {
+            if (undoStack.length <= 1) return; // Keep initial baseline state
+
+            const doc = getIframeDoc();
+            if (!doc) return;
+
+            // Pop the current state and push onto redoStack
+            const currentState = undoStack.pop();
+            redoStack.push({
+                title: currentState.title,
+                icon: currentState.icon,
+                time: new Date().toLocaleTimeString(),
+                bodyHtml: doc.body.innerHTML
+            });
+
+            // Restore the previous state
+            const targetState = undoStack[undoStack.length - 1];
+            doc.body.innerHTML = targetState.bodyHtml;
+
+            // Re-initialize integration and clear selection
+            initializeCanvasIntegration();
+            selectedElement = null;
+            document.getElementById('canvas-floating-bar').classList.add('hidden');
+            hideUndoToast();
+
+            updateUndoRedoUI();
+            scheduleAutosave();
+            showToast("Acción Deshecha (Undo)", `Se restauró el estado: "${targetState.title}"`);
+        }
+
+        function redoAction() {
+            if (redoStack.length === 0) return;
+
+            const doc = getIframeDoc();
+            if (!doc) return;
+
+            // Pop from redoStack
+            const targetState = redoStack.pop();
+
+            // Push current state to undoStack
+            undoStack.push({
+                title: targetState.title,
+                icon: targetState.icon,
+                time: new Date().toLocaleTimeString(),
+                bodyHtml: doc.body.innerHTML
+            });
+
+            // Restore
+            doc.body.innerHTML = targetState.bodyHtml;
+            initializeCanvasIntegration();
+            selectedElement = null;
+            document.getElementById('canvas-floating-bar').classList.add('hidden');
+
+            updateUndoRedoUI();
+            scheduleAutosave();
+            showToast("Acción Rehecha (Redo)", `Se re-aplicó: "${targetState.title}"`);
+        }
+
+        function jumpToHistoricalAction(index) {
+            if (index < 0 || index >= undoStack.length) return;
+            const doc = getIframeDoc();
+            if (!doc) return;
+
+            // Slice stack up to that point
+            const targetState = undoStack[index];
+            undoStack = undoStack.slice(0, index + 1);
+            redoStack = [];
+
+            doc.body.innerHTML = targetState.bodyHtml;
+            initializeCanvasIntegration();
+            selectedElement = null;
+            document.getElementById('canvas-floating-bar').classList.add('hidden');
+
+            updateUndoRedoUI();
+            scheduleAutosave();
+            showToast("Punto en el Tiempo", `Lienzo restaurado a: "${targetState.title}"`);
+            closeHistoryDrawer();
+        }
+
+        function updateUndoRedoUI() {
+            const btnUndo = document.getElementById('btn-undo');
+            const btnRedo = document.getElementById('btn-redo');
+            const badgeUndo = document.getElementById('badge-undo-count');
+            const badgeRedo = document.getElementById('badge-redo-count');
+            const histBadge = document.getElementById('hist-actions-badge');
+
+            const canUndo = undoStack.length > 1;
+            const canRedo = redoStack.length > 0;
+
+            btnUndo.disabled = !canUndo;
+            btnRedo.disabled = !canRedo;
+
+            badgeUndo.innerText = Math.max(0, undoStack.length - 1);
+            badgeRedo.innerText = redoStack.length;
+
+            badgeUndo.classList.toggle('hidden', undoStack.length <= 1);
+            badgeRedo.classList.toggle('hidden', redoStack.length === 0);
+
+            histBadge.innerText = undoStack.length;
+
+            // Refresh actions timeline list
+            renderActionsTimeline();
+        }
+
+        function renderActionsTimeline() {
+            const list = document.getElementById('actions-timeline-list');
+            if (!list) return;
+
+            if (undoStack.length === 0) {
+                list.innerHTML = '<p class="text-[#a4afb7] text-center py-4">No hay acciones registradas.</p>';
+                return;
+            }
+
+            list.innerHTML = undoStack.map((step, idx) => {
+                const isCurrent = idx === undoStack.length - 1;
+                return `
+                    <div onclick="jumpToHistoricalAction(${idx})" class="p-2.5 rounded border border-[#393d41] hover:border-[#D4AF37] ${isCurrent ? 'action-item-current' : 'bg-[#15171a]'} flex items-center justify-between cursor-pointer transition-colors group">
+                        <div class="flex items-center gap-2.5">
+                            <i class="fa-solid ${step.icon} text-xs ${isCurrent ? 'text-[#D4AF37]' : 'text-[#a4afb7]'}"></i>
+                            <div>
+                                <div class="text-white font-semibold text-xs ${isCurrent ? 'text-[#D4AF37]' : ''}">${step.title}</div>
+                                <div class="text-[9px] text-[#717b82]">${step.time} ${isCurrent ? '• (Actual)' : ''}</div>
+                            </div>
+                        </div>
+                        ${isCurrent ? '<span class="w-2 h-2 rounded-full bg-[#D4AF37]"></span>' : '<i class="fa-solid fa-clock-rotate-left opacity-0 group-hover:opacity-100 text-[#a4afb7] text-xs"></i>'}
+                    </div>
+                `;
+            }).reverse().join('');
+        }
+
+        // ==============================================
+        // AUTOSAVE ENGINE (DEBOUNCED + CRASH PROTECTION)
+        // ==============================================
+        function scheduleAutosave() {
+            const statusIcon = document.getElementById('autosave-status-icon');
+            const statusText = document.getElementById('autosave-status-text');
+
+            statusIcon.className = "w-2 h-2 rounded-full bg-amber-400 animate-ping";
+            statusText.innerText = "Guardando borrador...";
+            statusText.className = "text-amber-300 text-[11px] font-mono";
+
+            clearTimeout(autosaveTimer);
+            autosaveTimer = setTimeout(performAutosave, 2500);
+        }
+
+        async function performAutosave() {
+            const cleanHtml = getCleanCanvasHTML();
+            if (!cleanHtml) return;
+
+            // 1. Save to LocalStorage for instant browser restore
+            try {
+                localStorage.setItem('w_gestion_autosave_html', cleanHtml);
+                localStorage.setItem('w_gestion_autosave_time', Date.now().toString());
+            } catch (e) {
+                console.warn("LocalStorage lleno o deshabilitado:", e);
+            }
+
+            // 2. Save silently to server endpoint /api/autosave
+            try {
+                const res = await fetch('/api/autosave', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ html: cleanHtml })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const statusIcon = document.getElementById('autosave-status-icon');
+                    const statusText = document.getElementById('autosave-status-text');
+                    statusIcon.className = "w-2 h-2 rounded-full bg-sky-400";
+                    statusText.innerText = `Autoguardado (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`;
+                    statusText.className = "text-sky-300 text-[11px] font-mono";
+                }
+            } catch (err) {
+                console.warn("Autosave en servidor no disponible:", err);
+            }
+        }
+
+        // Check if there is an uncommitted autosave draft on launch
+        async function checkAutosaveOnLoad() {
+            try {
+                const res = await fetch('/api/autosave');
+                const data = await res.json();
+                if (data.success && data.exists) {
+                    const banner = document.getElementById('recovery-banner');
+                    banner.classList.remove('hidden');
+                }
+            } catch (e) {
+                // Ignore if offline
+            }
+        }
+
+        async function restoreAutosaveDraft() {
+            try {
+                const res = await fetch('/api/autosave');
+                const data = await res.json();
+                if (data.success && data.html) {
+                    const doc = getIframeDoc();
+                    doc.open();
+                    doc.write(data.html);
+                    doc.close();
+                    document.getElementById('recovery-banner').classList.add('hidden');
+                    showToast("Borrador Restaurado", "Se han recuperado tus cambios guardados automáticamente.");
+                    setTimeout(initializeCanvasIntegration, 500);
+                }
+            } catch (err) {
+                alert("Error al restaurar borrador: " + err.message);
+            }
+        }
+
+        function discardAutosaveDraft() {
+            document.getElementById('recovery-banner').classList.add('hidden');
+            localStorage.removeItem('w_gestion_autosave_html');
+            localStorage.removeItem('w_gestion_autosave_time');
+        }
+
+        // ==============================================
+        // SAFE DELETION GUARD WITH FLOATING RESTORE TOAST
+        // ==============================================
+        function deleteActiveElement() {
+            if (!selectedElement) return;
+
+            const tagName = selectedElement.tagName;
+            const elementDesc = selectedElement.id || selectedElement.className.split(' ')[0] || tagName;
+
+            // Prompt if deleting a major section
+            if (tagName === 'SECTION' || tagName === 'HEADER' || tagName === 'FOOTER') {
+                if (!confirm(`¿Estás seguro de que deseas eliminar la sección completa "${elementDesc}"? Podrás deshacer la acción con Ctrl+Z.`)) {
+                    return;
+                }
+            }
+
+            // Record snapshot before deletion
+            pushState(`Eliminado [${tagName}: ${elementDesc}]`, 'fa-trash-can');
+
+            // Perform deletion
+            selectedElement.remove();
+            selectedElement = null;
+            document.getElementById('canvas-floating-bar').classList.add('hidden');
+            switchSidebarView('widgets');
+            refreshNavigatorTree();
+
+            // Trigger floating restore toast
+            showUndoToast(`Se eliminó [${tagName}]. ¿Fue un error accidental?`);
+        }
+
+        function showUndoToast(msg) {
+            const toast = document.getElementById('undo-toast');
+            document.getElementById('undo-toast-text').innerText = msg;
+            toast.classList.remove('hidden');
+
+            clearTimeout(undoToastTimer);
+            undoToastTimer = setTimeout(hideUndoToast, 8000);
+        }
+
+        function hideUndoToast() {
+            document.getElementById('undo-toast').classList.add('hidden');
+            clearTimeout(undoToastTimer);
+        }
+
+        // ==============================================
+        // NAMED CHECKPOINTS & REVISIONS
+        // ==============================================
+        async function promptCreateCheckpoint() {
+            const name = prompt("Nombre del Punto de Control (Checkpoint):", "Antes de modificar servicios");
+            if (!name || !name.trim()) return;
+
+            const cleanHtml = getCleanCanvasHTML();
+            try {
+                const res = await fetch('/api/create-checkpoint', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name.trim(), html: cleanHtml })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast("Punto de Control Creado", `"${name}" guardado exitosamente.`);
+                    loadServerRevisions();
+                }
+            } catch (err) {
+                alert("Error al crear punto de control: " + err.message);
+            }
+        }
+
+        function openHistoryDrawer(tab = 'actions') {
+            document.getElementById('history-drawer').classList.remove('hidden');
+            switchHistoryTab(tab);
+        }
+
+        function closeHistoryDrawer() {
+            document.getElementById('history-drawer').classList.add('hidden');
+        }
+
+        function switchHistoryTab(tab) {
+            const bActions = document.getElementById('hist-tab-btn-actions');
+            const bRevisions = document.getElementById('hist-tab-btn-revisions');
+            const pActions = document.getElementById('hist-panel-actions');
+            const pRevisions = document.getElementById('hist-panel-revisions');
+
+            if (tab === 'actions') {
+                bActions.className = "flex-1 py-3 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
+                bRevisions.className = "flex-1 py-3 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer";
+                pActions.classList.remove('hidden');
+                pRevisions.classList.add('hidden');
+                renderActionsTimeline();
+            } else {
+                bRevisions.className = "flex-1 py-3 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
+                bActions.className = "flex-1 py-3 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer";
+                pRevisions.classList.remove('hidden');
+                pActions.classList.add('hidden');
+                loadServerRevisions();
+            }
+        }
+
+        async function loadServerRevisions() {
+            const container = document.getElementById('server-revisions-list');
+            container.innerHTML = '<p class="text-[#a4afb7] text-center py-4">Consultando revisiones...</p>';
+            try {
+                const res = await fetch('/api/revisions');
+                const data = await res.json();
+                if (data.success && data.revisions.length > 0) {
+                    container.innerHTML = data.revisions.map(rev => {
+                        const isCheckpoint = rev.type === 'checkpoint';
+                        return `
+                            <div class="p-3 bg-[#15171a] border border-[#393d41] rounded-lg flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <i class="fa-solid ${isCheckpoint ? 'fa-bookmark text-[#D4AF37]' : 'fa-code-commit text-emerald-400'} text-xs"></i>
+                                    <div>
+                                        <div class="text-white font-bold text-xs">${rev.title}</div>
+                                        <div class="text-[9px] text-[#717b82]">${new Date(rev.createdAt).toLocaleString()} • ${(rev.size / 1024).toFixed(1)} KB</div>
+                                    </div>
+                                </div>
+                                <button onclick="restoreBackup('${rev.filename}')" class="bg-[#26292c] hover:bg-[#D4AF37] hover:text-black text-white px-2.5 py-1 rounded text-[10px] font-bold transition-colors cursor-pointer">
+                                    Restaurar
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = '<p class="text-[#a4afb7] text-center py-4">No hay revisiones almacenadas.</p>';
+                }
+            } catch (err) {
+                container.innerHTML = `<p class="text-red-400 text-center py-4">Error: ${err.message}</p>`;
+            }
+        }
+
+        async function restoreBackup(filename) {
+            if (!confirm(`¿Deseas restaurar la versión ${filename}? Se creará automáticamente un respaldo de seguridad del estado actual.`)) return;
+            try {
+                const res = await fetch('/api/restore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ backupFileName: filename, target: 'index.html' })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast("Versión Restaurada", filename);
+                    document.getElementById('preview-frame').src = './index.html?r=' + Date.now();
+                    closeHistoryDrawer();
+                }
+            } catch (err) {
+                alert("Error al restaurar: " + err.message);
+            }
+        }
+
+        // ==============================================
+        // CANVAS INITIALIZATION & ELEMENTOR CONTROLS
+        // ==============================================
         function initializeCanvasIntegration() {
             try {
                 const doc = getIframeDoc();
-                if (!doc) return;
+                if (!doc || !doc.body) return;
 
-                // Inject Elementor Selection Styles into the iframe
+                // Push initial state if undoStack is empty
+                if (undoStack.length === 0) {
+                    undoStack.push({
+                        title: 'Inicio de Edición',
+                        icon: 'fa-flag',
+                        time: new Date().toLocaleTimeString(),
+                        bodyHtml: doc.body.innerHTML
+                    });
+                    updateUndoRedoUI();
+                }
+
+                // Inject Selection Styles
                 let style = doc.getElementById('elementor-editor-injected-styles');
                 if (!style) {
                     style = doc.createElement('style');
@@ -804,7 +1187,7 @@
                     doc.head.appendChild(style);
                 }
 
-                // Add Hover & Click Listeners to canvas elements
+                // Hover listeners
                 doc.body.addEventListener('mouseover', (e) => {
                     const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, img, section, .card-propiedad, [data-el-widget]');
                     if (target && target !== selectedElement) {
@@ -819,7 +1202,7 @@
                     }
                 });
 
-                // Select on Click
+                // Selection on Click
                 doc.body.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -827,31 +1210,29 @@
                     selectCanvasElement(target);
                 });
 
-                // Enable Inline ContentEditable on Double Click (Classic Elementor UX)
+                // Inline editing on Double Click
                 doc.body.addEventListener('dblclick', (e) => {
                     const target = e.target.closest('h1, h2, h3, p, a, button, span');
                     if (target) {
+                        pushState(`Edición Inline de [${target.tagName}]`, 'fa-pen-to-square');
                         target.setAttribute('contenteditable', 'true');
                         target.focus();
                         target.addEventListener('blur', () => {
                             target.removeAttribute('contenteditable');
                             document.getElementById('ctrl-input-text').value = target.innerText;
-                            recordHistory(`Edición inline de ${target.tagName}`);
+                            scheduleAutosave();
                         }, { once: true });
                     }
                 });
 
-                // Populate Navigator Tree
                 refreshNavigatorTree();
 
             } catch (err) {
-                console.error("No se pudo inyectar el script del canvas:", err);
+                console.error("Error al inicializar integración con el lienzo:", err);
             }
         }
 
-        // Select an element from the canvas
         function selectCanvasElement(el) {
-            const doc = getIframeDoc();
             if (selectedElement) {
                 selectedElement.classList.remove('elementor-selected-element');
             }
@@ -860,16 +1241,13 @@
             selectedElement.classList.remove('elementor-hovered-element');
             selectedElement.classList.add('elementor-selected-element');
 
-            // Switch to Inspector view
             switchSidebarView('inspector');
             switchElementorTab('content');
 
-            // Update Inspector labels
             const tagName = el.tagName.toUpperCase();
             document.getElementById('insp-tag-type').innerText = `${tagName} • WIDGET`;
             document.getElementById('insp-element-name').innerText = el.id || el.getAttribute('aria-label') || el.className.split(' ')[0] || tagName;
 
-            // Populate Content Tab inputs
             const textGroup = document.getElementById('ctrl-text-group');
             const linkGroup = document.getElementById('ctrl-link-group');
             const imageGroup = document.getElementById('ctrl-image-group');
@@ -891,7 +1269,6 @@
                 linkGroup.classList.add('hidden');
             }
 
-            // Populate Style inputs
             const computed = window.getComputedStyle(el);
             document.getElementById('ctrl-font-size').value = parseInt(computed.fontSize) || 16;
             document.getElementById('label-font-size').innerText = computed.fontSize;
@@ -899,7 +1276,6 @@
             document.getElementById('ctrl-font-weight').value = computed.fontWeight || '400';
             document.getElementById('ctrl-select-tag').value = tagName;
 
-            // Position Floating Bar near element
             positionFloatingBar(el);
         }
 
@@ -915,32 +1291,35 @@
         }
 
         // ==============================================
-        // ELEMENT MUTATIONS & BIDIRECTIONAL SYNC
+        // ELEMENT MUTATIONS & AUTO-SNAPSHOT WRAPPERS
         // ==============================================
         function updateActiveElementText(val) {
             if (!selectedElement) return;
+            pushState(`Texto [${selectedElement.tagName}]: "${val.slice(0, 20)}..."`, 'fa-pen');
             selectedElement.innerText = val;
-            recordHistory(`Actualizado texto de ${selectedElement.tagName}`);
         }
 
         function updateActiveElementLink(val) {
             if (!selectedElement) return;
+            pushState(`Enlace [${selectedElement.tagName}]`, 'fa-link');
             selectedElement.setAttribute('href', val);
         }
 
         function updateActiveElementImage(val) {
             if (!selectedElement) return;
+            pushState(`Imagen [${selectedElement.tagName}]`, 'fa-image');
             selectedElement.setAttribute('src', val);
         }
 
         function updateActiveElementStyle(prop, val) {
             if (!selectedElement) return;
+            pushState(`Estilo ${prop}: ${val}`, 'fa-brush');
             selectedElement.style[prop] = val;
-            recordHistory(`Estilo ${prop}: ${val}`);
         }
 
         function updateMarginPadding() {
             if (!selectedElement) return;
+            pushState(`Espaciado de [${selectedElement.tagName}]`, 'fa-arrows-up-down');
             const mt = document.getElementById('ctrl-margin-top').value || 0;
             const mr = document.getElementById('ctrl-margin-right').value || 0;
             const mb = document.getElementById('ctrl-margin-bottom').value || 0;
@@ -954,19 +1333,9 @@
             selectedElement.style.padding = `${pt}px ${pr}px ${pb}px ${pl}px`;
         }
 
-        function applyAnimation(anim) {
-            if (!selectedElement) return;
-            selectedElement.setAttribute('data-animation', anim);
-            showToast("Animación Asignada", `Efecto ${anim} configurado para este elemento.`);
-        }
-
-        function updateActiveElementClasses(classes) {
-            if (!selectedElement) return;
-            selectedElement.className = classes;
-        }
-
         function duplicateActiveElement() {
             if (!selectedElement) return;
+            pushState(`Duplicar [${selectedElement.tagName}]`, 'fa-copy');
             const clone = selectedElement.cloneNode(true);
             clone.classList.remove('elementor-selected-element');
             selectedElement.parentNode.insertBefore(clone, selectedElement.nextSibling);
@@ -975,19 +1344,9 @@
             refreshNavigatorTree();
         }
 
-        function deleteActiveElement() {
-            if (!selectedElement) return;
-            const parent = selectedElement.parentNode;
-            selectedElement.remove();
-            selectedElement = null;
-            document.getElementById('canvas-floating-bar').classList.add('hidden');
-            switchSidebarView('widgets');
-            showToast("Elemento Eliminado", "El elemento ha sido retirado del lienzo.");
-            refreshNavigatorTree();
-        }
-
         function moveActiveElement(dir) {
             if (!selectedElement || !selectedElement.parentNode) return;
+            pushState(`Mover [${selectedElement.tagName}]`, dir === 'up' ? 'fa-arrow-up' : 'fa-arrow-down');
             const parent = selectedElement.parentNode;
             if (dir === 'up' && selectedElement.previousElementSibling) {
                 parent.insertBefore(selectedElement, selectedElement.previousElementSibling);
@@ -1002,12 +1361,27 @@
             switchSidebarView('inspector');
         }
 
+        function applyAnimation(anim) {
+            if (!selectedElement) return;
+            pushState(`Animación: ${anim}`, 'fa-wand-magic-sparkles');
+            selectedElement.setAttribute('data-animation', anim);
+            showToast("Animación Asignada", `Efecto ${anim} configurado.`);
+        }
+
+        function updateActiveElementClasses(classes) {
+            if (!selectedElement) return;
+            pushState(`Clases CSS modificadas`, 'fa-code');
+            selectedElement.className = classes;
+        }
+
         // ==============================================
-        // INSERT NEW ELEMENTOR WIDGETS
+        // INSERT WIDGETS
         // ==============================================
         function insertWidget(type) {
             const doc = getIframeDoc();
             if (!doc) return;
+
+            pushState(`Insertar Widget [${type}]`, 'fa-plus');
 
             const targetContainer = selectedElement ? (selectedElement.closest('section, div') || doc.body) : doc.body;
             let newEl;
@@ -1063,8 +1437,143 @@
         }
 
         // ==============================================
-        // NAVIGATOR TREE & HISTORY
+        // PUBLISH TO PRODUCTION (/api/save)
         // ==============================================
+        async function publishChanges() {
+            if (isSaving) return;
+            isSaving = true;
+
+            const cleanHtml = getCleanCanvasHTML();
+            if (!cleanHtml) return;
+
+            const icon = document.getElementById('publish-icon');
+            const label = document.getElementById('publish-label');
+
+            icon.className = "fa-solid fa-spinner fa-spin text-xs";
+            label.innerText = "PUBLICANDO...";
+
+            try {
+                const response = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        html: cleanHtml,
+                        filename: 'index.html',
+                        label: 'Publicación Manual desde Elementor'
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    hasUnsavedChanges = false;
+                    localStorage.removeItem('w_gestion_autosave_html');
+                    localStorage.removeItem('w_gestion_autosave_time');
+
+                    const statusIcon = document.getElementById('autosave-status-icon');
+                    const statusText = document.getElementById('autosave-status-text');
+                    statusIcon.className = "w-2 h-2 rounded-full bg-emerald-500";
+                    statusText.innerText = "Publicado en producción";
+                    statusText.className = "text-emerald-400 text-[11px] font-mono font-bold";
+
+                    showToast("¡Página Publicada!", "Los cambios se guardaron y están activos en http://localhost:3600");
+                } else {
+                    alert("Error al guardar: " + result.error);
+                }
+            } catch (err) {
+                alert("Error de conexión al servidor: " + err.message);
+            } finally {
+                isSaving = false;
+                icon.className = "fa-solid fa-floppy-disk text-xs";
+                label.innerText = "ACTUALIZAR";
+            }
+        }
+
+        // Viewport Switcher
+        function setCanvasViewport(mode) {
+            const wrapper = document.getElementById('canvas-wrapper');
+            const btnDesk = document.getElementById('btn-device-desktop');
+            const btnTab = document.getElementById('btn-device-tablet');
+            const btnMob = document.getElementById('btn-device-mobile');
+
+            [btnDesk, btnTab, btnMob].forEach(b => {
+                b.className = "px-2.5 py-1 rounded text-[#a4afb7] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
+            });
+
+            if (mode === 'desktop') {
+                wrapper.className = "canvas-desktop transition-all duration-300 relative overflow-hidden bg-black flex flex-col";
+                btnDesk.className = "px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
+            } else if (mode === 'tablet') {
+                wrapper.className = "canvas-tablet transition-all duration-300 relative overflow-hidden bg-black flex flex-col";
+                btnTab.className = "px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
+            } else if (mode === 'mobile') {
+                wrapper.className = "canvas-mobile transition-all duration-300 relative overflow-hidden bg-black flex flex-col";
+                btnMob.className = "px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer";
+            }
+        }
+
+        function cycleViewport() {
+            const wrapper = document.getElementById('canvas-wrapper');
+            if (wrapper.classList.contains('canvas-desktop')) setCanvasViewport('tablet');
+            else if (wrapper.classList.contains('canvas-tablet')) setCanvasViewport('mobile');
+            else setCanvasViewport('desktop');
+        }
+
+        function switchSidebarView(view) {
+            const viewWidgets = document.getElementById('view-widgets');
+            const viewInspector = document.getElementById('view-inspector');
+            const btnWidgets = document.getElementById('btn-view-widgets');
+            const btnInspector = document.getElementById('btn-view-inspector');
+            const headerTitle = document.getElementById('sidebar-header-title');
+
+            if (view === 'widgets') {
+                viewWidgets.classList.remove('hidden');
+                viewInspector.classList.add('hidden');
+                btnWidgets.className = "w-7 h-7 rounded bg-[#32363b] text-[#D4AF37] flex items-center justify-center transition-colors cursor-pointer";
+                btnInspector.className = "w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center transition-colors cursor-pointer";
+                headerTitle.innerText = "ELEMENTOS";
+            } else {
+                viewWidgets.classList.add('hidden');
+                viewInspector.classList.remove('hidden');
+                btnInspector.className = "w-7 h-7 rounded bg-[#32363b] text-[#D4AF37] flex items-center justify-center transition-colors cursor-pointer";
+                btnWidgets.className = "w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center transition-colors cursor-pointer";
+                headerTitle.innerText = "EDITAR ELEMENTO";
+            }
+        }
+
+        function switchElementorTab(tab) {
+            const pContent = document.getElementById('el-panel-content');
+            const pStyle = document.getElementById('el-panel-style');
+            const pAdvanced = document.getElementById('el-panel-advanced');
+            const bContent = document.getElementById('tab-btn-content');
+            const bStyle = document.getElementById('tab-btn-style');
+            const bAdvanced = document.getElementById('tab-btn-advanced');
+
+            [pContent, pStyle, pAdvanced].forEach(p => p.classList.add('hidden'));
+            [bContent, bStyle, bAdvanced].forEach(b => {
+                b.className = "flex-1 py-2.5 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer";
+            });
+
+            if (tab === 'content') {
+                pContent.classList.remove('hidden');
+                bContent.className = "flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
+            } else if (tab === 'style') {
+                pStyle.classList.remove('hidden');
+                bStyle.className = "flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
+            } else if (tab === 'advanced') {
+                pAdvanced.classList.remove('hidden');
+                bAdvanced.className = "flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer";
+            }
+        }
+
+        function filterWidgets(query) {
+            query = query.toLowerCase().trim();
+            const cards = document.querySelectorAll('.widget-card');
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        }
+
         function toggleNavigator() {
             const nav = document.getElementById('navigator-window');
             nav.classList.toggle('hidden');
@@ -1090,9 +1599,6 @@
                         <i class="fa-solid fa-folder text-[#D4AF37] text-xs"></i>
                         <span class="font-medium truncate">${idx + 1}. ${title}</span>
                     </div>
-                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onclick="toggleVisibility(event, '${sec.id || ''}')" class="p-1 hover:text-[#D4AF37] text-[10px]"><i class="fa-solid fa-eye"></i></button>
-                    </div>
                 `;
                 node.onclick = () => {
                     sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1102,135 +1608,12 @@
             });
         }
 
-        function recordHistory(desc) {
-            actionHistory.push({ desc, time: new Date().toLocaleTimeString() });
-            const dot = document.getElementById('save-status-dot');
-            dot.className = "w-2 h-2 rounded-full bg-amber-400 animate-ping ml-1";
-            dot.title = "Cambios sin publicar";
-        }
-
-        async function toggleHistoryModal() {
-            const modal = document.getElementById('history-modal');
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                loadServerRevisions();
-            }
-        }
-
-        async function loadServerRevisions() {
-            const container = document.getElementById('history-revisions-list');
-            container.innerHTML = '<p class="text-[#a4afb7] text-center py-4">Consultando historial en el servidor...</p>';
-            try {
-                const res = await fetch('/api/revisions');
-                const data = await res.json();
-                if (data.success && data.revisions.length > 0) {
-                    container.innerHTML = data.revisions.map(rev => `
-                        <div class="flex items-center justify-between p-3 bg-[#15171a] border border-[#393d41] rounded-lg">
-                            <div>
-                                <div class="text-white font-bold text-xs">${rev.filename}</div>
-                                <div class="text-[10px] text-[#a4afb7]">${new Date(rev.createdAt).toLocaleString()} • ${(rev.size / 1024).toFixed(1)} KB</div>
-                            </div>
-                            <button onclick="restoreBackup('${rev.filename}')" class="bg-[#26292c] hover:bg-[#D4AF37] hover:text-black text-white px-2.5 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer">
-                                Restaurar
-                            </button>
-                        </div>
-                    `).join('');
-                } else {
-                    container.innerHTML = '<p class="text-[#a4afb7] text-center py-4">No hay revisiones previas registradas.</p>';
-                }
-            } catch (err) {
-                container.innerHTML = `<p class="text-red-400 text-center py-4">Error al cargar historial: ${err.message}</p>`;
-            }
-        }
-
-        async function restoreBackup(filename) {
-            if (!confirm(`¿Deseas restaurar la versión ${filename}?`)) return;
-            try {
-                const res = await fetch('/api/restore', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ backupFileName: filename, target: 'index.html' })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    showToast("Versión Restaurada", filename);
-                    document.getElementById('preview-frame').src = './index.html?r=' + Date.now();
-                    toggleHistoryModal();
-                }
-            } catch (err) {
-                alert("Error al restaurar: " + err.message);
-            }
-        }
-
         function toggleSiteSettingsModal() {
             document.getElementById('settings-modal').classList.toggle('hidden');
         }
 
-        // ==============================================
-        // PUBLISH & PERSISTENCE TO SERVER (/api/save)
-        // ==============================================
-        async function publishChanges() {
-            if (isSaving) return;
-            isSaving = true;
-
-            const doc = getIframeDoc();
-            if (!doc) return;
-
-            // Deselect any element to clean editor styles before serialization
-            if (selectedElement) {
-                selectedElement.classList.remove('elementor-selected-element');
-            }
-            document.getElementById('canvas-floating-bar').classList.add('hidden');
-
-            // Remove editor-specific injected stylesheet
-            const injected = doc.getElementById('elementor-editor-injected-styles');
-            if (injected) injected.remove();
-
-            // Extract serialized HTML
-            const fullHtml = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
-
-            // Re-inject the styles for continuous editing
-            initializeCanvasIntegration();
-
-            const btn = document.getElementById('btn-publish');
-            const icon = document.getElementById('publish-icon');
-            const label = document.getElementById('publish-label');
-
-            icon.className = "fa-solid fa-spinner fa-spin text-xs";
-            label.innerText = "PUBLICANDO...";
-
-            try {
-                const response = await fetch('/api/save', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        html: fullHtml,
-                        filename: 'index.html'
-                    })
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    showToast("¡Página Publicada!", "Los cambios se guardaron y están activos en http://localhost:3600");
-                    const dot = document.getElementById('save-status-dot');
-                    dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse ml-1";
-                    dot.title = "Sincronizado con producción";
-                } else {
-                    alert("Error al guardar: " + result.error);
-                }
-            } catch (err) {
-                alert("Error de conexión al servidor: " + err.message);
-            } finally {
-                isSaving = false;
-                icon.className = "fa-solid fa-floppy-disk text-xs";
-                label.innerText = "ACTUALIZAR";
-            }
-        }
-
-        // Download Clean HTML Directly
         function downloadCleanHTML() {
-            const doc = getIframeDoc();
-            const clean = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+            const clean = getCleanCanvasHTML();
             const blob = new Blob([clean], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1241,15 +1624,13 @@
             showToast("HTML Exportado", "Archivo index-elementor-export.html descargado.");
         }
 
-        // Export Elementor JSON Template
         function exportElementorTemplate() {
             const template = {
                 title: "W Gestión Inmobiliaria Landing Page",
-                version: "2.0.0",
+                version: "2.1.0",
                 engine: "Elementor Visual Builder Replica",
-                author: "Antigravity & Braulio",
                 date: new Date().toISOString(),
-                content: getIframeDoc().body.innerHTML
+                content: getCleanCanvasHTML()
             };
             const blob = new Blob([JSON.stringify(template, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -1261,7 +1642,6 @@
             showToast("Plantilla Exportada", "Template JSON compatible generado.");
         }
 
-        // Toast Notification Trigger
         function showToast(title, msg) {
             const toast = document.getElementById('elementor-toast');
             document.getElementById('toast-title').innerText = title;
@@ -1272,13 +1652,39 @@
             }, 3500);
         }
 
-        // Keyboard Shortcut: Ctrl+S / Cmd+S to Publish
+        // ==============================================
+        // KEYBOARD SHORTCUTS (CTRL+Z, CTRL+Y, CTRL+S)
+        // ==============================================
         window.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            const isCtrl = e.ctrlKey || e.metaKey;
+
+            // Undo: Ctrl + Z (without Shift)
+            if (isCtrl && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                undoAction();
+            }
+            // Redo: Ctrl + Y OR Ctrl + Shift + Z
+            else if (isCtrl && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) {
+                e.preventDefault();
+                redoAction();
+            }
+            // Save: Ctrl + S
+            else if (isCtrl && e.key.toLowerCase() === 's') {
                 e.preventDefault();
                 publishChanges();
             }
         });
+
+        // Warn before leaving with unsaved work
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = 'Tienes cambios no guardados en tu página web. ¿Seguro que deseas salir?';
+            }
+        });
+
+        // Check for autosave on startup
+        window.addEventListener('DOMContentLoaded', checkAutosaveOnLoad);
     </script>
 </body>
 </html>
