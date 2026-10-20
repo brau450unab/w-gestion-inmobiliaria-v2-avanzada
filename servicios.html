@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios & Procedimiento Fiduciario | W Gestión Inmobiliaria</title>
+    <meta name="description" content="Metodología fiduciaria paso a paso, corretaje de alto estándar y administración de condominios bajo Ley 21.442 en Santiago y Viña del Mar.">
+
+    <!-- Tailwind CSS CDN con configuración v4 / custom styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#0D1117',
+                        'secondary': '#CAA052',
+                        'secondary-hover': '#B38B3D',
+                        'surface': '#FFFFFF',
+                        'surface-variant': '#F5F2EC',
+                        'on-surface': '#1C1B1F',
+                        'on-surface-variant': '#49454F',
+                        'tech-base': '#080C12',
+                        'tech-card': '#0E131D',
+                        'tech-border': 'rgba(255, 255, 255, 0.12)',
+                        'tech-border-bright': 'rgba(255, 255, 255, 0.22)',
+                        'brand-crimson': '#FF3B30',
+                        'brand-cobalt': '#2563EB',
+                        'brand-emerald': '#10B981',
+                    },
+                    fontFamily: {
+                        'display': ['"Urbanist"', '"Plus Jakarta Sans"', 'sans-serif'],
+                        'label': ['"Outfit"', 'sans-serif'],
+                        'body-lg': ['"Plus Jakarta Sans"', 'sans-serif'],
+                        'body-md': ['"Plus Jakarta Sans"', 'sans-serif'],
+                        'body-sm': ['"Plus Jakarta Sans"', 'sans-serif'],
+                        'mono': ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts Oficiales: Urbanist + Outfit + Plus Jakarta Sans + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Urbanist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined' !important;
+            font-weight: normal;
+            font-style: normal;
+            font-size: 20px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none !important;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+            vertical-align: middle;
+        }
+        .bg-grid-blueprint {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        }
+        .bg-grid-blueprint-light {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+        }
+        .whatsapp-float {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.08) translateY(-4px);
+            box-shadow: 0 15px 30px rgba(37, 211, 102, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-[#FAF9F7] font-body-md text-on-surface antialiased selection:bg-secondary selection:text-tech-base">
+
+    <!-- =========================================================
+         1. MENÚ SUPERIOR DE ALTO LUJO (INICIO - SERVICIOS - CONTACTO)
+         ========================================================= -->
+    <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-white/10 transition-all duration-300" style="background-color: rgba(8, 12, 18, 0.95);">
+        <div class="h-20 w-full px-6 md:px-12 lg:px-16 flex items-center justify-between max-w-[1700px] mx-auto">
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-3.5 group">
+                <div class="h-11 w-11 rounded-sm bg-white p-1.5 flex items-center justify-center border border-white/20 shadow-sm transition-transform group-hover:scale-105">
+                    <img src="./assets/media_1792425582649_f69a6f17.jpg" alt="Logo W Gestión Inmobiliaria" class="h-full w-full object-contain">
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-display font-medium text-lg sm:text-xl tracking-tight text-white group-hover:text-secondary transition-colors">
+                        W Gestión Inmobiliaria
+                    </span>
+                    <span class="font-label text-[9px] text-white/50 tracking-[0.22em] uppercase">Corretaje de Propiedades & Administración de Condominios</span>
+                </div>
+            </a>
+
+            <!-- Navegación Exclusiva: 3 Pestañas Claras -->
+            <nav class="hidden md:flex items-center gap-8 font-label text-xs uppercase tracking-[0.2em]">
+                <a href="index.html" class="text-white/70 hover:text-white transition-colors py-2 relative group">
+                    <span>Inicio</span>
+                    <span class="absolute bottom-0 left-0 w-0 h-[1.5px] bg-secondary group-hover:w-full transition-all duration-300"></span>
+                </a>
+                <a href="servicios.html" class="text-white font-semibold py-2 relative group">
+                    <span class="text-secondary">Servicios</span>
+                    <span class="absolute bottom-0 left-0 w-full h-[1.5px] bg-secondary"></span>
+                </a>
+                <a href="#contacto" class="text-white/70 hover:text-white transition-colors py-2 relative group">
+                    <span>Contacto</span>
+                    <span class="absolute bottom-0 left-0 w-0 h-[1.5px] bg-secondary group-hover:w-full transition-all duration-300"></span>
+                </a>
+            </nav>
+
+            <!-- Acción Directa Concierge -->
+            <div class="hidden sm:flex items-center gap-4">
+                <a href="#contacto" class="inline-flex items-center gap-2.5 px-5 py-2.5 bg-secondary text-white font-label text-xs uppercase tracking-[0.2em] font-semibold rounded-sm hover:bg-white hover:text-tech-base transition-all duration-300 shadow-[0_0_20px_rgba(202,160,82,0.25)]">
+                    <span>Agendar Asesoría</span>
+                    <span class="material-symbols-outlined text-sm">north_east</span>
+                </a>
+            </div>
+
+            <!-- Botón Menú Móvil -->
+            <button type="button" onclick="toggleMobileNav()" class="md:hidden text-white/80 hover:text-white p-2 rounded-sm border border-white/20 text-sm flex items-center justify-center cursor-pointer">
+                <span class="material-symbols-outlined" id="mobile-nav-icon">menu</span>
+            </button>
+        </div>
+
+        <!-- Menú Móvil Desplegable -->
+        <div id="mobile-nav-menu" class="hidden md:hidden bg-[#080C12] border-b border-white/10 px-6 py-6 space-y-4 font-label text-xs uppercase tracking-[0.2em]">
+            <a href="index.html" class="block py-2 text-white/70 hover:text-white border-b border-white/5">Inicio</a>
+            <a href="servicios.html" class="block py-2 text-secondary font-bold border-b border-white/5">Servicios & Metodología</a>
+            <a href="#contacto" class="block py-2 text-white/70 hover:text-white border-b border-white/5" onclick="toggleMobileNav()">Contacto</a>
+            <a href="#contacto" class="block w-full text-center py-3 bg-secondary text-white font-bold rounded-sm mt-3" onclick="toggleMobileNav()">Agendar Asesoría</a>
+        </div>
+    </header>
+
+    <main class="w-full pt-20">
+        <!-- =========================================================
+             2. HERO DE SERVICIOS & PROCEDIMIENTO FIDUCIARIO
+             ========================================================= -->
+        <section class="relative w-full py-24 md:py-32 bg-tech-base text-white overflow-hidden">
+            <div class="absolute inset-0 bg-grid-blueprint pointer-events-none opacity-40"></div>
+            
+            <!-- Glow Ambiental Sutil -->
+            <div class="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-secondary/15 rounded-full blur-[160px] pointer-events-none"></div>
+
+            <div class="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-sm bg-white/5 border border-white/10 font-label text-[10px] uppercase tracking-[0.25em] text-secondary mb-6">
+                    <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                    <span>METODOLOGÍA DE TRABAJO TRANSPARENTE</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+                    <div class="lg:col-span-8 space-y-5">
+                        <h1 class="font-display font-bold text-4xl sm:text-6xl text-white tracking-tight leading-[1.1]">
+                            Procedimiento de Trabajo &amp; <br>
+                            <span class="text-secondary font-extrabold">Servicios Inmobiliarios</span>
+                        </h1>
+                        <p class="font-body-lg text-base sm:text-lg text-white/80 font-light leading-relaxed max-w-2xl">
+                            Un servicio estructurado que combina la experiencia en gobiernos corporativos, tasación comercial en UF, corretaje de propiedades y administración de condominios bajo la Ley N° 21.442.
+                        </p>
+                    </div>
+
+                    <!-- Insignia Ejecutiva de Dirección -->
+                    <div class="lg:col-span-4 bg-white/[0.04] backdrop-blur-md border border-white/10 p-6 rounded-sm space-y-3 font-label text-xs">
+                        <div class="text-[10px] uppercase tracking-widest text-secondary font-semibold">DIRECCIÓN EJECUTIVA & GOBERNANZA</div>
+                        <div class="font-display font-medium text-lg text-white">Juan Ignacio Saavedra González</div>
+                        <p class="text-white/60 font-light text-[11px] leading-relaxed">
+                            Ingeniero Comercial · Magíster en Administración de Negocios (MBA) y Diplomado en Gobiernos Corporativos por la <strong>Pontificia Universidad Católica de Chile</strong>. Trayectoria directiva en Carrefour, Kimberly Clark y Mutual de Seguros.
+                        </p>
+                        <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-white/40">
+                            <span>SEDE CORPORATIVA: VIÑA DEL MAR & SANTIAGO</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Quick Stats de Validación -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 pt-10 border-t border-white/10 font-label">
+                    <div class="p-4 bg-white/[0.02] border border-white/5 rounded-sm">
+                        <div class="font-display text-3xl font-bold text-white">30 Años</div>
+                        <div class="text-[10px] text-white/50 uppercase tracking-widest mt-1">Auditoría Títulos CBR</div>
+                    </div>
+                    <div class="p-4 bg-white/[0.02] border border-white/5 rounded-sm">
+                        <div class="font-display text-3xl font-bold text-secondary">3.5x Renta</div>
+                        <div class="text-[10px] text-white/50 uppercase tracking-widest mt-1">Evaluación de Arrendatarios</div>
+                    </div>
+                    <div class="p-4 bg-white/[0.02] border border-white/5 rounded-sm">
+                        <div class="font-display text-3xl font-bold text-brand-emerald">100%</div>
+                        <div class="text-[10px] text-white/50 uppercase tracking-widest mt-1">Cumplimiento Ley 21.442</div>
+                    </div>
+                    <div class="p-4 bg-white/[0.02] border border-white/5 rounded-sm">
+                        <div class="font-display text-3xl font-bold text-white">Foto & Dron
+                        <div class="text-[10px] text-white/50 uppercase tracking-widest mt-1">Fotografía HD y Dron</div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             3. PROCEDIMIENTO FIDUCIARIO PASO A PASO (SCREEN 4 / FLUJO)
+             ========================================================= -->
+        <section id="procedimiento" class="scroll-mt-24 relative w-full py-24 px-6 md:px-12 lg:px-16 bg-white border-t border-black/5">
+            <div class="max-w-[1400px] mx-auto">
+                
+                <!-- Encabezado Editorial Fiduciario -->
+                <div class="text-center max-w-4xl mx-auto mb-20">
+                    <span class="font-label text-xs uppercase tracking-[0.25em] text-secondary font-semibold block mb-3">
+                        SEGURIDAD Y TRANSPARENCIA · PASO A PASO
+                    </span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-5xl lg:text-[50px] text-tech-base tracking-tight leading-tight text-balance">
+                        Procedimiento de Trabajo <br class="hidden sm:inline">
+                        <span class="text-secondary font-extrabold">· Paso a Paso</span>
+                    </h2>
+                    <p class="font-body-md text-sm sm:text-base text-on-surface-variant font-light mt-4 leading-relaxed max-w-2xl mx-auto text-pretty">
+                        Un proceso claro de 6 etapas para comprar, vender, arrendar o administrar su propiedad con total respaldo legal y comercial.
+                    </p>
+                </div>
+
+                <!-- Línea de Tiempo Alternada (Hitos 01 a 06) -->
+                <div class="relative space-y-16 md:space-y-24">
+                    <!-- Conector Central Vertical -->
+                    <div class="hidden md:block absolute left-1/2 top-10 bottom-10 w-[1px] bg-gradient-to-b from-transparent via-black/15 to-transparent -translate-x-1/2"></div>
+
+                    <!-- HITO 01 -->
+                    <div class="relative flex flex-col md:flex-row items-center gap-8 md:gap-16">
+                        <div class="w-full md:w-1/2 md:text-right flex flex-col items-start md:items-end">
+                            <span class="font-label text-[10px] uppercase tracking-widest text-secondary font-semibold mb-2">Hito 01 • Fase Preliminar</span>
+                            <h3 class="font-display font-bold text-2xl text-tech-base mb-3">Evaluación Inicial & Tasación Comercial en UF</h3>
+                            <p class="font-body-md text-sm text-on-surface-variant font-light leading-relaxed mb-4">
+                                Levantamiento detallado de parámetros arquitectónicos, análisis de absorción de mercado según microzona y definición del valor fiduciario indexado en UF bajo estándares internacionales IVS.
+                            </p>
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#F4F3F1] text-on-surface-variant font-label text-xs tracking-wider">
+                                <span class="material-symbols-outlined text-sm text-secondary">analytics</span>
+                                <span>Resultado: Informe de Tasación Comercial y Análisis de Mercado</span>
+                            </div>
+                        </div>
+                        <!-- Nodo Central -->
+                        <div class="relative z-10 flex-shrink-0 w-14 h-14 rounded-full bg-white border-2 border-tech-base shadow-lg flex items-center justify-center font-display font-semibold text-lg text-tech-base">
+                            01
+                        </div>
+                        <!-- Visual Node -->
+                        <div class="w-full md:w-1/2">
+                            <div class="p-6 rounded-md bg-[#FAF9F7] border border-black/10 shadow-sm transition-all duration-300 hover:shadow-md">
+                                <div class="h-48 rounded-sm overflow-hidden mb-4 relative bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCQ9nJvuo4kP2Rui84oy8O3O9IhP-Ougaz8Y1ZSKHIJ2TpREoTNrOQ4-Ub9JRRgtV3CavdW-HA0Fk7bxih_cnTrduTTIVLXUDpGzb64sXFMVxYjbn_wZUCP3Y-mF1uBUoiWG_YRwsFU0Nm6qiH5mpCM5_ZYrTnW0NjsiMUk1fyxbDirktvwRtS9cZ6F4mM_URI6JN3LA6ebDntd1g09jmJ0qIQj5Tj0jV0oloCSp7qVMCULIlFw3G6DXw');">
+                                    <div class="absolute bottom-2 left-2 px-2.5 py-1 rounded-sm bg-tech-base/80 backdrop-blur-md text-white font-label text-[10px]">
+                                        MODELACIÓN PATRIMONIAL UF
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between font-label text-xs text-on-surface-variant">
+                                    <span>Métricas: m² Útiles, Terrazas, Orientación</span>
+                                    <span class="text-brand-emerald font-semibold">TOLERANCIA ±1.5%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HITO 02 -->
+                    <div class="relative flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
+                        <div class="w-full md:w-1/2 md:text-left flex flex-col items-start">
+                            <span class="font-label text-[10px] uppercase tracking-widest text-brand-crimson font-semibold mb-2">Hito 02 • Blindaje Jurídico</span>
+                            <h3 class="font-display font-bold text-2xl text-tech-base mb-3">Estudio de Títulos en el Conservador de Bienes Raíces (CBR)</h3>
+                            <p class="font-body-md text-sm text-on-surface-variant font-light leading-relaxed mb-4">
+                                Revisión legal de dominio de los últimos 30 años, certificados de hipotecas, gravámenes e interdicciones ante el Conservador de Bienes Raíces (Santiago y Viña del Mar).
+                            </p>
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#F4F3F1] text-on-surface-variant font-label text-xs tracking-wider">
+                                <span class="material-symbols-outlined text-sm text-brand-crimson">gavel</span>
+                                <span>Resultado: Estudio de Títulos Aprobado y Carpeta Legal para Notaría</span>
+                            </div>
+                        </div>
+                        <!-- Nodo Central -->
+                        <div class="relative z-10 flex-shrink-0 w-14 h-14 rounded-full bg-white border-2 border-brand-crimson shadow-lg flex items-center justify-center font-display font-semibold text-lg text-brand-crimson">
+                            02
+                        </div>
+                        <!-- Visual Node -->
+                        <div class="w-full md:w-1/2">
+                            <div class="p-6 rounded-md bg-[#FAF9F7] border border-black/10 shadow-sm transition-all duration-300 hover:shadow-md">
+                                <div class="h-48 rounded-sm overflow-hidden mb-4 relative bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBH3b0UhbiRiJM-2pmGZZ2GeMBg1R3vc13trkNemq9tHOEPV2fPAS_WJpv7ksZhNkjSmvxw_WETOaGTpH1MVGShzaIfI3-rTm0ErHMj6Yv_0WTax83UrtXo7W0LVtlzc2xLDMa3EEo9tSBe6OBJCCNWdluJpTEyBowkUbPsS8B4sWrIxyZ1PzambAWf9vzqZcB8v31rduvoSXhIuuZaXBQ0-uV9YpFtPbP3TjNhojpX5lPOjfNaB5iGqQ');">
+                                    <div class="absolute bottom-2 left-2 px-2.5 py-1 rounded-sm bg-brand-crimson text-white font-label text-[10px]">
+                                        EXPEDIENTE NOTARIAL CONECTADO
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between font-label text-xs text-on-surface-variant">
+                                    <span>Certificación: Litigios, Embargos y Servidumbres</span>
+                                    <span class="text-brand-crimson font-semibold">ESTUDIO 30 AÑOS OK</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HITO 03 -->
+                    <div class="relative flex flex-col md:flex-row items-center gap-8 md:gap-16">
+                        <div class="w-full md:w-1/2 md:text-right flex flex-col items-start md:items-end">
+                            <span class="font-label text-[10px] uppercase tracking-widest text-secondary font-semibold mb-2">Hito 03 • Fotografía & Difusión</span>
+                            <h3 class="font-display font-bold text-2xl text-tech-base mb-3">Fotografía Profesional & Tomas con Dron</h3>
+                            <p class="font-body-md text-sm text-on-surface-variant font-light leading-relaxed mb-4">
+                                Sesión fotográfica profesional de alta definición y tomas aéreas con dron para resaltar la arquitectura y entorno de la propiedad en los principales portales de Chile.
+                            </p>
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#F4F3F1] text-on-surface-variant font-label text-xs tracking-wider">
+                                <span class="material-symbols-outlined text-sm text-secondary">photo_camera</span>
+                                <span>Resultado: Catálogo Fotográfico HD y Publicación en Portales Líderes</span>
+                            </div>
+                        </div>
+                        <!-- Nodo Central -->
+                        <div class="relative z-10 flex-shrink-0 w-14 h-14 rounded-full bg-white border-2 border-secondary shadow-lg flex items-center justify-center font-display font-semibold text-lg text-secondary">
+                            03
+                        </div>
+                        <!-- Visual Node -->
+                        <div class="w-full md:w-1/2">
+                            <div class="p-6 rounded-md bg-[#FAF9F7] border border-black/10 shadow-sm transition-all duration-300 hover:shadow-md">
+                                <div class="h-48 rounded-sm overflow-hidden mb-4 relative bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRJcsJMNG1r6Z7pcoS1DO-cmanYkvrtgH9MVP30hkHlQ5AUBR6m2uM6wlItXTPIXpBRGBx_zLRg7dbaF7S5hGzxfv62nyh99nzr85AeEMm2Bty3BtM1cebEdtGwlimpIcJ-w29EHUJManx5QTKfFphPSNYMedvxnTn_rKNIf0mljTE4t1kRai6s7u1dVThekeTHtWboh2lbYpG9JqsLZ7kxbH-9Ob6I4AlBWEaIY5SsoV_QJ3cVkoVsw');">
+                                    <div class="absolute bottom-2 left-2 px-2.5 py-1 rounded-sm bg-secondary text-white font-label text-[10px]">
+                                        FOTOGRAFÍA PROFESIONAL + DRON
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between font-label text-xs text-on-surface-variant">
+                                    <span>Formato: Fotografías HD y Tomas Aéreas</span>
+                                    <span class="text-secondary font-semibold">CALIDAD CINEMATOGRÁFICA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HITO 04 -->
+                    <div class="relative flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
+                        <div class="w-full md:w-1/2 md:text-left flex flex-col items-start">
+                            <span class="font-label text-[10px] uppercase tracking-widest text-brand-cobalt font-semibold mb-2">Hito 04 • Selección de Arrendatarios</span>
+                            <h3 class="font-display font-bold text-2xl text-tech-base mb-3">Filtro de Arrendatarios y Calificación de Compradores</h3>
+                            <p class="font-body-md text-sm text-on-surface-variant font-light leading-relaxed mb-4">
+                                En arriendos, verificación rigurosa de ingresos líquidos (mínimo 3.5 veces el valor del arriendo), certificado Dicom Platinum sin antecedentes comerciales y codeudor solidario.
+                            </p>
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#F4F3F1] text-on-surface-variant font-label text-xs tracking-wider">
+                                <span class="material-symbols-outlined text-sm text-brand-cobalt">verified_user</span>
+                                <span>Resultado: Ficha de Evaluación Financiera del Arrendatario Aprobada</span>
+                            </div>
+                        </div>
+                        <!-- Nodo Central -->
+                        <div class="relative z-10 flex-shrink-0 w-14 h-14 rounded-full bg-white border-2 border-brand-cobalt shadow-lg flex items-center justify-center font-display font-semibold text-lg text-brand-cobalt">
+                            04
+                        </div>
+                        <!-- Visual Node -->
+                        <div class="w-full md:w-1/2">
+                            <div class="p-6 rounded-md bg-[#FAF9F7] border border-black/10 shadow-sm transition-all duration-300 hover:shadow-md">
+                                <div class="h-48 rounded-sm overflow-hidden mb-4 relative bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA-sEPztCFxVYo6Swu37m3xaPwbbSCmLhNinpxyVbNTIaQj00vgZGOh__wX8WrQi_4OraWi78PkHwYxma7AESIfTgG_7DpCYtOSYsPFWckufBTQPzeoG4je7-i_nSZfoD1IE1yAbETwMVl9cjFwi41YYhdVKeK6KvQ--OQ8tO2Hp5lVY5nFaGVWiFf57alhjv8Oq64fNMVX1jzmx9pvb77ebW96qGBJmeeDkRK4vi-S9OJvqwbm7t_uRA');">
+                                    <div class="absolute bottom-2 left-2 px-2.5 py-1 rounded-sm bg-brand-cobalt text-white font-label text-[10px]">
+                                        EVALUACIÓN COMERCIAL APROBADA
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between font-label text-xs text-on-surface-variant">
+                                    <span>Requisito: Ingreso Líquido 3.5x Arriendo</span>
+                                    <span class="text-brand-cobalt font-semibold">FILTRO CRÉDITO 99.8%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HITO 05 -->
+                    <div class="relative flex flex-col md:flex-row items-center gap-8 md:gap-16">
+                        <div class="w-full md:w-1/2 md:text-right flex flex-col items-start md:items-end">
+                            <span class="font-label text-[10px] uppercase tracking-widest text-brand-emerald font-semibold mb-2">Hito 05 • Cierre Notarial</span>
+                            <h3 class="font-display font-bold text-2xl text-tech-base mb-3">Confección de Contratos & Firma en Notaría</h3>
+                            <p class="font-body-md text-sm text-on-surface-variant font-light leading-relaxed mb-4">
+                                Redacción de promesas de compraventa y contratos de arriendo por abogados expertos. Instrucciones notariales para resguardo de vales vista hasta la inscripción en el CBR.
+                            </p>
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#F4F3F1] text-on-surface-variant font-label text-xs tracking-wider">
+                                <span class="material-symbols-outlined text-sm text-brand-emerald">assured_workload</span>
+                                <span>Resultado: Escritura Notarial o Contrato de Arriendo Firmado</span>
+                            </div>
+                        </div>
+                        <!-- Nodo Central -->
+                        <div class="relative z-10 flex-shrink-0 w-14 h-14 rounded-full bg-white border-2 border-brand-emerald shadow-lg flex items-center justify-center font-display font-semibold text-lg text-brand-emerald">
+                            05
+                        </div>
+                        <!-- Visual Node -->
+                        <div class="w-full md:w-1/2">
+                            <div class="p-6 rounded-md bg-[#FAF9F7] border border-black/10 shadow-sm transition-all duration-300 hover:shadow-md">
+                                <div class="h-48 rounded-sm overflow-hidden mb-4 relative bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDKr5wZqLIXfJmZ9b9BRZFFaVgsup6RtvhHvhyDavZhUvMV2xpgRtEGGO6O3eBluWyIw6BUo07ZfUknLkqBnKh0rEIOENxx7fp5p_5GisahJVSajpJGvqYPaQZGr3aEhzWJJD82Dqo_m_4bL_G0y17S_0y9tER1Rg47-QoJkrOEpNwVJyZovLbR4muNijyqHjkEYSm3YZT87ddPsEJeIHcW8vm9uMyY_wOPW3cOxgHM4QUPcO5X-YaunQ');">
+                                    <div class="absolute bottom-2 left-2 px-2.5 py-1 rounded-sm bg-brand-emerald text-white font-label text-[10px]">
+                                        CIERRE NOTARIAL BLINDADO
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between font-label text-xs text-on-surface-variant">
+                                    <span>Garantía: Vales Vista en Custodia Fiduciaria</span>
+                                    <span class="text-brand-emerald font-semibold">100% SEGURO</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HITO 06 -->
+                    <div class="relative flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
+                        <div class="w-full md:w-1/2 md:text-left flex flex-col items-start">
+                            <span class="font-label text-[10px] uppercase tracking-widest text-secondary font-semibold mb-2">Hito 06 • Entrega y Postventa</span>
+                            <h3 class="font-display font-bold text-2xl text-tech-base mb-3">Inscripción en el CBR & Entrega de la Propiedad</h3>
+                            <p class="font-body-md text-sm text-on-surface-variant font-light leading-relaxed mb-4">
+                                Seguimiento del proceso de inscripción en el Conservador de Bienes Raíces, entrega material del inmueble con acta de inventario y soporte continuo de administración.
+                            </p>
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#F4F3F1] text-on-surface-variant font-label text-xs tracking-wider">
+                                <span class="material-symbols-outlined text-sm text-secondary">security</span>
+                                <span>Resultado: Copia de Inscripción de Dominio Vigente y Acta de Entrega</span>
+                            </div>
+                        </div>
+                        <!-- Nodo Central -->
+                        <div class="relative z-10 flex-shrink-0 w-14 h-14 rounded-full bg-white border-2 border-tech-base shadow-lg flex items-center justify-center font-display font-semibold text-lg text-tech-base">
+                            06
+                        </div>
+                        <!-- Visual Node -->
+                        <div class="w-full md:w-1/2">
+                            <div class="p-6 rounded-md bg-tech-base text-white border border-tech-border-bright shadow-lg space-y-3 font-label text-xs">
+                                <div class="flex items-center justify-between text-secondary">
+                                    <span class="font-bold uppercase tracking-wider">ATENCIÓN Y SOPORTE CONTINUO</span>
+                                    <span class="w-2 h-2 rounded-full bg-brand-emerald animate-pulse"></span>
+                                </div>
+                                <p class="text-white/70 font-light leading-relaxed">
+                                    Monitoreo de gastos comunes al día, resolución de incidencias en menos de 2 horas y reportes trimestrales de valorización de su inmueble.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =========================================================
+             4. LAS 5 DIVISIONES ESTRATÉGICAS DE W GESTIÓN INMOBILIARIA
+             ========================================================= -->
+        <section id="divisiones" class="scroll-mt-24 w-full py-28 px-6 md:px-12 lg:px-16 bg-[#F5F2EC] border-t border-black/5">
+            <div class="max-w-[1400px] mx-auto">
+                <div class="text-center max-w-4xl mx-auto mb-16">
+                    <span class="font-label text-xs uppercase tracking-[0.25em] text-secondary font-semibold block mb-3">
+                        PORTAFOLIO DE CAPACIDADES
+                    </span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-5xl lg:text-[50px] text-tech-base tracking-tight leading-tight text-balance">
+                        5 Divisiones de <br class="hidden sm:inline">
+                        <span class="text-secondary font-extrabold">Asesoría Inmobiliaria</span>
+                    </h2>
+                    <p class="font-body-md text-sm sm:text-base text-on-surface-variant font-light mt-4 max-w-2xl mx-auto text-pretty">
+                        A diferencia de intermediarios tradicionales, aplicamos la rigurosidad de los directorios corporativos a cada escala inmobiliaria.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- División 1 -->
+                    <div class="bg-white p-8 rounded-sm border border-black/10 hover:border-brand-emerald transition-all shadow-sm space-y-4">
+                        <div class="w-12 h-12 rounded-sm bg-brand-emerald/10 text-brand-emerald flex items-center justify-center font-bold text-lg font-mono">01</div>
+                        <h3 class="font-display font-bold text-2xl text-tech-base">Administración de Edificios Ley 21.442</h3>
+                        <p class="text-xs text-on-surface-variant font-light leading-relaxed">
+                            Control operativo total, conciliación bancaria 1 a 1 sin desfase, mantenimiento predictivo de ascensores y calderas, y cumplimiento estricto del nuevo reglamento de copropiedad inmobiliaria.
+                        </p>
+                        <ul class="text-[11px] text-tech-base font-label space-y-1.5 pt-2 border-t border-black/5">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-brand-emerald rounded-full"></span> Rendición en línea para el Comité</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-brand-emerald rounded-full"></span> Control de morosidad inferior al 1.5%</li>
+                        </ul>
+                    </div>
+
+                    <!-- División 2 -->
+                    <div class="bg-white p-8 rounded-sm border border-black/10 hover:border-brand-crimson transition-all shadow-sm space-y-4">
+                        <div class="w-12 h-12 rounded-sm bg-brand-crimson/10 text-brand-crimson flex items-center justify-center font-bold text-lg font-mono">02</div>
+                        <h3 class="font-display font-bold text-2xl text-tech-base">Corretaje de Propiedades (Compra y Venta)</h3>
+                        <p class="text-xs text-on-surface-variant font-light leading-relaxed">
+                            Comercialización confidencial de residencias de lujo y activos comerciales. Estudio de títulos por abogados habilitados ante el CBR y promoción dirigida a redes de inversión privadas.
+                        </p>
+                        <ul class="text-[11px] text-tech-base font-label space-y-1.5 pt-2 border-t border-black/5">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-brand-crimson rounded-full"></span> Tasación IVS con comparables reales</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-brand-crimson rounded-full"></span> Promesas y escrituras sin contingencias</li>
+                        </ul>
+                    </div>
+
+                    <!-- División 3 -->
+                    <div class="bg-white p-8 rounded-sm border border-black/10 hover:border-brand-cobalt transition-all shadow-sm space-y-4">
+                        <div class="w-12 h-12 rounded-sm bg-brand-cobalt/10 text-brand-cobalt flex items-center justify-center font-bold text-lg font-mono">03</div>
+                        <h3 class="font-display font-bold text-2xl text-tech-base">Arriendo Seguro y Administración Mensual</h3>
+                        <p class="text-xs text-on-surface-variant font-light leading-relaxed">
+                            Gestión integral de colocación y cobranza indexada en UF. Evaluación rigurosa de arrendatarios con verificación de renta líquida (3.5 veces el arriendo), garantías notariales y monitoreo mensual de pagos.
+                        </p>
+                        <ul class="text-[11px] text-tech-base font-label space-y-1.5 pt-2 border-t border-black/5">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-brand-cobalt rounded-full"></span> Cobertura de vacancia cero</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-brand-cobalt rounded-full"></span> Gestión legal de restitución de inmueble</li>
+                        </ul>
+                    </div>
+
+                    <!-- División 4 -->
+                    <div class="bg-white p-8 rounded-sm border border-black/10 hover:border-secondary transition-all shadow-sm space-y-4">
+                        <div class="w-12 h-12 rounded-sm bg-secondary/15 text-secondary font-bold text-lg font-mono flex items-center justify-center">04</div>
+                        <h3 class="font-display font-bold text-2xl text-tech-base">Desarrollo de Proyectos Comerciales y Terrenos</h3>
+                        <p class="text-xs text-on-surface-variant font-light leading-relaxed">
+                            Estructuración de locales comerciales y strip centers para supermercados, farmacias y comercio. Búsqueda de terrenos, gestión de permisos y contratos a largo plazo.
+                        </p>
+                        <ul class="text-[11px] text-tech-base font-label space-y-1.5 pt-2 border-t border-black/5">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Flujos garantizados con empresas AAA</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Mitigación de riesgos urbanísticos</li>
+                        </ul>
+                    </div>
+
+                    <!-- División 5 -->
+                    <div class="bg-white p-8 rounded-sm border border-black/10 hover:border-tech-base transition-all shadow-sm space-y-4 md:col-span-2 lg:col-span-2">
+                        <div class="w-12 h-12 rounded-sm bg-tech-base text-white font-bold text-lg font-mono flex items-center justify-center">05</div>
+                        <h3 class="font-display font-bold text-2xl text-tech-base">Consultoría Estratégica & Asesoría Empresarial</h3>
+                        <p class="text-xs text-on-surface-variant font-light leading-relaxed">
+                            A través de nuestra división consultiva <em>Wgestionempresarial</em>, estructuramos reorganizaciones financieras, auditorías contables para sociedades de inversión y valorizaciones patrimoniales de carteras complejas.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-black/5 font-label text-xs">
+                            <div class="flex items-center gap-2 text-tech-base"><span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Reestructuración de Pasivos & Flujo de Caja</div>
+                            <div class="flex items-center gap-2 text-tech-base"><span class="w-1.5 h-1.5 bg-secondary rounded-full"></span> Cumplimiento Tributario & Gobiernos Corporativos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             5. FORMULARIO DE ASESORÍA & CONTACTO DIRECTO
+             ========================================================= -->
+        <section id="contacto" class="w-full bg-[#080C12] py-28 px-6 md:px-12 lg:px-16 border-t border-tech-border-bright relative">
+            <div class="absolute inset-0 bg-grid-blueprint pointer-events-none opacity-40"></div>
+            
+            <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+                <div class="lg:col-span-5 space-y-6 text-white">
+                    <div class="inline-flex items-center gap-2 font-label text-[10px] uppercase tracking-[0.25em] text-secondary bg-white/5 px-3 py-1 rounded-sm border border-white/10">
+                        <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                        CONTACTO DIRECTO
+                    </div>
+                    <h3 class="font-display font-bold text-3xl sm:text-5xl text-white tracking-tight leading-tight">
+                        Solicite Asesoría Personalizada
+                    </h3>
+                    <p class="font-body-md text-sm text-white/70 leading-relaxed font-light">
+                        Indíquenos la naturaleza de su requerimiento. Un socio director se comunicará en menos de 15 minutos hábiles para coordinar una reunión privada o visita técnica.
+                    </p>
+                    
+                    <div class="p-4 bg-tech-card border border-tech-border-bright rounded-sm font-label space-y-2">
+                        <div class="text-[10px] uppercase tracking-wider text-white/50">Mesa Telefónica & WhatsApp Oficial</div>
+                        <div class="text-base font-bold text-white font-mono">+56 9 8594 4821</div>
+                        <div class="text-xs text-white/60">Libertad 269, Depto 204, Viña del Mar · Santiago Oriente</div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 bg-tech-card p-8 lg:p-10 rounded-sm border border-tech-border-bright shadow-2xl">
+                    <form onsubmit="event.preventDefault(); enviarFormularioServicios();" class="space-y-5 font-label text-xs">
+                        <div>
+                            <label class="block uppercase tracking-wider text-white/70 font-semibold mb-2">Nombre Completo *</label>
+                            <input type="text" id="srv-nombre" required placeholder="p. ej. María Teresa Ovalle" class="w-full px-4 py-3 bg-[#080C12] border border-tech-border text-white text-sm focus:border-secondary focus:outline-none transition-all rounded-sm">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block uppercase tracking-wider text-white/70 font-semibold mb-2">Email Corporativo *</label>
+                                <input type="email" id="srv-email" required placeholder="correo@empresa.cl" class="w-full px-4 py-3 bg-[#080C12] border border-tech-border text-white text-sm focus:border-secondary focus:outline-none transition-all rounded-sm">
+                            </div>
+                            <div>
+                                <label class="block uppercase tracking-wider text-white/70 font-semibold mb-2">Teléfono / WhatsApp *</label>
+                                <input type="tel" id="srv-telefono" required placeholder="+56 9 1234 5678" class="w-full px-4 py-3 bg-[#080C12] border border-tech-border text-white text-sm focus:border-secondary focus:outline-none transition-all rounded-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block uppercase tracking-wider text-white/70 font-semibold mb-2">Servicio de Interés Principal *</label>
+                            <select id="srv-tipo" class="w-full px-4 py-3 bg-[#080C12] border border-tech-border text-white text-sm focus:border-secondary focus:outline-none transition-all rounded-sm">
+                                <option value="Venta Exclusiva de Propiedad">01. Venta Exclusiva de Activo (Corretaje Prime)</option>
+                                <option value="Arriendo con Resguardo Fiduciario">02. Arriendo Seguro & Evaluación de Arrendatarios (Renta 3.5x)</option>
+                                <option value="Administración de Condominio Ley 21.442">03. Administración de Edificio o Condominio (Ley 21.442)</option>
+                                <option value="Desarrollo Comercial B2B">04. Proyecto Comercial Build-to-Suit / Terreno Retail</option>
+                                <option value="Consultoría Empresarial">05. Consultoría Estratégica (Wgestionempresarial)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block uppercase tracking-wider text-white/70 font-semibold mb-2">Detalle o Consulta Específica</label>
+                            <textarea id="srv-mensaje" rows="3" placeholder="Indique características del activo, comuna o estado actual de la comunidad..." class="w-full px-4 py-3 bg-[#080C12] border border-tech-border text-white text-sm focus:border-secondary focus:outline-none transition-all rounded-sm"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-4 bg-secondary hover:bg-white hover:text-tech-base text-white font-label text-xs uppercase tracking-[0.2em] font-bold rounded-sm transition-all shadow-[0_0_25px_rgba(202,160,82,0.3)] flex items-center justify-center gap-2 cursor-pointer">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Enviar Consulta por WhatsApp</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- =========================================================
+         6. FOOTER EDITORIAL DE ALTA GAMA
+         ========================================================= -->
+    <footer class="w-full bg-[#05080C] text-white py-16 px-6 md:px-12 lg:px-16 border-t border-white/10 font-label">
+        <div class="max-w-[1700px] mx-auto flex flex-col md:flex-row items-center justify-between text-xs text-white/60 gap-6">
+            <div class="flex items-center gap-3">
+                <div class="h-8 w-8 bg-white p-1 rounded-sm flex items-center justify-center">
+                    <img src="./assets/media_1792425582649_f69a6f17.jpg" alt="Logo W" class="h-full w-full object-contain">
+                </div>
+                <div>
+                    <span class="font-display font-medium text-sm text-white">W Gestión Inmobiliaria</span>
+                    <span class="text-[9px] uppercase tracking-widest text-secondary ml-2">Procedimiento Fiduciario</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-6 font-mono text-[11px] text-white/40">
+                <span>SANTIAGO · VIÑA DEL MAR</span>
+                <span>•</span>
+                <span>LEY N° 21.442 CERTIFICADA</span>
+            </div>
+            <div class="text-[11px] text-white/40">
+                © 2026 W Gestión Inmobiliaria Chile.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón Flotante WhatsApp -->
+    <a href="https://wa.me/56985944821?text=Hola,%20deseo%20solicitar%20asesor%C3%ADa%20sobre%20sus%20servicios%20y%20metodolog%C3%ADa%20con%20W%20Gesti%C3%B3n%20Inmobiliaria." target="_blank" rel="noopener noreferrer" class="whatsapp-float" title="Contactar vía WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script>
+        function toggleMobileNav() {
+            const menu = document.getElementById('mobile-nav-menu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        function enviarFormularioServicios() {
+            const nombre = document.getElementById('srv-nombre').value || '';
+            const email = document.getElementById('srv-email').value || '';
+            const tel = document.getElementById('srv-telefono').value || '';
+            const tipo = document.getElementById('srv-tipo').value || '';
+            const mensaje = document.getElementById('srv-mensaje').value || '';
+
+            const textoWhatsApp = 
+                `*SOLICITUD DE ASESORÍA / SERVICIOS W GESTIÓN*%0A` +
+                `--------------------------------------------%0A` +
+                `• *Cliente:* ${encodeURIComponent(nombre)}%0A` +
+                `• *Email:* ${encodeURIComponent(email)}%0A` +
+                `• *Teléfono:* ${encodeURIComponent(tel)}%0A` +
+                `• *Servicio:* ${encodeURIComponent(tipo)}%0A` +
+                `• *Detalle:* ${encodeURIComponent(mensaje)}%0A` +
+                `--------------------------------------------%0A` +
+                `Solicito contacto con un socio director. Muchas gracias.`;
+
+            window.open(`https://wa.me/56985944821?text=${textoWhatsApp}`, '_blank');
+        }
+    </script>
+</body>
+</html>

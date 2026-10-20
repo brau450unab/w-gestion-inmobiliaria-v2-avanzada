@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intranet Visual Editor - W Gestión Inmobiliaria</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,600;0,700;0,800;0,900;1,700&family=Open+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Open Sans', sans-serif; }
+        .font-heading { font-family: 'Montserrat', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #08090d; }
+        ::-webkit-scrollbar-thumb { background: #1c212d; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2f3647; }
+
+        /* Responsive canvas preview frames */
+        .preview-desktop { width: 100%; height: 100%; }
+        .preview-tablet { width: 768px; height: 95%; box-shadow: 0 0 45px rgba(0,0,0,0.9); border-radius: 16px; border: 8px solid #1c212d; }
+        .preview-mobile { width: 390px; height: 92%; box-shadow: 0 0 45px rgba(0,0,0,0.9); border-radius: 24px; border: 10px solid #1c212d; }
+
+        /* Toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 38px;
+            height: 20px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #27272a; transition: .3s; border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #D4AF37; }
+        input:checked + .slider:before { transform: translateX(18px); background-color: black; }
+    </style>
+</head>
+<body class="bg-[#050608] text-gray-200 flex flex-col h-screen overflow-hidden select-none">
+
+    <!-- PORTAL DE AUTENTICACIÓN (LOGIN MODAL) -->
+    <div id="auth-overlay" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+        <div class="bg-[#0c0e14] border-2 border-[#D4AF37]/80 rounded-2xl max-w-md w-full p-8 shadow-[0_0_50px_rgba(212,175,55,0.25)] relative overflow-hidden">
+            <!-- Glow decorativo superior -->
+            <div class="absolute -top-12 -left-12 w-32 h-32 bg-[#D4AF37]/20 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="text-center mb-6">
+                <!-- Logotipo Clicable para Volver -->
+                <a href="./index.html" title="Volver a la Página Principal" class="inline-block p-3 rounded-xl border border-gray-800 hover:border-[#D4AF37] shadow-md mb-3 transition-colors bg-black/60">
+                    <img src="./assets/logo.svg" alt="W Gestión Inmobiliaria" class="h-10 w-auto object-contain">
+                </a>
+                <h2 class="text-2xl font-heading font-black text-white tracking-wider uppercase">
+                    INTRANET <span class="text-[#D4AF37]">ADMIN</span>
+                </h2>
+                <p class="text-xs text-gray-400 mt-1">Plataforma de Edición Visual & Gestión Inmobiliaria</p>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">
+                        <i class="fa-solid fa-user text-[#D4AF37] mr-1"></i> Usuario
+                    </label>
+                    <input type="text" id="login-user" required autocomplete="username" placeholder="admin" class="w-full bg-black/80 border border-gray-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] font-mono transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">
+                        <i class="fa-solid fa-lock text-[#D4AF37] mr-1"></i> Contraseña
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="login-pass" required autocomplete="current-password" placeholder="••••••••" class="w-full bg-black/80 border border-gray-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] font-mono transition-colors">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white p-1">
+                            <i id="pass-eye-icon" class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="login-error" class="hidden text-xs text-red-400 font-bold bg-red-950/40 border border-red-800 p-2.5 rounded text-center">
+                    Credenciales incorrectas. Verifica usuario y contraseña.
+                </div>
+
+                <div class="pt-2 flex flex-col gap-2.5">
+                    <button type="submit" class="w-full bg-gradient-to-r from-[#D4AF37] to-[#B89320] hover:from-[#F5E6CA] hover:to-[#D4AF37] text-black font-heading font-black py-3 rounded-lg text-sm uppercase tracking-wider shadow-lg transition-transform hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-right-to-bracket text-base"></i>
+                        <span>Acceder al Panel de Edición</span>
+                    </button>
+                    
+                    <!-- Botón Atrás para volver a la landing -->
+                    <a href="./index.html" class="w-full bg-black hover:bg-gray-900 text-gray-400 hover:text-white text-xs font-bold py-2.5 rounded-lg border border-gray-800 hover:border-gray-700 flex items-center justify-center gap-2 transition-colors cursor-pointer">
+                        <i class="fa-solid fa-arrow-left text-[#D4AF37]"></i>
+                        <span>Volver a la Página Principal</span>
+                    </a>
+                </div>
+
+                <div class="text-center pt-2 text-[11px] text-gray-500">
+                    Credenciales autorizadas: <span class="text-gray-300 font-mono font-bold">admin</span> / <span class="text-gray-300 font-mono font-bold">wgestion2026</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 1. HEADER SUPERIOR DE LA INTRANET -->
+    <header class="h-14 bg-[#0a0c12] border-b border-gray-800 flex items-center justify-between px-4 z-30 shrink-0">
+        <!-- Logo e Indicador de Modo -->
+        <div class="flex items-center gap-3">
+            <a href="./index.html" title="Volver a la Landing" class="flex items-center gap-2.5 group">
+                <div class="bg-black/80 p-1.5 rounded flex items-center border border-gray-800 group-hover:border-[#D4AF37] transition-colors">
+                    <img src="./assets/logo.svg" alt="W Gestión Inmobiliaria" class="h-6 w-auto object-contain">
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="font-heading font-black text-sm text-white tracking-wider group-hover:text-[#D4AF37] transition-colors uppercase">
+                        INTRANET
+                    </span>
+                    <span class="bg-[#D4AF37] text-black text-[10px] px-2 py-0.5 rounded font-black uppercase font-heading">
+                        Real Estate
+                    </span>
+                </div>
+            </a>
+
+            <!-- Botón Atrás explícito -->
+            <a href="./index.html" class="flex items-center gap-1.5 text-xs font-bold text-gray-300 hover:text-white bg-gray-900 hover:bg-gray-800 px-2.5 py-1.5 rounded-lg border border-gray-700 transition-all cursor-pointer shadow-sm" title="Ver la Landing Page">
+                <i class="fa-solid fa-arrow-left text-[#D4AF37] text-xs"></i>
+                <span class="inline">Ver Web</span>
+            </a>
+        </div>
+
+        <!-- Selector de Dispositivos (Desktop / Tablet / Móvil) -->
+        <div class="hidden sm:flex items-center bg-black/60 p-1 rounded-lg border border-gray-800">
+            <button onclick="setViewport('desktop')" id="btn-vp-desktop" class="px-3 py-1 rounded text-xs font-semibold bg-gray-800 text-[#D4AF37] flex items-center gap-1.5 transition-colors cursor-pointer" title="Vista Escritorio">
+                <i class="fa-solid fa-desktop"></i> <span>Escritorio</span>
+            </button>
+            <button onclick="setViewport('tablet')" id="btn-vp-tablet" class="px-3 py-1 rounded text-xs font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer" title="Vista Tablet">
+                <i class="fa-solid fa-tablet-screen-button"></i> <span>Tablet</span>
+            </button>
+            <button onclick="setViewport('mobile')" id="btn-vp-mobile" class="px-3 py-1 rounded text-xs font-semibold text-gray-400 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer" title="Vista Celular">
+                <i class="fa-solid fa-mobile-screen"></i> <span>Móvil</span>
+            </button>
+        </div>
+
+        <!-- Acciones: Guardar, Descargar y Cerrar Sesión -->
+        <div class="flex items-center gap-2">
+            <button onclick="exportUpdatedHTML()" class="bg-gray-900 hover:bg-gray-800 text-gray-200 text-xs font-bold py-1.5 px-3 rounded flex items-center gap-1.5 border border-gray-700 transition-all cursor-pointer" title="Descargar código index.html listo para producción">
+                <i class="fa-solid fa-download text-[#D4AF37]"></i> <span class="hidden lg:inline">Descargar HTML</span>
+            </button>
+
+            <button onclick="performSave(false)" class="bg-gradient-to-r from-[#D4AF37] to-[#B89320] hover:from-[#F5E6CA] hover:to-[#D4AF37] text-black font-heading font-black text-xs py-1.5 px-3.5 rounded flex items-center gap-1.5 shadow-md transition-all cursor-pointer">
+                <i class="fa-solid fa-floppy-disk"></i> <span>Guardar</span>
+            </button>
+
+            <button onclick="handleLogout()" class="bg-red-950/60 hover:bg-red-900 text-red-300 text-xs font-bold py-1.5 px-2.5 rounded flex items-center gap-1.5 border border-red-800/80 transition-all cursor-pointer" title="Cerrar Sesión">
+                <i class="fa-solid fa-right-from-bracket"></i> <span class="hidden sm:inline">Salir</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 2. ESPACIO DE TRABAJO: SIDEBAR DE EDICIÓN ESTRUCTURAL + LIENZO INTERACTIVO -->
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <!-- SIDEBAR DE EDICIÓN VISUAL SIMPLIFICADA POR BLOQUES -->
+        <aside class="w-88 sm:w-96 bg-[#0a0c12] border-r border-gray-800 flex flex-col shrink-0 z-20 overflow-hidden shadow-2xl">
+            
+            <!-- Pestañas del Sidebar (4 Módulos: Bloque, Secciones, Contenido, Ajustes) -->
+            <div class="flex border-b border-gray-800 bg-[#07080a] text-[11px] font-bold">
+                <button onclick="switchSidebarTab('tab-inspector')" id="btn-tab-inspector" class="flex-1 py-3 text-center border-b-2 border-[#D4AF37] text-[#D4AF37] flex flex-col items-center justify-center gap-1 cursor-pointer">
+                    <i class="fa-solid fa-cubes text-sm"></i> <span>Bloque</span>
+                </button>
+                <button onclick="switchSidebarTab('tab-tree')" id="btn-tab-tree" class="flex-1 py-3 text-center border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex flex-col items-center justify-center gap-1 cursor-pointer">
+                    <i class="fa-solid fa-layer-group text-sm"></i> <span>Secciones</span>
+                </button>
+                <button onclick="switchSidebarTab('tab-global')" id="btn-tab-global" class="flex-1 py-3 text-center border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex flex-col items-center justify-center gap-1 cursor-pointer">
+                    <i class="fa-solid fa-sliders text-sm"></i> <span>Global</span>
+                </button>
+                <button onclick="switchSidebarTab('tab-settings')" id="btn-tab-settings" class="flex-1 py-3 text-center border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex flex-col items-center justify-center gap-1 cursor-pointer">
+                    <i class="fa-solid fa-gear text-sm"></i> <span>Ajustes</span>
+                </button>
+            </div>
+
+            <!-- PESTAÑA 1: INSPECTOR ESTRUCTURAL DE CAJAS Y ELEMENTOS PRINCIPALES -->
+            <div id="tab-inspector" class="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
+                
+                <!-- Estado cuando NO hay bloque seleccionado -->
+                <div id="inspector-empty" class="text-center py-10 px-4 space-y-3 bg-black/40 rounded-xl border border-dashed border-gray-800">
+                    <div class="w-12 h-12 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center text-xl mx-auto">
+                        <i class="fa-solid fa-hand-pointer animate-bounce"></i>
+                    </div>
+                    <h4 class="font-heading font-black text-sm text-white">Edición por Cajas & Bloques</h4>
+                    <p class="text-gray-400 text-[11px] leading-relaxed">
+                        Haz clic en cualquier <strong>tarjeta de unidad de negocio</strong>, <strong>video en terreno</strong>, <strong>proyecto de la galería</strong>, <strong>banner principal</strong> o <strong>texto</strong> para editar su contenido estructurado.
+                    </p>
+                </div>
+
+                <!-- Formulario Inspector Activo (Se abre al seleccionar una caja o bloque principal) -->
+                <div id="inspector-active" class="hidden space-y-3.5">
+                    
+                    <!-- Header del Bloque / Caja Seleccionada -->
+                    <div class="bg-black/60 p-3 rounded-lg border border-[#D4AF37]/40 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span id="insp-tag-badge" class="bg-[#D4AF37] text-black font-black text-[10px] px-2 py-0.5 rounded font-mono uppercase">
+                                BLOQUE
+                            </span>
+                            <span id="insp-type-label" class="font-heading font-bold text-white text-xs truncate max-w-[170px]">
+                                Unidad de Negocio
+                            </span>
+                        </div>
+                        <button onclick="deselectElement()" class="text-gray-400 hover:text-white text-xs cursor-pointer p-1" title="Deseleccionar">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <!-- 1. Título del Bloque / Caja -->
+                    <div id="grp-title-content" class="bg-black/40 p-3.5 rounded-lg border border-gray-800 space-y-1.5">
+                        <label class="block text-gray-300 font-bold uppercase text-[11px] flex items-center justify-between">
+                            <span><i class="fa-solid fa-heading text-[#D4AF37] mr-1"></i> Título del Bloque</span>
+                            <span class="text-[10px] text-gray-500 font-normal">Sincronizado</span>
+                        </label>
+                        <input type="text" id="insp-input-title" oninput="handleInspectorTitleChange(this.value)" class="w-full bg-[#07080a] border border-gray-700 rounded p-2 text-white font-heading font-bold text-xs focus:outline-none focus:border-[#D4AF37]">
+                    </div>
+
+                    <!-- 2. Texto / Párrafo / Descripción del Bloque -->
+                    <div id="grp-text-content" class="bg-black/40 p-3.5 rounded-lg border border-gray-800 space-y-1.5">
+                        <label class="block text-gray-300 font-bold uppercase text-[11px]">
+                            <i class="fa-solid fa-align-left text-[#D4AF37] mr-1"></i> Texto o Descripción
+                        </label>
+                        <textarea id="insp-input-text" rows="3" oninput="handleInspectorTextChange(this.value)" class="w-full bg-[#07080a] border border-gray-700 rounded-lg p-2 text-white font-body text-xs focus:outline-none focus:border-[#D4AF37] leading-relaxed"></textarea>
+                    </div>
+
+                    <!-- 3. Multimedia del Bloque (Imagen o Video) -->
+                    <div id="grp-media-content" class="bg-black/40 p-3.5 rounded-lg border border-gray-800 space-y-2 hidden">
+                        <label class="block text-gray-300 font-bold uppercase text-[11px]">
+                            <i class="fa-solid fa-photo-film text-[#D4AF37] mr-1"></i> Archivo Multimedia (Ruta o URL)
+                        </label>
+                        <input type="text" id="insp-input-src" oninput="handleInspectorSrcChange(this.value)" placeholder="./assets/media/..." class="w-full bg-[#07080a] border border-gray-700 rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
+                        <p class="text-[10px] text-gray-500">Ruta local (`./assets/...`) o enlace directo de imagen/video.</p>
+                    </div>
+
+                    <!-- 4. Enlace / Botón del Bloque -->
+                    <div id="grp-link-content" class="bg-black/40 p-3.5 rounded-lg border border-gray-800 space-y-1.5 hidden">
+                        <label class="block text-gray-300 font-bold uppercase text-[11px]">
+                            <i class="fa-solid fa-link text-[#D4AF37] mr-1"></i> Enlace de Destino (URL)
+                        </label>
+                        <input type="text" id="insp-input-href" oninput="handleInspectorHrefChange(this.value)" placeholder="https://..." class="w-full bg-[#07080a] border border-gray-700 rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
+                    </div>
+
+                    <!-- 5. Ficha Modal de Servicio (Específico al seleccionar tarjetas de servicio) -->
+                    <div id="grp-service-popup" class="bg-black/60 p-3.5 rounded-lg border border-[#D4AF37]/30 space-y-3 hidden">
+                        <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                            <span class="text-[#D4AF37] font-black font-heading uppercase text-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-window-restore"></i> Ficha Técnica del Servicio
+                            </span>
+                            <button onclick="previewCurrentServicePopup()" class="bg-[#D4AF37] text-black px-2 py-0.5 rounded text-[10px] font-bold uppercase cursor-pointer hover:bg-yellow-300">
+                                Probar Pop-up
+                            </button>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-[11px]">Subtítulo técnico:</label>
+                            <input type="text" id="insp-srv-subtitle" oninput="handleServicePopupChange()" class="w-full bg-[#07080a] border border-gray-700 rounded p-1.5 text-white">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-[11px]">Descripción técnica ampliada:</label>
+                            <textarea id="insp-srv-desc" rows="3" oninput="handleServicePopupChange()" class="w-full bg-[#07080a] border border-gray-700 rounded p-1.5 text-white"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-[11px]">Puntos clave (1 por línea):</label>
+                            <textarea id="insp-srv-features" rows="4" oninput="handleServicePopupChange()" class="w-full bg-[#07080a] border border-gray-700 rounded p-1.5 text-white"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- 6. Estilos Visuales del Bloque -->
+                    <div class="bg-black/40 p-3.5 rounded-lg border border-gray-800 space-y-2.5">
+                        <label class="block text-gray-300 font-bold uppercase text-[11px]">
+                            <i class="fa-solid fa-palette text-[#D4AF37] mr-1"></i> Estilo Visual Rápido
+                        </label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-1">Color de Texto:</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="color" id="insp-style-color" oninput="handleInspectorStyleChange('color', this.value)" class="w-7 h-7 rounded border border-gray-700 bg-transparent cursor-pointer">
+                                    <span id="insp-color-label" class="font-mono text-[10px] text-gray-400">#ffffff</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-1">Alineación:</label>
+                                <div class="flex bg-[#07080a] rounded p-0.5 border border-gray-700">
+                                    <button type="button" onclick="handleInspectorStyleChange('textAlign', 'left')" class="flex-1 py-1 text-center hover:bg-gray-800 rounded text-gray-300 cursor-pointer"><i class="fa-solid fa-align-left text-xs"></i></button>
+                                    <button type="button" onclick="handleInspectorStyleChange('textAlign', 'center')" class="flex-1 py-1 text-center hover:bg-gray-800 rounded text-gray-300 cursor-pointer"><i class="fa-solid fa-align-center text-xs"></i></button>
+                                    <button type="button" onclick="handleInspectorStyleChange('textAlign', 'right')" class="flex-1 py-1 text-center hover:bg-gray-800 rounded text-gray-300 cursor-pointer"><i class="fa-solid fa-align-right text-xs"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PESTAÑA 2: ESTRUCTURA (ÁRBOL DE SECCIONES PRINCIPALES) -->
+            <div id="tab-tree" class="flex-1 overflow-y-auto p-4 space-y-2.5 text-xs hidden">
+                <p class="text-gray-400 text-[11px] mb-2">Haz clic en cualquier sección estructural para enfocarla en el editor:</p>
+                
+                <div onclick="jumpToSection('hero-section')" class="p-2.5 rounded bg-black/50 border border-gray-800 hover:border-[#D4AF37] flex items-center justify-between cursor-pointer transition-all">
+                    <span class="font-bold text-white"><i class="fa-solid fa-image text-[#D4AF37] mr-2"></i> 1. Banner Principal (Hero)</span>
+                    <i class="fa-solid fa-arrow-right text-gray-500 text-xs"></i>
+                </div>
+
+                <div onclick="jumpToSection('servicios')" class="p-2.5 rounded bg-black/50 border border-gray-800 hover:border-[#D4AF37] flex items-center justify-between cursor-pointer transition-all">
+                    <span class="font-bold text-white"><i class="fa-solid fa-briefcase text-[#D4AF37] mr-2"></i> 2. Showcase de Servicios (Fichas & Modales)</span>
+                    <i class="fa-solid fa-arrow-right text-gray-500 text-xs"></i>
+                </div>
+
+                <div onclick="jumpToSection('proyectos')" class="p-2.5 rounded bg-black/50 border border-gray-800 hover:border-[#D4AF37] flex items-center justify-between cursor-pointer transition-all">
+                    <span class="font-bold text-white"><i class="fa-solid fa-building text-[#D4AF37] mr-2"></i> 3. Proyectos & Gestión Inmobiliaria</span>
+                    <i class="fa-solid fa-arrow-right text-gray-500 text-xs"></i>
+                </div>
+
+                <div onclick="jumpToSection('opiniones')" class="p-2.5 rounded bg-black/50 border border-gray-800 hover:border-[#D4AF37] flex items-center justify-between cursor-pointer transition-all">
+                    <span class="font-bold text-white"><i class="fa-brands fa-google text-[#D4AF37] mr-2"></i> 4. Reseñas Google Maps (Carrusel Infinito)</span>
+                    <i class="fa-solid fa-arrow-right text-gray-500 text-xs"></i>
+                </div>
+
+                <div onclick="jumpToSection('contacto')" class="p-2.5 rounded bg-black/50 border border-gray-800 hover:border-[#D4AF37] flex items-center justify-between cursor-pointer transition-all">
+                    <span class="font-bold text-white"><i class="fa-solid fa-file-signature text-[#D4AF37] mr-2"></i> 5. Formulario de Contacto (Solicitar Evaluación)</span>
+                    <i class="fa-solid fa-arrow-right text-gray-500 text-xs"></i>
+                </div>
+
+                <div onclick="jumpToSection('redes-sociales')" class="p-2.5 rounded bg-black/50 border border-gray-800 hover:border-[#D4AF37] flex items-center justify-between cursor-pointer transition-all">
+                    <span class="font-bold text-white"><i class="fa-brands fa-instagram text-[#D4AF37] mr-2"></i> 6. Redes Sociales & GIFs Animados</span>
+                    <i class="fa-solid fa-arrow-right text-gray-500 text-xs"></i>
+                </div>
+
+                <div onclick="jumpToSection('footer')" class="p-2.5 rounded bg-black/50 border border-gray-800 hover:border-[#D4AF37] flex items-center justify-between cursor-pointer transition-all">
+                    <span class="font-bold text-white"><i class="fa-solid fa-circle-info text-[#D4AF37] mr-2"></i> 7. Footer Corporativo & Contacto</span>
+                    <i class="fa-solid fa-arrow-right text-gray-500 text-xs"></i>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 3: PARÁMETROS GLOBALES DE CONTENIDO -->
+            <div id="tab-global" class="flex-1 overflow-y-auto p-4 space-y-4 text-xs hidden">
+                <div class="bg-black/50 p-3.5 rounded-lg border border-gray-800 space-y-2.5">
+                    <h4 class="font-heading font-black text-xs text-[#D4AF37] uppercase flex items-center gap-1.5">
+                        <i class="fa-brands fa-whatsapp text-green-400 text-sm"></i> Parámetros de Contacto & Dirección
+                    </h4>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Teléfono Móvil / WhatsApp:</label>
+                        <input type="text" id="cfg-phone" oninput="applyGlobalConfig()" class="w-full bg-[#07080a] border border-gray-700 rounded px-2.5 py-1.5 text-white font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Enlace Directo WhatsApp:</label>
+                        <input type="text" id="cfg-walink" oninput="applyGlobalConfig()" class="w-full bg-[#07080a] border border-gray-700 rounded px-2.5 py-1.5 text-white font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Dirección de Oficina Central:</label>
+                        <input type="text" id="cfg-address" oninput="applyGlobalConfig()" class="w-full bg-[#07080a] border border-gray-700 rounded px-2.5 py-1.5 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Coordenadas Destino GPS:</label>
+                        <input type="text" id="cfg-gps" oninput="applyGlobalConfig()" class="w-full bg-[#07080a] border border-gray-700 rounded px-2.5 py-1.5 text-white font-mono">
+                    </div>
+                </div>
+
+                <div class="bg-black/50 p-3.5 rounded-lg border border-gray-800 space-y-2.5">
+                    <h4 class="font-heading font-black text-xs text-[#D4AF37] uppercase flex items-center gap-1.5">
+                        <i class="fa-solid fa-palette text-sm"></i> Color de Acento Champagne Gold
+                    </h4>
+                    <div class="flex items-center gap-3">
+                        <input type="color" id="cfg-accent-color" oninput="applyGlobalConfig()" class="w-9 h-9 rounded border border-gray-700 bg-transparent cursor-pointer">
+                        <span id="cfg-accent-val" class="font-mono text-gray-300 font-bold">#D4AF37</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 4: MÓDULO DE AJUSTES Y CONFIGURACIÓN DEL SISTEMA -->
+            <div id="tab-settings" class="flex-1 overflow-y-auto p-4 space-y-4 text-xs hidden">
+                
+                <!-- 1. Gestión de Usuarios y Roles -->
+                <div class="bg-black/50 p-3.5 rounded-lg border border-gray-800 space-y-3">
+                    <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                        <h4 class="font-heading font-black text-xs text-[#D4AF37] uppercase flex items-center gap-1.5">
+                            <i class="fa-solid fa-users text-sm"></i> Gestión de Usuarios
+                        </h4>
+                        <button type="button" onclick="toggleNewUserForm()" class="text-gray-400 hover:text-[#D4AF37] text-xs font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-user-plus"></i> <span>Nuevo</span>
+                        </button>
+                    </div>
+
+                    <!-- Tabla de usuarios existentes -->
+                    <div id="users-list-container" class="space-y-2">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+
+                    <!-- Formulario Desplegable para Agregar Usuario -->
+                    <div id="form-new-user" class="hidden bg-[#07080a] p-3 rounded-lg border border-[#D4AF37]/40 space-y-2 mt-2">
+                        <div class="font-bold text-white text-[11px] uppercase">Crear Nuevo Usuario</div>
+                        <div>
+                            <input type="text" id="nu-username" placeholder="Nombre de usuario" class="w-full bg-black border border-gray-700 rounded px-2.5 py-1.5 text-white font-mono text-xs">
+                        </div>
+                        <div>
+                            <input type="password" id="nu-password" placeholder="Contraseña de acceso" class="w-full bg-black border border-gray-700 rounded px-2.5 py-1.5 text-white font-mono text-xs">
+                        </div>
+                        <div>
+                            <select id="nu-role" class="w-full bg-black border border-gray-700 rounded px-2.5 py-1.5 text-white text-xs">
+                                <option value="Administrador">Rol: Administrador (Acceso total)</option>
+                                <option value="Editor">Rol: Editor de Contenido</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2 pt-1">
+                            <button type="button" onclick="handleCreateUser()" class="flex-1 bg-[#D4AF37] hover:bg-yellow-300 text-black font-bold py-1.5 rounded transition-all">
+                                Guardar Usuario
+                            </button>
+                            <button type="button" onclick="toggleNewUserForm()" class="px-3 bg-gray-800 hover:bg-gray-700 text-gray-300 py-1.5 rounded">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Cambiar Contraseña del Usuario Activo -->
+                <div class="bg-black/50 p-3.5 rounded-lg border border-gray-800 space-y-2.5">
+                    <h4 class="font-heading font-black text-xs text-[#D4AF37] uppercase flex items-center gap-1.5">
+                        <i class="fa-solid fa-key text-sm"></i> Cambiar mi Contraseña
+                    </h4>
+                    <div>
+                        <label class="block text-gray-400 mb-1 text-[11px]">Contraseña actual:</label>
+                        <input type="password" id="pwd-current" placeholder="••••••••" class="w-full bg-[#07080a] border border-gray-700 rounded px-2.5 py-1.5 text-white font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1 text-[11px]">Nueva contraseña:</label>
+                        <input type="password" id="pwd-new" placeholder="Mínimo 6 caracteres" class="w-full bg-[#07080a] border border-gray-700 rounded px-2.5 py-1.5 text-white font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1 text-[11px]">Confirmar nueva contraseña:</label>
+                        <input type="password" id="pwd-confirm" placeholder="Repite la nueva contraseña" class="w-full bg-[#07080a] border border-gray-700 rounded px-2.5 py-1.5 text-white font-mono">
+                    </div>
+                    <button type="button" onclick="handleChangePassword()" class="w-full bg-gray-800 hover:bg-gray-700 text-[#D4AF37] font-bold py-1.5 rounded transition-all cursor-pointer">
+                        Actualizar Contraseña
+                    </button>
+                </div>
+
+                <!-- 3. Motor de Autoguardado (Auto-Save) -->
+                <div class="bg-black/50 p-3.5 rounded-lg border border-gray-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-heading font-black text-xs text-[#D4AF37] uppercase flex items-center gap-1.5">
+                                <i class="fa-solid fa-cloud-arrow-up text-sm"></i> Autoguardado
+                            </h4>
+                            <p class="text-[10px] text-gray-400 mt-0.5">Guarda los cambios automáticamente</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="autosave-toggle" checked onchange="toggleAutoSave(this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-400 mb-1 text-[11px]">Frecuencia de guardado:</label>
+                        <select id="autosave-freq" onchange="changeAutoSaveMode(this.value)" class="w-full bg-[#07080a] border border-gray-700 rounded px-2.5 py-1.5 text-white text-xs">
+                            <option value="instant">Instantáneo (al editar cambios)</option>
+                            <option value="30s">Cada 30 segundos</option>
+                            <option value="60s">Cada 1 minuto</option>
+                            <option value="manual">Manual (solo con botón Guardar)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 4. Metadatos SEO y Banner de Aviso -->
+                <div class="bg-black/50 p-3.5 rounded-lg border border-gray-800 space-y-3">
+                    <h4 class="font-heading font-black text-xs text-[#D4AF37] uppercase flex items-center gap-1.5">
+                        <i class="fa-solid fa-bullhorn text-sm"></i> Banner Superior de Anuncio
+                    </h4>
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-300 text-[11px]">Mostrar Banner Superior en Web:</span>
+                        <label class="switch">
+                            <input type="checkbox" id="banner-toggle" onchange="toggleAnnouncementBanner(this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="banner-controls" class="space-y-2 hidden">
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-[11px]">Texto del Anuncio:</label>
+                            <input type="text" id="banner-text" oninput="updateAnnouncementBanner()" value="✨ Gestión Patrimonial de Excelencia en Viña del Mar y Región de Valparaíso · Agenda tu reunión ejecutiva" class="w-full bg-[#07080a] border border-gray-700 rounded px-2.5 py-1.5 text-white text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-[11px]">Color del Banner:</label>
+                            <select id="banner-color" onchange="updateAnnouncementBanner()" class="w-full bg-[#07080a] border border-gray-700 rounded px-2.5 py-1.5 text-white text-xs">
+                                <option value="gold">Champagne Gold (Elegante Corporativo)</option>
+                                <option value="dark">Negro Obsidian con Bordes Dorados</option>
+                                <option value="green">Verde WhatsApp (Atención Inmediata)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Respaldos y Restauración -->
+                <div class="bg-black/50 p-3.5 rounded-lg border border-gray-800 space-y-2.5">
+                    <h4 class="font-heading font-black text-xs text-[#D4AF37] uppercase flex items-center gap-1.5">
+                        <i class="fa-solid fa-box-archive text-sm"></i> Respaldos y Restauración
+                    </h4>
+                    <p class="text-[10px] text-gray-400">Descarga una copia completa de seguridad con todos los cambios y usuarios:</p>
+
+                    <button type="button" onclick="exportBackupJSON()" class="w-full bg-gray-900 hover:bg-gray-800 text-gray-200 font-bold py-1.5 rounded flex items-center justify-center gap-2 border border-gray-700 transition-all cursor-pointer">
+                        <i class="fa-solid fa-file-export text-[#D4AF37]"></i>
+                        <span>Descargar Respaldo (.json)</span>
+                    </button>
+
+                    <label class="w-full bg-gray-900 hover:bg-gray-800 text-gray-200 font-bold py-1.5 rounded flex items-center justify-center gap-2 border border-gray-700 transition-all cursor-pointer">
+                        <i class="fa-solid fa-file-import text-[#D4AF37]"></i>
+                        <span>Restaurar Respaldo (.json)</span>
+                        <input type="file" id="backup-file-input" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+                    </label>
+
+                    <button type="button" onclick="resetToDefaults()" class="w-full bg-red-950/40 hover:bg-red-900/60 text-red-300 font-bold py-1.5 rounded border border-red-800/80 transition-all cursor-pointer text-[10px]">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Restablecer a Valores de Fábrica
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Footer del Sidebar con Indicador en Vivo de Autoguardado -->
+            <div class="p-3 border-t border-gray-800 bg-[#07080a] flex items-center justify-between text-[11px] text-gray-400">
+                <span id="autosave-indicator" class="flex items-center gap-1 text-[10px] text-green-400">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Autoguardado activo
+                </span>
+                <span class="font-mono text-gray-500 text-[10px]">v2.0 Real Estate</span>
+            </div>
+        </aside>
+
+        <!-- LIENZO CENTRAL (CANVAS EN VIVO DONDE SE HACE CLIC EN CADA ELEMENTO) -->
+        <main class="flex-1 bg-[#050608] p-2 sm:p-4 flex items-center justify-center overflow-hidden relative">
+            <div id="canvas-wrapper" class="preview-desktop bg-black transition-all duration-300 relative overflow-hidden flex items-center justify-center">
+                <iframe id="site-frame" src="./landing.html" class="w-full h-full border-0"></iframe>
+            </div>
+
+            <!-- Mensaje Flotante Toast -->
+            <div id="toast" class="fixed bottom-6 right-6 bg-[#D4AF37] text-black px-4 py-2.5 rounded-lg font-heading font-bold text-xs shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none z-50">
+                <i class="fa-solid fa-circle-check text-sm"></i>
+                <span id="toast-msg">Cambios guardados con éxito</span>
+            </div>
+
+            <!-- Botón Flotante Permanente "Atrás / Volver a la Web" para Móviles -->
+            <a href="./index.html" class="fixed bottom-6 left-6 sm:hidden bg-[#D4AF37] hover:bg-yellow-300 text-black font-heading font-black text-xs px-4 py-2.5 rounded-full shadow-2xl border-2 border-black flex items-center gap-2 active:scale-95 transition-all z-50 cursor-pointer" title="Volver a la Landing Page">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Volver a la Web</span>
+            </a>
+        </main>
+
+    </div>
+
+    <!-- JAVASCRIPT: MOTOR DE AUTENTICACIÓN, EDICIÓN ESTRUCTURAL, AUTOGUARDADO Y CONFIGURACIONES -->
+    <script>
+        // ==========================================
+        // 1. SISTEMA DE AUTENTICACIÓN Y MULTI-USUARIOS
+        // ==========================================
+        const INITIAL_USERS = [
+            { id: 1, user: "admin", pass: "wgestion2026", role: "Administrador", created: "2026-10-01" },
+            { id: 2, user: "editor", pass: "realestate2026", role: "Editor", created: "2026-10-02" }
+        ];
+
+        function getUsersList() {
+            const stored = localStorage.getItem('wgestion_users_list');
+            if (!stored) {
+                localStorage.setItem('wgestion_users_list', JSON.stringify(INITIAL_USERS));
+                return INITIAL_USERS;
+            }
+            return JSON.parse(stored);
+        }
+
+        function checkAuthSession() {
+            const session = sessionStorage.getItem('wgestion_intranet_logged');
+            const overlay = document.getElementById('auth-overlay');
+            if (session === 'true') {
+                overlay.classList.add('hidden');
+                renderUsersTable();
+            } else {
+                overlay.classList.remove('hidden');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('login-user').value.trim();
+            const p = document.getElementById('login-pass').value.trim();
+            const err = document.getElementById('login-error');
+
+            const users = getUsersList();
+            const validUser = users.find(usr => usr.user === u && usr.pass === p);
+
+            if (validUser) {
+                sessionStorage.setItem('wgestion_intranet_logged', 'true');
+                sessionStorage.setItem('wgestion_current_user', validUser.user);
+                sessionStorage.setItem('wgestion_current_role', validUser.role);
+                document.getElementById('auth-overlay').classList.add('hidden');
+                err.classList.add('hidden');
+                showToast(`Sesión iniciada como ${validUser.user} (${validUser.role})`);
+                initInspectorBridge();
+                renderUsersTable();
+            } else {
+                err.classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('wgestion_intranet_logged');
+            sessionStorage.removeItem('wgestion_current_user');
+            sessionStorage.removeItem('wgestion_current_role');
+            location.reload();
+        }
+
+        function togglePasswordVisibility() {
+            const pass = document.getElementById('login-pass');
+            const icon = document.getElementById('pass-eye-icon');
+            if (pass.type === 'password') {
+                pass.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                pass.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function renderUsersTable() {
+            const container = document.getElementById('users-list-container');
+            if (!container) return;
+
+            const users = getUsersList();
+            const currentUser = sessionStorage.getItem('wgestion_current_user') || 'admin';
+
+            container.innerHTML = users.map(u => `
+                <div class="flex items-center justify-between p-2 rounded bg-[#07080a] border border-gray-800">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full ${u.role === 'Administrador' ? 'bg-[#D4AF37] text-black' : 'bg-blue-600 text-white'} flex items-center justify-center font-bold text-[10px]">
+                            ${u.user.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <div class="font-bold text-white text-xs">${u.user} ${u.user === currentUser ? '<span class="text-[9px] text-green-400 font-normal">(Tú)</span>' : ''}</div>
+                            <span class="text-[9px] text-gray-400">${u.role}</span>
+                        </div>
+                    </div>
+                    ${u.user !== currentUser && users.length > 1 ? `
+                        <button type="button" onclick="deleteUser(${u.id})" class="text-gray-500 hover:text-red-400 p-1 cursor-pointer" title="Eliminar usuario">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
+                    ` : '<span class="text-[9px] text-gray-500">Activo</span>'}
+                </div>
+            `).join('');
+        }
+
+        function toggleNewUserForm() {
+            const form = document.getElementById('form-new-user');
+            form.classList.toggle('hidden');
+        }
+
+        function handleCreateUser() {
+            const username = document.getElementById('nu-username').value.trim();
+            const password = document.getElementById('nu-password').value.trim();
+            const role = document.getElementById('nu-role').value;
+
+            if (!username || !password) {
+                alert("Ingresa nombre de usuario y contraseña.");
+                return;
+            }
+
+            const users = getUsersList();
+            if (users.some(u => u.user.toLowerCase() === username.toLowerCase())) {
+                alert("El nombre de usuario ya existe.");
+                return;
+            }
+
+            users.push({
+                id: Date.now(),
+                user: username,
+                pass: password,
+                role: role,
+                created: new Date().toISOString().split('T')[0]
+            });
+
+            localStorage.setItem('wgestion_users_list', JSON.stringify(users));
+            renderUsersTable();
+            toggleNewUserForm();
+            document.getElementById('nu-username').value = '';
+            document.getElementById('nu-password').value = '';
+            showToast(`Usuario ${username} creado exitosamente`);
+        }
+
+        function deleteUser(id) {
+            if (!confirm("¿Seguro que deseas eliminar este usuario?")) return;
+            let users = getUsersList();
+            users = users.filter(u => u.id !== id);
+            localStorage.setItem('wgestion_users_list', JSON.stringify(users));
+            renderUsersTable();
+            showToast("Usuario eliminado correctamente");
+        }
+
+        function handleChangePassword() {
+            const current = document.getElementById('pwd-current').value.trim();
+            const newP = document.getElementById('pwd-new').value.trim();
+            const confirmP = document.getElementById('pwd-confirm').value.trim();
+
+            if (!current || !newP || !confirmP) {
+                alert("Por favor completa todos los campos de contraseña.");
+                return;
+            }
+
+            if (newP !== confirmP) {
+                alert("La nueva contraseña y la confirmación no coinciden.");
+                return;
+            }
+
+            const currentUser = sessionStorage.getItem('wgestion_current_user') || 'admin';
+            const users = getUsersList();
+            const userObj = users.find(u => u.user === currentUser);
+
+            if (!userObj || userObj.pass !== current) {
+                alert("La contraseña actual es incorrecta.");
+                return;
+            }
+
+            userObj.pass = newP;
+            localStorage.setItem('wgestion_users_list', JSON.stringify(users));
+            document.getElementById('pwd-current').value = '';
+            document.getElementById('pwd-new').value = '';
+            document.getElementById('pwd-confirm').value = '';
+            showToast("Contraseña actualizada con éxito");
+        }
+
+        // ==========================================
+        // 2. MOTOR DE AUTOGUARDADO (AUTO-SAVE ENGINE)
+        // ==========================================
+        let isAutoSaveEnabled = true;
+        let autoSaveMode = 'instant';
+        let autoSaveTimer = null;
+
+        function toggleAutoSave(enabled) {
+            isAutoSaveEnabled = enabled;
+            const indicator = document.getElementById('autosave-indicator');
+            if (enabled) {
+                indicator.innerHTML = `<i class="fa-solid fa-cloud-arrow-up text-green-400"></i> Autoguardado activo`;
+                showToast("Autoguardado activado");
+            } else {
+                indicator.innerHTML = `<i class="fa-solid fa-pause text-yellow-400"></i> Autoguardado pausado`;
+                showToast("Autoguardado desactivado");
+            }
+        }
+
+        function changeAutoSaveMode(mode) {
+            autoSaveMode = mode;
+            showToast(`Frecuencia de guardado: ${mode}`);
+        }
+
+        function triggerAutoSave() {
+            if (!isAutoSaveEnabled || autoSaveMode === 'manual') return;
+
+            if (autoSaveTimer) clearTimeout(autoSaveTimer);
+
+            const delay = autoSaveMode === 'instant' ? 1200 : (autoSaveMode === '30s' ? 30000 : 60000);
+            autoSaveTimer = setTimeout(() => {
+                performSave(true);
+            }, delay);
+        }
+
+        function performSave(isAuto = false) {
+            const frame = document.getElementById('site-frame');
+            if (!frame || !frame.contentDocument) return;
+
+            // Clonar documento y limpiar clases de inspección
+            const docClone = frame.contentDocument.cloneNode(true);
+            docClone.querySelectorAll('.elementor-selected, .elementor-hover').forEach(el => {
+                el.classList.remove('elementor-selected', 'elementor-hover');
+            });
+            const inspectorStyle = docClone.getElementById('intranet-inspector-styles');
+            if (inspectorStyle) inspectorStyle.remove();
+
+            const fullHTML = "<!DOCTYPE html>\n" + docClone.documentElement.outerHTML;
+            localStorage.setItem('wgestion_draft_html', fullHTML);
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            const indicator = document.getElementById('autosave-indicator');
+            if (indicator && isAutoSaveEnabled) {
+                indicator.innerHTML = `<i class="fa-solid fa-circle-check text-green-400"></i> Guardado ${timeStr}`;
+            }
+
+            if (!isAuto) {
+                showToast("✅ Cambios guardados con éxito");
+            }
+        }
+
+        // ==========================================
+        // 3. MOTOR DE INSPECCIÓN VISUAL SIMPLIFICADA
+        // ==========================================
+        let selectedElement = null;
+        let selectedServiceId = null;
+
+        function initInspectorBridge() {
+            const frame = document.getElementById('site-frame');
+            if (!frame) return;
+
+            function attachListeners() {
+                try {
+                    const doc = frame.contentDocument || frame.contentWindow.document;
+                    if (!doc || !doc.body || doc.__intranet_attached) return;
+                    doc.__intranet_attached = true;
+
+                    // Inyectar estilos de selección en el iframe
+                    let inspectStyle = doc.getElementById('intranet-inspector-styles');
+                    if (!inspectStyle) {
+                        inspectStyle = doc.createElement('style');
+                        inspectStyle.id = 'intranet-inspector-styles';
+                        inspectStyle.innerHTML = `
+                            .elementor-hover {
+                                outline: 2px dashed #D4AF37 !important;
+                                outline-offset: 3px !important;
+                                cursor: pointer !important;
+                            }
+                            .elementor-selected {
+                                outline: 3px solid #D4AF37 !important;
+                                outline-offset: 4px !important;
+                                box-shadow: 0 0 30px rgba(212, 175, 55, 0.7) !important;
+                            }
+                        `;
+                        doc.head.appendChild(inspectStyle);
+                    }
+
+                    // Hover sobre cajas y elementos estructurales
+                    doc.body.addEventListener('mouseover', (e) => {
+                        const target = getInspectableElement(e.target);
+                        if (!target || target === selectedElement) return;
+                        target.classList.add('elementor-hover');
+                    });
+
+                    doc.body.addEventListener('mouseout', (e) => {
+                        const target = getInspectableElement(e.target);
+                        if (target && target !== selectedElement) {
+                            target.classList.remove('elementor-hover');
+                        }
+                    });
+
+                    // Clic para seleccionar la caja o bloque completo
+                    doc.body.addEventListener('click', (e) => {
+                        const target = getInspectableElement(e.target);
+                        if (!target) return;
+
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        selectElement(target);
+                    }, true);
+
+                    loadGlobalConfigIntoInputs();
+                } catch (err) {
+                    console.error("Error al inicializar puente de inspección:", err);
+                }
+            }
+
+            if (frame.contentDocument && frame.contentDocument.readyState !== 'loading' && frame.contentDocument.body) {
+                attachListeners();
+            }
+            frame.addEventListener('load', attachListeners);
+        }
+
+        // Selección simplificada: Detecta componentes estructurales y cajas principales
+        function getInspectableElement(el) {
+            if (!el || el === document.body || el.tagName === 'HTML') return null;
+
+            // 1. Cajas completas de Servicios
+            const serviceCard = el.closest('#services-container > div') || el.closest('#servicios .cursor-pointer');
+            if (serviceCard) return serviceCard;
+
+            // 2. Cajas de Redes Sociales con GIFs
+            const socialCard = el.closest('#redes-sociales .social-card') || el.closest('#redes-sociales .grid > div');
+            if (socialCard) return socialCard;
+
+            // 3. Cajas de Proyectos & Gestión
+            const projectCard = el.closest('#proyectos .project-card') || el.closest('#proyectos .grid > div') || el.closest('#galeria .grid > div');
+            if (projectCard) return projectCard;
+
+            // 4. Caja Formulario de Contacto
+            const formBox = el.closest('#contacto') || el.closest('#asesoria');
+            if (formBox && (el.tagName.startsWith('H') || el.tagName === 'P' || el.tagName === 'LABEL' || el.closest('button[type="submit"]'))) return formBox;
+
+            // 5. Cajas de Información de Contacto / Footer
+            const contactItem = el.closest('#footer .space-y-6 > div') || el.closest('#contacto .space-y-6 > div');
+            if (contactItem) return contactItem;
+
+            // 6. Caja Banner Hero / Slide de textos
+            const heroSlide = el.closest('#slide-texts .slide-text') || el.closest('#hero-section');
+            if (heroSlide && (el.tagName.startsWith('H') || el.tagName === 'P' || el.closest('a'))) return heroSlide;
+
+            // 7. Títulos Principales de Sección (H1, H2)
+            if (el.tagName === 'H1' || el.tagName === 'H2') return el;
+            const heading = el.closest('h1, h2');
+            if (heading) return heading;
+
+            // 8. Imágenes y Videos Principales
+            if (el.tagName === 'IMG' || el.tagName === 'VIDEO') return el;
+
+            // 9. Botones de acción principales
+            const btnAction = el.closest('.whatsapp-float, #gps-btn, a[href*="whatsapp.com"], a.bg-brand-accent');
+            if (btnAction) return btnAction;
+
+            return null;
+        }
+
+        function selectElement(el) {
+            const frame = document.getElementById('site-frame');
+            const doc = frame.contentDocument;
+
+            if (selectedElement) {
+                selectedElement.classList.remove('elementor-selected', 'elementor-hover');
+            }
+
+            selectedElement = el;
+            selectedElement.classList.remove('elementor-hover');
+            selectedElement.classList.add('elementor-selected');
+
+            switchSidebarTab('tab-inspector');
+            document.getElementById('inspector-empty').classList.add('hidden');
+            document.getElementById('inspector-active').classList.remove('hidden');
+
+            const tag = el.tagName.toUpperCase();
+            const tagBadge = document.getElementById('insp-tag-badge');
+            const typeLabel = document.getElementById('insp-type-label');
+
+            // Resetear visibilidad de campos
+            document.getElementById('grp-title-content').classList.remove('hidden');
+            document.getElementById('grp-text-content').classList.remove('hidden');
+            document.getElementById('grp-media-content').classList.add('hidden');
+            document.getElementById('grp-link-content').classList.add('hidden');
+            document.getElementById('grp-service-popup').classList.add('hidden');
+
+            selectedServiceId = null;
+
+            // Identificar el tipo de componente seleccionado
+            const serviceCard = el.closest('#services-container > div');
+            const videoCard = el.closest('#videos-terreno .video-zoom-box') || el.closest('#videos-terreno .grid > div');
+            const galleryCard = el.closest('#galeria .grid > div');
+            const heroSlide = el.closest('#slide-texts .slide-text') || el.closest('#hero-section');
+            const contactItem = el.closest('#contacto .space-y-6 > div');
+
+            if (serviceCard) {
+                tagBadge.textContent = "UNIDAD";
+                typeLabel.textContent = "Unidad de Negocio (Caja)";
+                
+                const cards = Array.from(doc.querySelectorAll('#services-container > div'));
+                selectedServiceId = cards.indexOf(serviceCard) + 1;
+
+                const h3 = serviceCard.querySelector('h3');
+                document.getElementById('insp-input-title').value = h3 ? h3.innerText.trim() : '';
+
+                const p = serviceCard.querySelector('p');
+                document.getElementById('insp-input-text').value = p ? p.innerText.trim() : '';
+
+                const img = serviceCard.querySelector('img');
+                if (img) {
+                    document.getElementById('grp-media-content').classList.remove('hidden');
+                    document.getElementById('insp-input-src').value = img.getAttribute('src') || '';
+                }
+
+                if (selectedServiceId > 0 && frame.contentWindow.SERVICES_DATA) {
+                    const srvData = frame.contentWindow.SERVICES_DATA[selectedServiceId];
+                    if (srvData) {
+                        document.getElementById('grp-service-popup').classList.remove('hidden');
+                        document.getElementById('insp-srv-subtitle').value = srvData.subtitle || '';
+                        document.getElementById('insp-srv-desc').value = srvData.desc || '';
+                        document.getElementById('insp-srv-features').value = (srvData.features || []).join('\n');
+                    }
+                }
+            } else if (videoCard) {
+                tagBadge.textContent = "VIDEO";
+                typeLabel.textContent = "Caja Video en Terreno";
+                
+                const h4 = videoCard.querySelector('h4');
+                document.getElementById('insp-input-title').value = h4 ? h4.innerText.trim() : '';
+
+                const p = videoCard.querySelector('p');
+                document.getElementById('insp-input-text').value = p ? p.innerText.trim() : '';
+
+                const video = videoCard.querySelector('video');
+                if (video) {
+                    document.getElementById('grp-media-content').classList.remove('hidden');
+                    document.getElementById('insp-input-src').value = video.getAttribute('src') || '';
+                }
+            } else if (galleryCard) {
+                tagBadge.textContent = "PROYECTO";
+                typeLabel.textContent = "Inmueble de Portafolio";
+
+                const h4 = galleryCard.querySelector('h4');
+                document.getElementById('insp-input-title').value = h4 ? h4.innerText.trim() : '';
+
+                const span = galleryCard.querySelector('span');
+                document.getElementById('insp-input-text').value = span ? span.innerText.trim() : '';
+
+                const img = galleryCard.querySelector('img');
+                if (img) {
+                    document.getElementById('grp-media-content').classList.remove('hidden');
+                    document.getElementById('insp-input-src').value = img.getAttribute('src') || '';
+                }
+            } else if (heroSlide) {
+                tagBadge.textContent = "HERO";
+                typeLabel.textContent = "Banner Principal Hero";
+
+                const h1 = heroSlide.querySelector('h1') || heroSlide;
+                document.getElementById('insp-input-title').value = h1 ? h1.innerText.trim() : '';
+
+                const p = heroSlide.querySelector('p');
+                document.getElementById('insp-input-text').value = p ? p.innerText.trim() : '';
+            } else if (contactItem) {
+                tagBadge.textContent = "CONTACTO";
+                typeLabel.textContent = "Datos de Contacto";
+
+                const h4 = contactItem.querySelector('h4');
+                document.getElementById('insp-input-title').value = h4 ? h4.innerText.trim() : '';
+
+                const p = contactItem.querySelector('p, a');
+                document.getElementById('insp-input-text').value = p ? p.innerText.trim() : '';
+            } else if (tag.startsWith('H')) {
+                tagBadge.textContent = tag;
+                typeLabel.textContent = `Título ${tag}`;
+                document.getElementById('insp-input-title').value = el.innerText.trim();
+                document.getElementById('grp-text-content').classList.add('hidden');
+            } else if (tag === 'A' || tag === 'BUTTON') {
+                tagBadge.textContent = "BOTÓN";
+                typeLabel.textContent = "Botón / Acción Principal";
+                document.getElementById('insp-input-title').value = el.innerText.trim();
+                document.getElementById('grp-text-content').classList.add('hidden');
+                document.getElementById('grp-link-content').classList.remove('hidden');
+                document.getElementById('insp-input-href').value = el.getAttribute('href') || '';
+            } else if (tag === 'IMG') {
+                tagBadge.textContent = "IMAGEN";
+                typeLabel.textContent = "Imagen";
+                document.getElementById('grp-title-content').classList.add('hidden');
+                document.getElementById('grp-text-content').classList.add('hidden');
+                document.getElementById('grp-media-content').classList.remove('hidden');
+                document.getElementById('insp-input-src').value = el.getAttribute('src') || '';
+            }
+
+            // Poblar estilos rápidos
+            const computed = window.getComputedStyle(el);
+            document.getElementById('insp-style-color').value = rgbToHex(computed.color);
+            document.getElementById('insp-color-label').textContent = rgbToHex(computed.color);
+        }
+
+        function deselectElement() {
+            if (selectedElement) {
+                selectedElement.classList.remove('elementor-selected', 'elementor-hover');
+                selectedElement = null;
+            }
+            document.getElementById('inspector-empty').classList.remove('hidden');
+            document.getElementById('inspector-active').classList.add('hidden');
+        }
+
+        // Modificaciones reactivas
+        function handleInspectorTitleChange(newTitle) {
+            if (!selectedElement) return;
+
+            if (selectedServiceId) {
+                const h3 = selectedElement.querySelector('h3');
+                if (h3) h3.textContent = newTitle;
+                const frame = document.getElementById('site-frame');
+                if (frame.contentWindow.SERVICES_DATA && frame.contentWindow.SERVICES_DATA[selectedServiceId]) {
+                    frame.contentWindow.SERVICES_DATA[selectedServiceId].title = newTitle;
+                }
+            } else {
+                const titleEl = selectedElement.querySelector('h1, h2, h3, h4') || selectedElement;
+                titleEl.textContent = newTitle;
+            }
+            triggerAutoSave();
+        }
+
+        function handleInspectorTextChange(newText) {
+            if (!selectedElement) return;
+
+            const textEl = selectedElement.querySelector('p, span') || selectedElement;
+            textEl.textContent = newText;
+            triggerAutoSave();
+        }
+
+        function handleInspectorSrcChange(newSrc) {
+            if (!selectedElement) return;
+
+            const mediaEl = selectedElement.querySelector('img, video') || (selectedElement.tagName === 'IMG' || selectedElement.tagName === 'VIDEO' ? selectedElement : null);
+            if (mediaEl) {
+                mediaEl.setAttribute('src', newSrc);
+                if (mediaEl.tagName === 'VIDEO') mediaEl.load();
+            }
+            triggerAutoSave();
+        }
+
+        function handleInspectorHrefChange(newHref) {
+            if (!selectedElement) return;
+
+            const linkEl = selectedElement.querySelector('a') || (selectedElement.tagName === 'A' ? selectedElement : null);
+            if (linkEl) {
+                linkEl.setAttribute('href', newHref);
+            }
+            triggerAutoSave();
+        }
+
+        function handleInspectorStyleChange(prop, val) {
+            if (!selectedElement) return;
+            selectedElement.style[prop] = val;
+            if (prop === 'color') {
+                document.getElementById('insp-color-label').textContent = val;
+            }
+            triggerAutoSave();
+        }
+
+        function handleServicePopupChange() {
+            if (!selectedServiceId) return;
+            const frame = document.getElementById('site-frame');
+            if (!frame.contentWindow.SERVICES_DATA) return;
+
+            const srv = frame.contentWindow.SERVICES_DATA[selectedServiceId];
+            if (srv) {
+                srv.subtitle = document.getElementById('insp-srv-subtitle').value;
+                srv.desc = document.getElementById('insp-srv-desc').value;
+                srv.features = document.getElementById('insp-srv-features').value.split('\n').filter(s => s.trim().length > 0);
+            }
+            triggerAutoSave();
+        }
+
+        function previewCurrentServicePopup() {
+            if (!selectedServiceId) return;
+            const frame = document.getElementById('site-frame');
+            if (frame.contentWindow.openServiceModal) {
+                frame.contentWindow.openServiceModal(selectedServiceId);
+            }
+        }
+
+        // ==========================================
+        // 4. PARÁMETROS GLOBALES Y NAVEGACIÓN
+        // ==========================================
+        function jumpToSection(sectionId) {
+            const frame = document.getElementById('site-frame');
+            const doc = frame.contentDocument;
+            const sec = doc.getElementById(sectionId);
+            if (sec) {
+                sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                selectElement(sec);
+            }
+        }
+
+        function loadGlobalConfigIntoInputs() {
+            const frame = document.getElementById('site-frame');
+            const doc = frame.contentDocument;
+
+            const phoneLink = doc.querySelector('a[href^="tel:"], a[href*="phone=56997494382"]');
+            document.getElementById('cfg-phone').value = "+56 9 9749 4382";
+            document.getElementById('cfg-walink').value = "https://api.whatsapp.com/send?phone=56997494382";
+            document.getElementById('cfg-address').value = "Libertad 269, Depto 204, Viña del Mar, Región de Valparaíso";
+            document.getElementById('cfg-gps').value = "-33.018903,-71.551590";
+            document.getElementById('cfg-accent-color').value = "#D4AF37";
+            document.getElementById('cfg-accent-val').textContent = "#D4AF37";
+        }
+
+        function applyGlobalConfig() {
+            const frame = document.getElementById('site-frame');
+            const doc = frame.contentDocument;
+
+            const phone = document.getElementById('cfg-phone').value;
+            const walink = document.getElementById('cfg-walink').value;
+            const gps = document.getElementById('cfg-gps').value;
+            const accent = document.getElementById('cfg-accent-color').value;
+            document.getElementById('cfg-accent-val').textContent = accent;
+
+            doc.querySelectorAll('a[href*="whatsapp.com"]').forEach(a => {
+                a.href = walink;
+            });
+
+            doc.querySelectorAll('a[onclick*="navigateToGPS"]').forEach(a => {
+                a.setAttribute('data-gps', gps);
+            });
+
+            let dynamicStyle = doc.getElementById('intranet-dynamic-accent');
+            if (!dynamicStyle) {
+                dynamicStyle = doc.createElement('style');
+                dynamicStyle.id = 'intranet-dynamic-accent';
+                doc.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.innerHTML = `
+                .text-brand-accent { color: ${accent} !important; }
+                .bg-brand-accent { background-color: ${accent} !important; }
+                .border-brand-accent { border-color: ${accent} !important; }
+                .shadow-neon { box-shadow: 0 0 20px ${accent}66 !important; }
+            `;
+            triggerAutoSave();
+        }
+
+        // ==========================================
+        // 5. BANNER DE AVISO SUPERIOR
+        // ==========================================
+        function toggleAnnouncementBanner(show) {
+            const controls = document.getElementById('banner-controls');
+            if (show) {
+                controls.classList.remove('hidden');
+                updateAnnouncementBanner();
+            } else {
+                controls.classList.add('hidden');
+                const frame = document.getElementById('site-frame');
+                const existing = frame.contentDocument.getElementById('top-announcement-banner');
+                if (existing) existing.remove();
+            }
+            triggerAutoSave();
+        }
+
+        function updateAnnouncementBanner() {
+            const frame = document.getElementById('site-frame');
+            const doc = frame.contentDocument;
+            const text = document.getElementById('banner-text').value;
+            const color = document.getElementById('banner-color').value;
+
+            let bgClass = "bg-[#D4AF37] text-black";
+            if (color === 'dark') bgClass = "bg-[#0b0d13] text-[#D4AF37] border-b border-[#D4AF37]/50";
+            if (color === 'green') bgClass = "bg-green-600 text-white";
+
+            let banner = doc.getElementById('top-announcement-banner');
+            if (!banner) {
+                banner = doc.createElement('div');
+                banner.id = 'top-announcement-banner';
+                doc.body.insertBefore(banner, doc.body.firstChild);
+            }
+
+            banner.className = `${bgClass} font-heading font-black text-xs uppercase py-2 px-4 text-center tracking-wider sticky top-0 z-50 shadow-md flex items-center justify-center gap-2`;
+            banner.innerHTML = `<i class="fa-solid fa-crown animate-pulse"></i> <span>${text}</span>`;
+            triggerAutoSave();
+        }
+
+        // ==========================================
+        // 6. RESPALDOS Y RESTAURACIÓN JSON
+        // ==========================================
+        function exportBackupJSON() {
+            const backup = {
+                version: "2.0",
+                agency: "W Gestión Inmobiliaria",
+                date: new Date().toISOString(),
+                users: getUsersList(),
+                draftHTML: localStorage.getItem('wgestion_draft_html') || '',
+                config: {
+                    phone: document.getElementById('cfg-phone').value,
+                    walink: document.getElementById('cfg-walink').value,
+                    address: document.getElementById('cfg-address').value,
+                    gps: document.getElementById('cfg-gps').value,
+                    accent: document.getElementById('cfg-accent-color').value
+                }
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `wgestion-backup-${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+            showToast("📥 Respaldo JSON descargado correctamente");
+        }
+
+        function importBackupJSON(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    if (data.users) localStorage.setItem('wgestion_users_list', JSON.stringify(data.users));
+                    if (data.draftHTML) localStorage.setItem('wgestion_draft_html', data.draftHTML);
+                    renderUsersTable();
+                    showToast("✅ Respaldo restaurado con éxito. Recargando...");
+                    setTimeout(() => location.reload(), 1200);
+                } catch (err) {
+                    alert("Archivo de respaldo inválido o dañado.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetToDefaults() {
+            if (!confirm("¿Restablecer todo a los valores originales de fábrica? Se borrarán borradores y volverá a la versión limpia.")) return;
+            localStorage.removeItem('wgestion_draft_html');
+            localStorage.removeItem('wgestion_users_list');
+            location.reload();
+        }
+
+        // ==========================================
+        // 7. EXPORTAR HTML LIMPIO PARA PRODUCCIÓN
+        // ==========================================
+        function exportUpdatedHTML() {
+            const frame = document.getElementById('site-frame');
+            if (!frame || !frame.contentDocument) return;
+
+            const docClone = frame.contentDocument.cloneNode(true);
+            docClone.querySelectorAll('.elementor-selected, .elementor-hover').forEach(el => {
+                el.classList.remove('elementor-selected', 'elementor-hover');
+            });
+            const inspectorStyle = docClone.getElementById('intranet-inspector-styles');
+            if (inspectorStyle) inspectorStyle.remove();
+
+            const htmlContent = "<!DOCTYPE html>\n" + docClone.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("📥 index.html descargado listo para producción");
+        }
+
+        // ==========================================
+        // 8. UTILIDADES DE INTERFAZ
+        // ==========================================
+        function switchSidebarTab(tabId) {
+            ['tab-inspector', 'tab-tree', 'tab-global', 'tab-settings'].forEach(id => {
+                const el = document.getElementById(id);
+                const btn = document.getElementById(`btn-${id}`);
+                if (el) el.classList.add('hidden');
+                if (btn) {
+                    btn.classList.remove('border-[#D4AF37]', 'text-[#D4AF37]');
+                    btn.classList.add('border-transparent', 'text-gray-400');
+                }
+            });
+
+            const activeEl = document.getElementById(tabId);
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeEl) activeEl.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.add('border-[#D4AF37]', 'text-[#D4AF37]');
+                activeBtn.classList.remove('border-transparent', 'text-gray-400');
+            }
+        }
+
+        function setViewport(type) {
+            const wrapper = document.getElementById('canvas-wrapper');
+            const btnD = document.getElementById('btn-vp-desktop');
+            const btnT = document.getElementById('btn-vp-tablet');
+            const btnM = document.getElementById('btn-vp-mobile');
+
+            [btnD, btnT, btnM].forEach(b => {
+                b.classList.remove('bg-gray-800', 'text-[#D4AF37]');
+                b.classList.add('text-gray-400');
+            });
+
+            wrapper.classList.remove('preview-desktop', 'preview-tablet', 'preview-mobile');
+
+            if (type === 'desktop') {
+                wrapper.classList.add('preview-desktop');
+                btnD.classList.add('bg-gray-800', 'text-[#D4AF37]');
+            } else if (type === 'tablet') {
+                wrapper.classList.add('preview-tablet');
+                btnT.classList.add('bg-gray-800', 'text-[#D4AF37]');
+            } else if (type === 'mobile') {
+                wrapper.classList.add('preview-mobile');
+                btnM.classList.add('bg-gray-800', 'text-[#D4AF37]');
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-msg');
+            msgEl.textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function rgbToHex(rgb) {
+            if (!rgb || !rgb.startsWith('rgb')) return "#ffffff";
+            const vals = rgb.match(/\d+/g);
+            if (!vals || vals.length < 3) return "#ffffff";
+            return "#" + vals.slice(0, 3).map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuthSession();
+            initInspectorBridge();
+        });
+    </script>
+</body>
+</html>
