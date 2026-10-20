@@ -103,109 +103,117 @@
 
     <!-- 1. TOP ELEMENTOR APPLICATION HEADER BAR -->
     <header class="h-12 bg-[#1e2124] border-b border-[#393d41] flex items-center justify-between px-3 z-40 shrink-0">
-        <!-- Logo & Branding -->
-        <div class="flex items-center gap-3">
+        <!-- LEFT: Brand + Undo/Redo + Autosave Indicator -->
+        <div class="flex items-center gap-2.5">
             <a href="./index.html" class="flex items-center gap-2 group cursor-pointer" title="Ir al Sitio Web Oficial">
-                <div class="w-7 h-7 rounded bg-gradient-to-br from-[#92003B] to-[#D4AF37] flex items-center justify-center font-heading font-black text-white text-base shadow group-hover:scale-105 transition-transform">
-                    E
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-[#92003B] to-[#D4AF37] flex items-center justify-center font-heading font-black text-white text-xs shadow group-hover:scale-105 transition-transform">
+                    W
                 </div>
-                <div class="flex flex-col leading-none">
-                    <span class="font-heading font-extrabold text-[12px] text-white tracking-wide flex items-center gap-1.5">
-                        ELEMENTOR <span class="text-[#D4AF37] font-semibold text-[10px]">BUILDER PRO</span>
+                <div class="hidden sm:flex flex-col leading-none">
+                    <span class="font-heading font-extrabold text-[12px] text-white tracking-wide flex items-center gap-1">
+                        W GESTIÓN <span class="text-[#D4AF37] font-semibold text-[9px]">EDITOR</span>
                     </span>
-                    <span class="text-[9px] text-[#a4afb7]">Drag & Drop Visual • W Gestión Inmobiliaria</span>
+                    <span class="text-[8px] text-[#a4afb7]">Visual Studio</span>
                 </div>
             </a>
 
-            <div class="h-5 w-px bg-[#393d41] mx-1"></div>
+            <div class="h-4 w-px bg-[#393d41] mx-0.5"></div>
 
-            <!-- UNDO / REDO DEDICATED HEADER BUTTONS (DESHACER / REHACER) -->
-            <div class="flex items-center bg-[#15171a] p-0.5 rounded border border-[#393d41]">
-                <button onclick="undoAction()" id="btn-undo" disabled class="px-2 py-1 rounded text-[#a4afb7] hover:text-white disabled:opacity-40 disabled:hover:text-[#a4afb7] flex items-center gap-1 transition-colors cursor-pointer" title="Deshacer (Ctrl + Z)">
+            <!-- UNDO / REDO (DESHACER / REHACER) -->
+            <div class="flex items-center bg-[#15171a] p-0.5 rounded-lg border border-[#393d41]">
+                <button onclick="undoAction()" id="btn-undo" disabled class="px-2 py-1 rounded text-[#a4afb7] hover:text-white disabled:opacity-30 disabled:hover:text-[#a4afb7] flex items-center gap-1 transition-colors cursor-pointer" title="Deshacer (Ctrl + Z)">
                     <i class="fa-solid fa-arrow-rotate-left text-xs"></i>
-                    <span class="hidden xl:inline text-[10px] font-medium">Deshacer</span>
+                    <span class="hidden lg:inline text-[10px] font-medium">Deshacer</span>
                     <span id="badge-undo-count" class="hidden text-[9px] px-1 py-0.2 bg-[#26292c] rounded font-mono text-[#D4AF37]">0</span>
                 </button>
-                <div class="h-3.5 w-px bg-[#393d41]"></div>
-                <button onclick="redoAction()" id="btn-redo" disabled class="px-2 py-1 rounded text-[#a4afb7] hover:text-white disabled:opacity-40 disabled:hover:text-[#a4afb7] flex items-center gap-1 transition-colors cursor-pointer" title="Rehacer (Ctrl + Y)">
+                <div class="h-3 w-px bg-[#393d41]"></div>
+                <button onclick="redoAction()" id="btn-redo" disabled class="px-2 py-1 rounded text-[#a4afb7] hover:text-white disabled:opacity-30 disabled:hover:text-[#a4afb7] flex items-center gap-1 transition-colors cursor-pointer" title="Rehacer (Ctrl + Y)">
                     <i class="fa-solid fa-arrow-rotate-right text-xs"></i>
-                    <span class="hidden xl:inline text-[10px] font-medium">Rehacer</span>
+                    <span class="hidden lg:inline text-[10px] font-medium">Rehacer</span>
                     <span id="badge-redo-count" class="hidden text-[9px] px-1 py-0.2 bg-[#26292c] rounded font-mono text-[#D4AF37]">0</span>
                 </button>
             </div>
 
-            <!-- Status Badge: Autosave / Published state -->
-            <div class="flex items-center gap-1.5 bg-[#15171a] px-2.5 py-1 rounded border border-[#393d41]">
-                <span id="autosave-status-icon" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span id="autosave-status-text" class="text-white text-[11px] font-mono">Borrador al día</span>
+            <!-- Sutil Autosave Status -->
+            <div class="hidden xl:flex items-center gap-1.5 bg-[#15171a] px-2 py-1 rounded border border-[#393d41]">
+                <span id="autosave-status-icon" class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span id="autosave-status-text" class="text-gray-300 text-[10px] font-mono">Borrador al día</span>
             </div>
         </div>
 
-        <!-- Center: Responsive Mode Switcher (Iconic Elementor) -->
-        <div class="flex items-center bg-[#15171a] p-1 rounded-md border border-[#393d41] gap-1">
-            <button onclick="setCanvasViewport('desktop')" id="btn-device-desktop" class="px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" title="Modo Escritorio (100%)">
-                <i class="fa-solid fa-desktop text-xs"></i>
-                <span class="hidden md:inline text-[11px] font-medium">Escritorio</span>
-            </button>
-            <button onclick="setCanvasViewport('tablet')" id="btn-device-tablet" class="px-2.5 py-1 rounded text-[#a4afb7] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" title="Modo Tablet (768px)">
-                <i class="fa-solid fa-tablet-screen-button text-xs"></i>
-                <span class="hidden md:inline text-[11px] font-medium">Tablet</span>
-            </button>
-            <button onclick="setCanvasViewport('mobile')" id="btn-device-mobile" class="px-2.5 py-1 rounded text-[#a4afb7] flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" title="Modo Móvil (390px)">
-                <i class="fa-solid fa-mobile-screen text-xs"></i>
-                <span class="hidden md:inline text-[11px] font-medium">Móvil</span>
-            </button>
+        <!-- CENTER: SELECTOR DE PROFUNDIDAD DE EDICIÓN (UX/UI Progressive Disclosure) -->
+        <div class="flex items-center gap-2 bg-[#15171a] px-2.5 py-1 rounded-lg border border-[#393d41] shadow-inner">
+            <span class="text-[9px] text-[#a4afb7] uppercase font-bold tracking-wider hidden sm:inline">Profundidad:</span>
+            <select id="edit-depth-select" onchange="setEditDepth(this.value)" class="bg-[#26292c] text-white font-semibold text-[11px] rounded px-2 py-1 border border-[#393d41] focus:outline-none focus:border-[#D4AF37] cursor-pointer">
+                <option value="1">🟢 Nivel 1: Contenido Rápido (Textos/Precios)</option>
+                <option value="2">🔵 Nivel 2: Estructura & Secciones</option>
+                <option value="3">🟡 Nivel 3: Personalización Visual</option>
+            </select>
+            <span id="depth-desc-badge" class="hidden lg:inline-block text-[10px] text-emerald-400 font-medium">
+                Solo textos, precios y fotos
+            </span>
         </div>
 
-        <!-- Right: Navigator, History, Checkpoint, Preview, and PUBLISH/UPDATE -->
-        <div class="flex items-center gap-2">
-            <!-- Navigator Tree Toggle -->
-            <button onclick="toggleNavigator()" id="btn-toggle-navigator" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Árbol de Navegación de Capas">
-                <i class="fa-solid fa-layer-group text-xs text-[#D4AF37]"></i>
-                <span class="hidden lg:inline text-[11px]">Navegador</span>
-            </button>
-
-            <!-- History Toggle with 2 Tabs (Acciones & Revisiones) -->
-            <button onclick="openHistoryDrawer('actions')" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Historial de Acciones y Revisiones">
-                <i class="fa-solid fa-clock-rotate-left text-xs text-amber-400"></i>
-                <span class="hidden lg:inline text-[11px]">Historial</span>
-            </button>
-
-            <!-- Create Named Checkpoint Button -->
-            <button onclick="promptCreateCheckpoint()" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Crear Punto de Control Guardado con Nombre">
-                <i class="fa-solid fa-bookmark text-xs text-[#D4AF37]"></i>
-                <span class="hidden xl:inline text-[11px]">Checkpoint</span>
-            </button>
-
-            
-            <!-- DUAL MODE SWITCHER: CLIENTE (SEGURO) VS DESARROLLADOR PRO -->
-            <div class="flex items-center bg-[#15171a] p-0.5 rounded-md border border-[#393d41] gap-1 text-[11px]">
-                <button onclick="setEditorMode('client')" id="btn-mode-client" class="px-2.5 py-1 rounded bg-[#26292c] text-[#D4AF37] font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm" title="Modo Seguro: Edición fácil de textos, imágenes, precios y reordenar secciones sin riesgo de romper el diseño">
-                    <i class="fa-solid fa-shield-halved text-xs"></i>
-                    <span class="hidden sm:inline font-bold">Modo Cliente</span>
-                    <span class="sm:hidden font-bold">Cliente</span>
+        <!-- RIGHT: Device Switcher + Pedir al Dev + Sandwich Menu (...) + Publish Button -->
+        <div class="flex items-center gap-1.5">
+            <!-- Compact Device Switcher -->
+            <div class="hidden md:flex items-center bg-[#15171a] p-0.5 rounded border border-[#393d41] gap-0.5">
+                <button onclick="setCanvasViewport('desktop')" id="btn-device-desktop" class="w-7 h-7 rounded bg-[#26292c] text-[#D4AF37] flex items-center justify-center hover:text-white transition-colors cursor-pointer" title="Escritorio">
+                    <i class="fa-solid fa-desktop text-[11px]"></i>
                 </button>
-                <button onclick="setEditorMode('dev')" id="btn-mode-dev" class="px-2.5 py-1 rounded text-[#a4afb7] hover:text-white flex items-center gap-1.5 transition-all cursor-pointer" title="Modo Desarrollador Pro: Acceso a estilos CSS, layout, márgenes, padding y widgets avanzados">
-                    <i class="fa-solid fa-code text-xs"></i>
-                    <span class="hidden xl:inline">Desarrollador Pro</span>
-                    <span class="xl:hidden">Pro</span>
+                <button onclick="setCanvasViewport('tablet')" id="btn-device-tablet" class="w-7 h-7 rounded text-[#a4afb7] flex items-center justify-center hover:text-white transition-colors cursor-pointer" title="Tablet">
+                    <i class="fa-solid fa-tablet-screen-button text-[11px]"></i>
+                </button>
+                <button onclick="setCanvasViewport('mobile')" id="btn-device-mobile" class="w-7 h-7 rounded text-[#a4afb7] flex items-center justify-center hover:text-white transition-colors cursor-pointer" title="Móvil">
+                    <i class="fa-solid fa-mobile-screen text-[11px]"></i>
                 </button>
             </div>
 
-            <!-- SOLICITAR CAMBIO AL DESARROLLADOR (WHATSAPP & EMAIL) -->
-            <button onclick="openDeveloperRequestModal()" class="h-8 px-2.5 rounded bg-gradient-to-r from-amber-950/80 to-[#26292c] hover:from-amber-900 hover:to-[#32363b] text-[#D4AF37] hover:text-amber-300 flex items-center gap-1.5 border border-amber-600/50 shadow transition-all cursor-pointer" title="Solicitar cambio complejo o nueva sección al desarrollador (+56965312618)">
+            <!-- SOLICITAR CAMBIO AL DEV -->
+            <button onclick="openDeveloperRequestModal()" class="h-7 px-2.5 rounded bg-gradient-to-r from-amber-950/80 to-[#26292c] hover:from-amber-900 hover:to-[#32363b] text-[#D4AF37] hover:text-amber-300 flex items-center gap-1.5 border border-amber-600/50 shadow transition-all cursor-pointer text-[11px] font-semibold" title="Solicitar cambio complejo o nueva sección al desarrollador (+56965312618)">
                 <i class="fa-solid fa-comments text-xs"></i>
-                <span class="hidden md:inline text-[11px] font-semibold">Pedir al Dev</span>
+                <span class="hidden sm:inline">Pedir al Dev</span>
             </button>
 
-            <!-- Live Site Preview -->
-            <a href="./index.html" target="_blank" class="h-8 px-2.5 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center gap-1.5 border border-[#393d41] transition-all cursor-pointer" title="Abrir Sitio Web en Nueva Pestaña">
-                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                <span class="hidden sm:inline text-[11px]">Ver Web</span>
-            </a>
+            <!-- MORE TOOLS SANDWICH MENU (...) -->
+            <div class="relative">
+                <button onclick="toggleMoreToolsMenu()" id="btn-more-tools" class="w-7 h-7 rounded bg-[#26292c] hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center border border-[#393d41] transition-all cursor-pointer" title="Más herramientas del editor">
+                    <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                </button>
 
-            <!-- The Iconic Elementor Green ACTUALIZAR / PUBLICAR Button -->
-            <button onclick="publishChanges()" id="btn-publish" class="h-8 px-4 rounded bg-[#39b54a] hover:bg-[#2ea13e] text-white font-heading font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-950/40 transition-transform active:scale-95 cursor-pointer" title="Publicar en Producción (Ctrl + S)">
+                <!-- Dropdown Menu -->
+                <div id="dropdown-more-tools" class="hidden absolute right-0 top-9 w-60 bg-[#1e2124] border border-[#393d41] rounded-xl shadow-2xl py-1.5 z-50 text-xs">
+                    <button onclick="openHistoryDrawer('actions'); toggleMoreToolsMenu();" class="w-full px-3 py-2 text-left hover:bg-[#26292c] text-gray-200 flex items-center gap-2.5">
+                        <i class="fa-solid fa-clock-rotate-left text-amber-400 w-4"></i>
+                        <span>Historial de Acciones</span>
+                    </button>
+                    <button onclick="promptCreateCheckpoint(); toggleMoreToolsMenu();" class="w-full px-3 py-2 text-left hover:bg-[#26292c] text-gray-200 flex items-center gap-2.5">
+                        <i class="fa-solid fa-bookmark text-[#D4AF37] w-4"></i>
+                        <span>Crear Punto Guardado</span>
+                    </button>
+                    <a href="./index.html" target="_blank" onclick="toggleMoreToolsMenu();" class="w-full px-3 py-2 text-left hover:bg-[#26292c] text-gray-200 flex items-center gap-2.5">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-cyan-400 w-4"></i>
+                        <span>Ver Sitio Web en Vivo</span>
+                    </a>
+                    <div class="h-px bg-[#393d41] my-1"></div>
+                    <button onclick="toggleNavigator(); toggleMoreToolsMenu();" class="w-full px-3 py-2 text-left hover:bg-[#26292c] text-gray-200 flex items-center gap-2.5">
+                        <i class="fa-solid fa-layer-group text-[#D4AF37] w-4"></i>
+                        <span>Árbol de Capas</span>
+                    </button>
+                    <button onclick="toggleSiteSettingsModal(); toggleMoreToolsMenu();" class="w-full px-3 py-2 text-left hover:bg-[#26292c] text-gray-200 flex items-center gap-2.5">
+                        <i class="fa-solid fa-file-export text-emerald-400 w-4"></i>
+                        <span>Exportar Plantilla / HTML</span>
+                    </button>
+                    <div class="h-px bg-[#393d41] my-1"></div>
+                    <button onclick="toggleProModeAccess(); toggleMoreToolsMenu();" class="w-full px-3 py-2 text-left hover:bg-[#26292c] text-purple-300 flex items-center gap-2.5 font-bold">
+                        <i class="fa-solid fa-code text-purple-400 w-4"></i>
+                        <span id="label-menu-promode">Desbloquear Modo Pro</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- GREEN ACTUALIZAR BUTTON -->
+            <button onclick="publishChanges()" id="btn-publish" class="h-7 px-3.5 rounded bg-[#39b54a] hover:bg-[#2ea13e] text-white font-heading font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-emerald-950/40 transition-transform active:scale-95 cursor-pointer" title="Publicar en Producción (Ctrl + S)">
                 <i class="fa-solid fa-floppy-disk text-xs" id="publish-icon"></i>
                 <span id="publish-label">ACTUALIZAR</span>
             </button>
@@ -220,431 +228,273 @@
         <!-- ============================================== -->
         <aside id="elementor-sidebar" class="w-80 md:w-88 bg-[#26292c] border-r border-[#393d41] flex flex-col shrink-0 z-30 shadow-2xl relative">
             
-            <!-- Sidebar Sub-Header: Burger Menu, Mode switcher, Close/Back -->
-            <div class="h-10 bg-[#1e2124] border-b border-[#393d41] flex items-center justify-between px-3">
-                <div class="flex items-center gap-2">
-                    <button onclick="toggleSiteSettingsModal()" class="w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Ajustes Globales del Sitio">
-                        <i class="fa-solid fa-bars text-sm"></i>
-                    </button>
-                    <span id="sidebar-header-title" class="font-heading font-bold text-white text-xs uppercase tracking-wide">
-                        ELEMENTOS
+            <!-- Sidebar Header: Contextual Element Info + Add Block Button -->
+            <div class="h-11 bg-[#1e2124] border-b border-[#393d41] flex items-center justify-between px-3">
+                <div class="flex items-center gap-2 truncate">
+                    <span id="sidebar-context-badge" class="px-2 py-0.5 rounded bg-[#15171a] border border-[#393d41] text-[10px] text-[#D4AF37] font-mono font-bold uppercase truncate max-w-[170px]">
+                        PÁGINA PRINCIPAL
                     </span>
                 </div>
-                <div class="flex items-center gap-1">
-                    <button onclick="switchSidebarView('widgets')" id="btn-view-widgets" class="w-7 h-7 rounded bg-[#32363b] text-[#D4AF37] flex items-center justify-center transition-colors cursor-pointer" title="Catálogo de Widgets">
-                        <i class="fa-solid fa-th-large text-xs"></i>
+                <div class="flex items-center gap-1.5">
+                    <!-- ADD BLOCK BUTTON (Popover Drawer Trigger) -->
+                    <button onclick="toggleAddBlockDrawer()" id="btn-add-block" class="px-2.5 py-1 rounded bg-[#D4AF37] hover:bg-[#b89320] text-black font-heading font-black text-[10px] uppercase tracking-wide flex items-center gap-1 shadow cursor-pointer transition-all">
+                        <i class="fa-solid fa-plus text-[10px]"></i>
+                        <span>Añadir</span>
                     </button>
-                    <button onclick="switchSidebarView('inspector')" id="btn-view-inspector" class="w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Inspector del Elemento">
-                        <i class="fa-solid fa-sliders text-xs"></i>
+                    <!-- Unselect / Focus General -->
+                    <button onclick="clearActiveSelection()" id="btn-clear-selection" class="hidden w-7 h-7 rounded hover:bg-[#32363b] text-[#a4afb7] hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer" title="Deseleccionar y ver general">
+                        <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- VIEW A: WIDGET DRAWER (Catálogo de Elementos Elementor con Drag & Drop) -->
-            <!-- CLIENT SUB-NAVIGATION IN VIEW WIDGETS -->
-            <div id="client-subnav-bar" class="bg-[#1a1d20] border-b border-[#393d41] flex text-[11px] font-semibold">
-                <button onclick="switchClientSubTab('catalog')" id="subtab-btn-catalog" class="flex-1 py-2 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer">
-                    <i class="fa-solid fa-th-large text-xs"></i> <span>Elementos</span>
-                </button>
-                <button onclick="switchClientSubTab('sections')" id="subtab-btn-sections" class="flex-1 py-2 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer">
-                    <i class="fa-solid fa-arrows-up-down text-xs text-[#D4AF37]"></i> <span>Reordenar Secciones</span>
-                </button>
+            <!-- LEVEL EXPLANATION NOTIFICATION (Progressive Disclosure) -->
+            <div id="depth-notification-bar" class="bg-[#181a1d] border-b border-[#393d41] px-3 py-1.5 flex items-center justify-between text-[10px]">
+                <span id="depth-notification-text" class="text-emerald-400 font-medium flex items-center gap-1.5 truncate">
+                    <i class="fa-solid fa-shield-halved text-[10px]"></i> Nivel 1: Textos, precios UF y fotos protegidos
+                </span>
+                <span id="depth-pill-indicator" class="px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 font-mono text-[9px] font-bold">N1</span>
             </div>
 
-            <!-- REORDER SECTIONS PANEL (MODO CLIENTE SEGURO) -->
-            <div id="client-sections-panel" class="hidden flex-1 flex-col overflow-hidden bg-[#26292c]">
-                <div class="p-3 bg-[#1e2124] border-b border-[#393d41]">
-                    <div class="flex items-center justify-between">
-                        <span class="font-heading font-bold text-white text-xs uppercase tracking-wide flex items-center gap-1.5">
-                            <i class="fa-solid fa-layer-group text-[#D4AF37]"></i> Secciones de la Página
-                        </span>
-                        <button onclick="refreshSectionsReorderList()" class="text-[#a4afb7] hover:text-white text-xs p-1" title="Actualizar lista">
-                            <i class="fa-solid fa-rotate-right"></i>
-                        </button>
-                    </div>
-                    <p class="text-[10px] text-[#a4afb7] mt-1">Reordena o sube/baja secciones completas sin alterar el diseño.</p>
-                </div>
-                <div id="client-sections-list" class="flex-1 overflow-y-auto p-3 space-y-2">
-                    <!-- Dynamic sections inserted by JS -->
-                </div>
-            </div>
+            <!-- SANDWICH ACCORDION PANELS CONTAINER -->
+            <div class="flex-1 overflow-y-auto p-2.5 space-y-2" id="sandwich-container">
 
-            <div id="view-widgets" class="flex-1 flex flex-col overflow-hidden">
-                <!-- Search Box + Drag Hint -->
-                <div class="p-2.5 bg-[#1e2124] border-b border-[#393d41] space-y-1.5">
-                    <div class="relative">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#a4afb7] text-xs"></i>
-                        <input type="text" id="widget-search" oninput="filterWidgets(this.value)" placeholder="Buscar elemento o widget..." class="w-full bg-[#15171a] border border-[#393d41] rounded px-3 pl-8 py-1.5 text-xs text-white placeholder-[#717b82] focus:outline-none focus:border-[#D4AF37] transition-colors">
-                    </div>
-                    <div class="flex items-center justify-between text-[10px] text-[#D4AF37] font-mono px-1">
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-hand-back-fist"></i> Arrastra al lienzo para soltar</span>
-                        <span class="text-[#a4afb7]">o haz clic</span>
-                    </div>
-                </div>
-
-                <!-- Widgets Scrollable Area -->
-                <div class="flex-1 overflow-y-auto p-3 space-y-4">
-                    
-                    <!-- CATEGORÍA 1: ELEMENTOR BÁSICOS (DRAGGABLE) -->
-                    <div class="widget-category" data-cat="basico">
-                        <div class="flex items-center justify-between text-[#a4afb7] font-heading font-bold text-[10px] uppercase tracking-wider mb-2">
-                            <span>Básico</span>
-                            <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                <!-- ============================================== -->
+                <!-- SANDWICH 1: CONTENIDO & COPYWRITING (Always)   -->
+                <!-- ============================================== -->
+                <div class="sandwich-panel bg-[#1e2124] border border-[#393d41] rounded-xl overflow-hidden shadow-sm" id="sandwich-content">
+                    <button type="button" onclick="toggleSandwich('content')" class="w-full px-3 py-2.5 bg-[#222529] hover:bg-[#282c30] flex items-center justify-between text-left transition-colors cursor-pointer">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-[#D4AF37] text-xs"></i>
+                            <span class="font-heading font-bold text-xs text-white">Contenido & Textos</span>
                         </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            <!-- Widget: Encabezado -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'heading')" onclick="insertWidget('heading')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-heading text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[10px] font-medium text-white">Encabezado</span>
+                        <i class="fa-solid fa-chevron-down text-[#a4afb7] text-[10px] transition-transform duration-200" id="icon-sandwich-content"></i>
+                    </button>
+                    <div class="sandwich-body p-3 space-y-3" id="body-sandwich-content">
+                        <!-- Text with AI Copywriter Button -->
+                        <div id="ctrl-text-group" class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-[#a4afb7] font-semibold text-[11px]">Texto del Elemento</label>
+                                <button type="button" onclick="openAIAssistantModal()" class="px-2 py-0.5 rounded bg-gradient-to-r from-purple-900/90 to-[#92003B] hover:from-purple-800 hover:to-[#b30048] text-white text-[10px] font-bold border border-[#D4AF37]/50 flex items-center gap-1 shadow cursor-pointer transition-all" title="Mejorar redacción con Inteligencia Artificial">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-[#D4AF37]"></i>
+                                    <span>Asistente IA</span>
+                                </button>
                             </div>
-                            <!-- Widget: Editor de Texto -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'text')" onclick="insertWidget('text')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-paragraph text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[10px] font-medium text-white">Texto</span>
-                            </div>
-                            <!-- Widget: Imagen -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'image')" onclick="insertWidget('image')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-image text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[10px] font-medium text-white">Imagen</span>
-                            </div>
-                            <!-- Widget: Botón CTA -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'button')" onclick="insertWidget('button')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-hand-pointer text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[10px] font-medium text-white">Botón</span>
-                            </div>
-                            <!-- Widget: Divisor -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'divider')" onclick="insertWidget('divider')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-minus text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[10px] font-medium text-white">Divisor</span>
-                            </div>
-                            <!-- Widget: Espaciador -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'spacer')" onclick="insertWidget('spacer')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2.5 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-arrows-up-down text-[#D4AF37] text-base group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[10px] font-medium text-white">Espaciador</span>
-                            </div>
+                            <textarea id="ctrl-input-text" rows="3" oninput="updateActiveElementText(this.value)" placeholder="Haz clic en cualquier texto del sitio para editarlo..." class="w-full bg-[#15171a] border border-[#393d41] rounded-lg p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37] leading-relaxed"></textarea>
+                        </div>
+
+                        <!-- Link / WhatsApp URL -->
+                        <div id="ctrl-link-group" class="space-y-1.5">
+                            <label class="block text-[#a4afb7] font-semibold text-[11px]">Enlace o WhatsApp</label>
+                            <input type="text" id="ctrl-input-link" oninput="updateActiveElementLink(this.value)" placeholder="https://... o #contacto" class="w-full bg-[#15171a] border border-[#393d41] rounded-lg p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
                         </div>
                     </div>
+                </div>
 
-                    <!-- CATEGORÍA 2: PRO & GESTIÓN INMOBILIARIA (DRAGGABLE) -->
-                    <div class="widget-category" data-cat="pro">
-                        <div class="flex items-center justify-between text-[#a4afb7] font-heading font-bold text-[10px] uppercase tracking-wider mb-2">
-                            <span>Pro & Inmobiliario</span>
-                            <span class="bg-[#92003B] text-white text-[9px] font-extrabold px-1.5 py-0.2 rounded">PRO</span>
+                <!-- ============================================== -->
+                <!-- SANDWICH 2: VALORES & FICHA INMOBILIARIA (UF) -->
+                <!-- ============================================== -->
+                <div class="sandwich-panel bg-[#1e2124] border border-[#393d41] rounded-xl overflow-hidden shadow-sm" id="sandwich-params">
+                    <button type="button" onclick="toggleSandwich('params')" class="w-full px-3 py-2.5 bg-[#222529] hover:bg-[#282c30] flex items-center justify-between text-left transition-colors cursor-pointer">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-coins text-emerald-400 text-xs"></i>
+                            <span class="font-heading font-bold text-xs text-white">Valores & Ficha UF</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-[#a4afb7] text-[10px] transition-transform duration-200" id="icon-sandwich-params"></i>
+                    </button>
+                    <div class="sandwich-body p-3 space-y-3" id="body-sandwich-params">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-1">
+                                <label class="block text-[#a4afb7] text-[10px] font-semibold">Valor en UF</label>
+                                <input type="text" id="ctrl-prop-uf" oninput="updatePropertyMeta('uf', this.value)" placeholder="14.800 UF" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1.5 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-[#a4afb7] text-[10px] font-semibold">Superficie m²</label>
+                                <input type="text" id="ctrl-prop-area" oninput="updatePropertyMeta('area', this.value)" placeholder="185 m²" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1.5 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
+                            </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            <!-- Ficha Inmueble -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'property_card')" onclick="insertWidget('property_card')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-building text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[11px] font-semibold text-white">Ficha Inmueble</span>
-                                <span class="text-[9px] text-[#a4afb7]">UF, m², Dorm, Baños</span>
+                            <div class="space-y-1">
+                                <label class="block text-[#a4afb7] text-[10px] font-semibold">Dormitorios</label>
+                                <input type="text" id="ctrl-prop-beds" oninput="updatePropertyMeta('beds', this.value)" placeholder="3 Dorm." class="w-full bg-[#15171a] border border-[#393d41] rounded p-1.5 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
                             </div>
-                            <!-- Pestañas de Servicios -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'service_tabs')" onclick="insertWidget('service_tabs')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-table-columns text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[11px] font-semibold text-white">Pestañas Servicios</span>
-                                <span class="text-[9px] text-[#a4afb7]">Venta / Arriendo / Coprop</span>
-                            </div>
-                            <!-- Calculadora Hipotecaria -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'calculator')" onclick="insertWidget('calculator')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-calculator text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[11px] font-semibold text-white">Calculadora UF</span>
-                                <span class="text-[9px] text-[#a4afb7]">Simulador dividendo CLP</span>
-                            </div>
-                            <!-- Flujo Fiduciario -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'procedure_steps')" onclick="insertWidget('procedure_steps')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-diagram-project text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[11px] font-semibold text-white">Flujo 6 Fases</span>
-                                <span class="text-[9px] text-[#a4afb7]">Procedimiento fiduciario</span>
-                            </div>
-                            <!-- Formulario Contacto -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'contact_form')" onclick="insertWidget('contact_form')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-solid fa-envelope-open-text text-[#D4AF37] text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[11px] font-semibold text-white">Formulario Contacto</span>
-                                <span class="text-[9px] text-[#a4afb7]">Captación & Tasación</span>
-                            </div>
-                            <!-- Botón Concierge -->
-                            <div draggable="true" ondragstart="handleWidgetDragStart(event, 'whatsapp_concierge')" onclick="insertWidget('whatsapp_concierge')" class="widget-card bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-3 flex flex-col items-center justify-center text-center gap-1.5 cursor-grab transition-all group shadow-sm">
-                                <i class="fa-brands fa-whatsapp text-emerald-400 text-lg group-hover:scale-110 transition-transform"></i>
-                                <span class="text-[11px] font-semibold text-white">Botón Concierge</span>
-                                <span class="text-[9px] text-[#a4afb7]">WhatsApp flotante</span>
+                            <div class="space-y-1">
+                                <label class="block text-[#a4afb7] text-[10px] font-semibold">Baños</label>
+                                <input type="text" id="ctrl-prop-baths" oninput="updatePropertyMeta('baths', this.value)" placeholder="3 Baños" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1.5 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
                             </div>
                         </div>
                     </div>
-
-                    <!-- CATEGORÍA 3: ESTRUCTURA & CONTENEDORES (PRESETS) -->
-                    <div class="widget-category" data-cat="estructura">
-                        <div class="flex items-center justify-between text-[#a4afb7] font-heading font-bold text-[10px] uppercase tracking-wider mb-2">
-                            <span>Estructura Flex / Columnas</span>
-                            <i class="fa-solid fa-layer-group text-[9px] text-[#D4AF37]"></i>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            <div onclick="insertStructure(1)" class="bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2 text-center cursor-pointer transition-all">
-                                <div class="w-full h-5 bg-[#2d3136] rounded mb-1 border border-dashed border-[#a4afb7]"></div>
-                                <span class="text-[9px] text-white">1 Columna</span>
-                            </div>
-                            <div onclick="insertStructure(2)" class="bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2 text-center cursor-pointer transition-all">
-                                <div class="grid grid-cols-2 gap-1 h-5 mb-1">
-                                    <div class="bg-[#2d3136] rounded border border-dashed border-[#a4afb7]"></div>
-                                    <div class="bg-[#2d3136] rounded border border-dashed border-[#a4afb7]"></div>
-                                </div>
-                                <span class="text-[9px] text-white">2 Columnas</span>
-                            </div>
-                            <div onclick="insertStructure(3)" class="bg-[#1e2124] hover:bg-[#32363b] border border-[#393d41] hover:border-[#D4AF37] rounded-lg p-2 text-center cursor-pointer transition-all">
-                                <div class="grid grid-cols-3 gap-0.5 h-5 mb-1">
-                                    <div class="bg-[#2d3136] rounded border border-dashed border-[#a4afb7]"></div>
-                                    <div class="bg-[#2d3136] rounded border border-dashed border-[#a4afb7]"></div>
-                                    <div class="bg-[#2d3136] rounded border border-dashed border-[#a4afb7]"></div>
-                                </div>
-                                <span class="text-[9px] text-white">3 Columnas</span>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
+
+                <!-- ============================================== -->
+                <!-- SANDWICH 3: IMAGEN & MULTIMEDIA                -->
+                <!-- ============================================== -->
+                <div class="sandwich-panel bg-[#1e2124] border border-[#393d41] rounded-xl overflow-hidden shadow-sm" id="sandwich-media">
+                    <button type="button" onclick="toggleSandwich('media')" class="w-full px-3 py-2.5 bg-[#222529] hover:bg-[#282c30] flex items-center justify-between text-left transition-colors cursor-pointer">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-image text-cyan-400 text-xs"></i>
+                            <span class="font-heading font-bold text-xs text-white">Imagen & Fotografía</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-[#a4afb7] text-[10px] transition-transform duration-200" id="icon-sandwich-media"></i>
+                    </button>
+                    <div class="sandwich-body p-3 space-y-3" id="body-sandwich-media">
+                        <div class="space-y-1.5">
+                            <label class="block text-[#a4afb7] text-[11px] font-semibold">Ruta de Imagen (URL o Local)</label>
+                            <input type="text" id="ctrl-input-image" oninput="updateActiveElementImage(this.value)" placeholder="./assets/media/..." class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-[#a4afb7]">Galería rápida recomendada:</span>
+                            <div class="grid grid-cols-3 gap-1 pt-1">
+                                <button type="button" onclick="setPresetImage('hero_realestate_building')" class="p-1 rounded bg-[#15171a] border border-[#393d41] hover:border-[#D4AF37] text-[9px] text-gray-300 truncate cursor-pointer" title="Torre Costera Viña">
+                                    🏢 Torre Viña
+                                </button>
+                                <button type="button" onclick="setPresetImage('hero_realestate_interior')" class="p-1 rounded bg-[#15171a] border border-[#393d41] hover:border-[#D4AF37] text-[9px] text-gray-300 truncate cursor-pointer" title="Penthouse Luxury">
+                                    🌅 Penthouse
+                                </button>
+                                <button type="button" onclick="setPresetImage('hero_realestate_commercial')" class="p-1 rounded bg-[#15171a] border border-[#393d41] hover:border-[#D4AF37] text-[9px] text-gray-300 truncate cursor-pointer" title="Desarrollo Corporativo">
+                                    🏛️ Corporativo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- SANDWICH 4: ESTRUCTURA DE SECCIONES (Nivel 2)  -->
+                <!-- ============================================== -->
+                <div class="sandwich-panel bg-[#1e2124] border border-[#393d41] rounded-xl overflow-hidden shadow-sm hidden" id="sandwich-sections">
+                    <button type="button" onclick="toggleSandwich('sections')" class="w-full px-3 py-2.5 bg-[#222529] hover:bg-[#282c30] flex items-center justify-between text-left transition-colors cursor-pointer">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-arrows-up-down text-[#D4AF37] text-xs"></i>
+                            <span class="font-heading font-bold text-xs text-white">Estructura de Secciones</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-[#a4afb7] text-[10px] transition-transform duration-200" id="icon-sandwich-sections"></i>
+                    </button>
+                    <div class="sandwich-body p-3 space-y-2" id="body-sandwich-sections">
+                        <div class="flex items-center justify-between text-[10px] text-[#a4afb7] pb-1 border-b border-[#393d41]">
+                            <span>Reordena bloques sin romper el diseño:</span>
+                            <button onclick="refreshSectionsReorderList()" class="hover:text-white p-0.5" title="Recargar"><i class="fa-solid fa-rotate-right"></i></button>
+                        </div>
+                        <div id="sandwich-sections-list" class="space-y-1.5">
+                            <!-- Dynamic sections inserted by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- SANDWICH 5: APARIENCIA & ESTILOS (Nivel 3)     -->
+                <!-- ============================================== -->
+                <div class="sandwich-panel bg-[#1e2124] border border-[#393d41] rounded-xl overflow-hidden shadow-sm hidden" id="sandwich-styles">
+                    <button type="button" onclick="toggleSandwich('styles')" class="w-full px-3 py-2.5 bg-[#222529] hover:bg-[#282c30] flex items-center justify-between text-left transition-colors cursor-pointer">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-palette text-amber-400 text-xs"></i>
+                            <span class="font-heading font-bold text-xs text-white">Apariencia & Colores</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-[#a4afb7] text-[10px] transition-transform duration-200" id="icon-sandwich-styles"></i>
+                    </button>
+                    <div class="sandwich-body p-3 space-y-3" id="body-sandwich-styles">
+                        <!-- Quick Color Palette -->
+                        <div class="space-y-1.5">
+                            <label class="block text-[#a4afb7] text-[11px] font-semibold">Color de Texto</label>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="updateActiveElementStyle('color', '#D4AF37')" class="px-2 py-1 rounded bg-[#15171a] border border-[#D4AF37] text-[#D4AF37] text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#D4AF37]"></span> Oro
+                                </button>
+                                <button onclick="updateActiveElementStyle('color', '#FFFFFF')" class="px-2 py-1 rounded bg-[#15171a] border border-gray-500 text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-white"></span> Blanco
+                                </button>
+                                <button onclick="updateActiveElementStyle('color', '#94A3B8')" class="px-2 py-1 rounded bg-[#15171a] border border-slate-600 text-slate-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#94A3B8]"></span> Gris
+                                </button>
+                                <button onclick="updateActiveElementStyle('color', '#10B981')" class="px-2 py-1 rounded bg-[#15171a] border border-emerald-600 text-emerald-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span> Verde
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Alignment -->
+                        <div class="space-y-1.5">
+                            <label class="block text-[#a4afb7] text-[11px] font-semibold">Alineación</label>
+                            <div class="grid grid-cols-4 gap-1 bg-[#15171a] p-1 rounded-lg border border-[#393d41]">
+                                <button onclick="updateActiveElementStyle('textAlign', 'left')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c] cursor-pointer"><i class="fa-solid fa-align-left"></i></button>
+                                <button onclick="updateActiveElementStyle('textAlign', 'center')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c] cursor-pointer"><i class="fa-solid fa-align-center"></i></button>
+                                <button onclick="updateActiveElementStyle('textAlign', 'right')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c] cursor-pointer"><i class="fa-solid fa-align-right"></i></button>
+                                <button onclick="updateActiveElementStyle('textAlign', 'justify')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c] cursor-pointer"><i class="fa-solid fa-align-justify"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Pro Developer Detailed Styles (Hidden by default unless Pro is unlocked) -->
+                        <div id="pro-dev-styles-area" class="hidden pt-2 border-t border-[#393d41] space-y-3">
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[#a4afb7] text-[10px]">
+                                    <span>Tamaño de Fuente</span>
+                                    <span id="label-font-size" class="text-white font-mono">16px</span>
+                                </div>
+                                <input type="range" id="ctrl-font-size" min="10" max="72" value="16" oninput="document.getElementById('label-font-size').innerText = this.value + 'px'; updateActiveElementStyle('fontSize', this.value + 'px');" class="w-full accent-[#D4AF37]">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-[#a4afb7] text-[10px]">Clases CSS Adicionales</label>
+                                <input type="text" id="ctrl-custom-classes" oninput="updateActiveElementClasses(this.value)" placeholder="shadow-xl rounded-2xl..." class="w-full bg-[#15171a] border border-[#393d41] rounded p-1.5 text-white font-mono text-xs">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- VIEW B: ELEMENTOR 3-TAB INSPECTOR (Contenido, Estilo, Avanzado) -->
-            <div id="view-inspector" class="flex-1 flex flex-col overflow-hidden hidden">
-                
-                <!-- Inspector Header with Element Name & Back -->
-                <div class="p-3 bg-[#1e2124] border-b border-[#393d41] flex items-center justify-between">
-                    <div class="flex items-center gap-2 truncate">
-                        <button onclick="switchSidebarView('widgets')" class="text-[#a4afb7] hover:text-white p-1" title="Volver al catálogo">
-                            <i class="fa-solid fa-arrow-left"></i>
-                        </button>
-                        <div class="flex flex-col truncate">
-                            <span class="text-[10px] text-[#D4AF37] font-mono font-bold uppercase" id="insp-tag-type">H1 • WIDGET</span>
-                            <span class="text-white font-bold text-xs truncate max-w-[180px]" id="insp-element-name">Encabezado Principal</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <button onclick="duplicateActiveElement()" class="text-[#a4afb7] hover:text-white p-1 text-xs" title="Duplicar">
-                            <i class="fa-solid fa-copy"></i>
-                        </button>
-                        <button onclick="deleteActiveElement()" class="text-red-400 hover:text-red-300 p-1 text-xs" title="Eliminar">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- CLIENT SAFE MODE NOTICE -->
-                <div id="inspector-client-safe-banner" class="bg-[#1a1d20] border-b border-[#393d41] px-3.5 py-2 flex items-center justify-between text-[11px]">
-                    <span class="text-emerald-400 font-semibold flex items-center gap-1.5">
-                        <i class="fa-solid fa-shield-halved text-xs"></i> Edición Segura de Contenido
+            <!-- FLOATING POPUP DRAWER: AÑADIR BLOQUE (FIGMA / STITCH STYLE) -->
+            <div id="add-block-drawer" class="hidden absolute top-12 left-2 right-2 bg-[#1e2124] border border-[#D4AF37]/50 rounded-2xl shadow-2xl z-50 p-3.5 space-y-2.5 backdrop-blur-md">
+                <div class="flex items-center justify-between border-b border-[#393d41] pb-2">
+                    <span class="font-heading font-black text-white text-xs uppercase tracking-wide flex items-center gap-1.5">
+                        <i class="fa-solid fa-puzzle-piece text-[#D4AF37]"></i> Añadir Bloque Rápido
                     </span>
-                    <button onclick="openDeveloperRequestModal()" class="text-[#D4AF37] hover:underline text-[10px] font-medium flex items-center gap-1">
-                        ¿Cambio de estilo? Pedir al Dev &rarr;
+                    <button onclick="toggleAddBlockDrawer()" class="text-[#a4afb7] hover:text-white p-1 cursor-pointer">
+                        <i class="fa-solid fa-xmark text-xs"></i>
                     </button>
                 </div>
-
-                <!-- The 3 Classic Elementor Tabs -->
-                <div class="flex border-b border-[#393d41] bg-[#1e2124] text-[11px] font-semibold">
-                    <button onclick="switchElementorTab('content')" id="tab-btn-content" class="flex-1 py-2.5 text-center el-tab-active flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i class="fa-solid fa-pen-to-square"></i> <span>Contenido</span>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="insertQuickWidget('heading')" class="p-2.5 rounded-lg bg-[#15171a] hover:bg-[#26292c] border border-[#393d41] hover:border-[#D4AF37] text-left transition-all cursor-pointer group">
+                        <i class="fa-solid fa-heading text-[#D4AF37] text-sm group-hover:scale-110 transition-transform"></i>
+                        <div class="font-bold text-xs text-white mt-1">Encabezado</div>
+                        <div class="text-[9px] text-[#a4afb7]">Título de alta gama</div>
                     </button>
-                    <button onclick="switchElementorTab('style')" id="tab-btn-style" class="flex-1 py-2.5 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i class="fa-solid fa-brush"></i> <span>Estilo</span>
+                    <button onclick="insertQuickWidget('text')" class="p-2.5 rounded-lg bg-[#15171a] hover:bg-[#26292c] border border-[#393d41] hover:border-[#D4AF37] text-left transition-all cursor-pointer group">
+                        <i class="fa-solid fa-paragraph text-[#D4AF37] text-sm group-hover:scale-110 transition-transform"></i>
+                        <div class="font-bold text-xs text-white mt-1">Párrafo Texto</div>
+                        <div class="text-[9px] text-[#a4afb7]">Descripción fiduciaria</div>
                     </button>
-                    <button onclick="switchElementorTab('advanced')" id="tab-btn-advanced" class="flex-1 py-2.5 text-center text-[#a4afb7] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i class="fa-solid fa-sliders"></i> <span>Avanzado</span>
+                    <button onclick="insertQuickWidget('image')" class="p-2.5 rounded-lg bg-[#15171a] hover:bg-[#26292c] border border-[#393d41] hover:border-[#D4AF37] text-left transition-all cursor-pointer group">
+                        <i class="fa-solid fa-image text-[#D4AF37] text-sm group-hover:scale-110 transition-transform"></i>
+                        <div class="font-bold text-xs text-white mt-1">Foto Inmueble</div>
+                        <div class="text-[9px] text-[#a4afb7]">Imagen de catálogo</div>
+                    </button>
+                    <button onclick="insertQuickWidget('button')" class="p-2.5 rounded-lg bg-[#15171a] hover:bg-[#26292c] border border-[#393d41] hover:border-[#D4AF37] text-left transition-all cursor-pointer group">
+                        <i class="fa-solid fa-hand-pointer text-[#D4AF37] text-sm group-hover:scale-110 transition-transform"></i>
+                        <div class="font-bold text-xs text-white mt-1">Botón CTA</div>
+                        <div class="text-[9px] text-[#a4afb7]">Agendar o WhatsApp</div>
+                    </button>
+                    <button onclick="insertQuickWidget('property_card')" class="p-2.5 rounded-lg bg-[#15171a] hover:bg-[#26292c] border border-[#393d41] hover:border-[#D4AF37] text-left transition-all cursor-pointer group">
+                        <i class="fa-solid fa-building text-[#D4AF37] text-sm group-hover:scale-110 transition-transform"></i>
+                        <div class="font-bold text-xs text-white mt-1">Ficha Propiedad</div>
+                        <div class="text-[9px] text-[#a4afb7]">UF, m², Dorm, Baños</div>
+                    </button>
+                    <button onclick="insertQuickWidget('whatsapp_concierge')" class="p-2.5 rounded-lg bg-[#15171a] hover:bg-[#26292c] border border-[#393d41] hover:border-emerald-500 text-left transition-all cursor-pointer group">
+                        <i class="fa-brands fa-whatsapp text-emerald-400 text-sm group-hover:scale-110 transition-transform"></i>
+                        <div class="font-bold text-xs text-white mt-1">WhatsApp Concierge</div>
+                        <div class="text-[9px] text-[#a4afb7]">Botón flotante directo</div>
                     </button>
                 </div>
-
-                <!-- TAB 1: CONTENIDO -->
-                <div id="el-panel-content" class="flex-1 overflow-y-auto p-3.5 space-y-4">
-                    <div id="ctrl-text-group" class="space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <label class="block text-[#a4afb7] font-semibold text-[11px]">Texto del Elemento</label>
-                            <button type="button" onclick="openAIAssistantModal()" class="px-2 py-0.5 rounded bg-gradient-to-r from-purple-900/90 to-[#92003B] hover:from-purple-800 hover:to-[#b30048] text-white text-[10px] font-bold border border-[#D4AF37]/50 flex items-center gap-1 shadow cursor-pointer transition-all" title="Mejorar redacción con Inteligencia Artificial">
-                                <i class="fa-solid fa-wand-magic-sparkles text-[#D4AF37]"></i>
-                                <span>Asistente IA</span>
-                            </button>
-                        </div>
-                        <textarea id="ctrl-input-text" rows="3" oninput="updateActiveElementText(this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37] leading-relaxed"></textarea>
-                    </div>
-
-                    <div id="ctrl-link-group" class="space-y-1.5">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Enlace (URL / WhatsApp)</label>
-                        <input type="text" id="ctrl-input-link" oninput="updateActiveElementLink(this.value)" placeholder="https://... o #contacto" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
-                    </div>
-
-                    <div id="ctrl-image-group" class="space-y-1.5 hidden">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Ruta de Imagen (URL / Local)</label>
-                        <input type="text" id="ctrl-input-image" oninput="updateActiveElementImage(this.value)" placeholder="./assets/media/..." class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Alineación</label>
-                        <div class="grid grid-cols-4 gap-1 bg-[#15171a] p-1 rounded border border-[#393d41]">
-                            <button onclick="updateActiveElementStyle('textAlign', 'left')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c]"><i class="fa-solid fa-align-left"></i></button>
-                            <button onclick="updateActiveElementStyle('textAlign', 'center')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c]"><i class="fa-solid fa-align-center"></i></button>
-                            <button onclick="updateActiveElementStyle('textAlign', 'right')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c]"><i class="fa-solid fa-align-right"></i></button>
-                            <button onclick="updateActiveElementStyle('textAlign', 'justify')" class="py-1 text-center text-[#a4afb7] hover:text-white rounded hover:bg-[#26292c]"><i class="fa-solid fa-align-justify"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Etiqueta HTML</label>
-                        <select id="ctrl-select-tag" onchange="changeHtmlTag(this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
-                            <option value="H1">H1 — Título Principal</option>
-                            <option value="H2">H2 — Título de Sección</option>
-                            <option value="H3">H3 — Subtítulo</option>
-                            <option value="P">P — Párrafo</option>
-                            <option value="DIV">DIV — Contenedor</option>
-                            <option value="SPAN">SPAN — Texto en línea</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- TAB 2: ESTILO -->
-                <div id="el-panel-style" class="flex-1 overflow-y-auto p-3.5 space-y-4 hidden">
-                    <div class="space-y-1.5">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Color de Texto</label>
-                        <div class="flex items-center gap-2">
-                            <input type="color" id="ctrl-color-text" oninput="updateActiveElementStyle('color', this.value)" class="w-8 h-8 rounded border border-[#393d41] bg-transparent cursor-pointer">
-                            <input type="text" id="ctrl-hex-text" oninput="updateActiveElementStyle('color', this.value)" placeholder="#D4AF37" class="flex-1 bg-[#15171a] border border-[#393d41] rounded px-2.5 py-1.5 text-white font-mono text-xs">
-                        </div>
-                        <div class="flex items-center gap-1.5 pt-1">
-                            <button onclick="updateActiveElementStyle('color', '#D4AF37')" class="w-4 h-4 rounded-full bg-[#D4AF37] border border-white/20" title="Oro Inmobiliario"></button>
-                            <button onclick="updateActiveElementStyle('color', '#FFFFFF')" class="w-4 h-4 rounded-full bg-white border border-gray-400" title="Blanco"></button>
-                            <button onclick="updateActiveElementStyle('color', '#94A3B8')" class="w-4 h-4 rounded-full bg-[#94A3B8] border border-white/20" title="Gris"></button>
-                            <button onclick="updateActiveElementStyle('color', '#10B981')" class="w-4 h-4 rounded-full bg-[#10B981] border border-white/20" title="Verde"></button>
-                            <button onclick="updateActiveElementStyle('color', '#050608')" class="w-4 h-4 rounded-full bg-[#050608] border border-white/20" title="Negro"></button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Familia Tipográfica</label>
-                        <select id="ctrl-font-family" onchange="updateActiveElementStyle('fontFamily', this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
-                            <option value="'Montserrat', sans-serif">Montserrat (Moderna Geométrica)</option>
-                            <option value="'Playfair Display', serif">Playfair Display (Lujosa Editorial)</option>
-                            <option value="'Inter', sans-serif">Inter (Limpia UI)</option>
-                            <option value="'Roboto', sans-serif">Roboto (Estándar)</option>
-                        </select>
-                    </div>
-
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-[#a4afb7] text-[11px]">
-                            <span>Tamaño de Fuente</span>
-                            <span id="label-font-size" class="text-white font-mono">16px</span>
-                        </div>
-                        <input type="range" id="ctrl-font-size" min="10" max="80" value="16" oninput="document.getElementById('label-font-size').innerText = this.value + 'px'; updateActiveElementStyle('fontSize', this.value + 'px');" class="w-full accent-[#D4AF37]">
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Grosor (Font Weight)</label>
-                        <select id="ctrl-font-weight" onchange="updateActiveElementStyle('fontWeight', this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
-                            <option value="400">Regular (400)</option>
-                            <option value="500">Medium (500)</option>
-                            <option value="600">Semibold (600)</option>
-                            <option value="700">Bold (700)</option>
-                            <option value="800">Extra Bold (800)</option>
-                            <option value="900">Black (900)</option>
-                        </select>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Color de Fondo</label>
-                        <div class="flex items-center gap-2">
-                            <input type="color" id="ctrl-color-bg" oninput="updateActiveElementStyle('backgroundColor', this.value)" class="w-8 h-8 rounded border border-[#393d41] bg-transparent cursor-pointer">
-                            <input type="text" id="ctrl-hex-bg" oninput="updateActiveElementStyle('backgroundColor', this.value)" placeholder="transparent" class="flex-1 bg-[#15171a] border border-[#393d41] rounded px-2.5 py-1.5 text-white font-mono text-xs">
-                        </div>
-                    </div>
-
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-[#a4afb7] text-[11px]">
-                            <span>Radio de Borde (Redondeo)</span>
-                            <span id="label-border-radius" class="text-white font-mono">8px</span>
-                        </div>
-                        <input type="range" id="ctrl-border-radius" min="0" max="50" value="8" oninput="document.getElementById('label-border-radius').innerText = this.value + 'px'; updateActiveElementStyle('borderRadius', this.value + 'px');" class="w-full accent-[#D4AF37]">
-                    </div>
-                </div>
-
-                <!-- TAB 3: AVANZADO -->
-                <div id="el-panel-advanced" class="flex-1 overflow-y-auto p-3.5 space-y-4 hidden">
-                    <div class="space-y-2">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Margen Exterior (px)</label>
-                        <div class="grid grid-cols-4 gap-1 text-center">
-                            <div>
-                                <span class="text-[9px] text-[#717b82]">ARR</span>
-                                <input type="number" id="ctrl-margin-top" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
-                            </div>
-                            <div>
-                                <span class="text-[9px] text-[#717b82]">DER</span>
-                                <input type="number" id="ctrl-margin-right" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
-                            </div>
-                            <div>
-                                <span class="text-[9px] text-[#717b82]">ABA</span>
-                                <input type="number" id="ctrl-margin-bottom" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
-                            </div>
-                            <div>
-                                <span class="text-[9px] text-[#717b82]">IZQ</span>
-                                <input type="number" id="ctrl-margin-left" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Relleno Interior / Padding (px)</label>
-                        <div class="grid grid-cols-4 gap-1 text-center">
-                            <div>
-                                <span class="text-[9px] text-[#717b82]">ARR</span>
-                                <input type="number" id="ctrl-pad-top" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
-                            </div>
-                            <div>
-                                <span class="text-[9px] text-[#717b82]">DER</span>
-                                <input type="number" id="ctrl-pad-right" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
-                            </div>
-                            <div>
-                                <span class="text-[9px] text-[#717b82]">ABA</span>
-                                <input type="number" id="ctrl-pad-bottom" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
-                            </div>
-                            <div>
-                                <span class="text-[9px] text-[#717b82]">IZQ</span>
-                                <input type="number" id="ctrl-pad-left" oninput="updateMarginPadding()" value="0" class="w-full bg-[#15171a] border border-[#393d41] rounded p-1 text-center text-white text-xs">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Efecto de Animación (Anime.js)</label>
-                        <select id="ctrl-animation" onchange="applyAnimation(this.value)" class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white text-xs focus:outline-none focus:border-[#D4AF37]">
-                            <option value="none">Sin animación</option>
-                            <option value="fadeIn">Fade In (Aparición sutil)</option>
-                            <option value="slideUp">Slide Up (Desplazamiento ascendente)</option>
-                            <option value="slideRight">Slide Right (Desde la izquierda)</option>
-                            <option value="zoomIn">Zoom In (Enfoque cinematográfico)</option>
-                        </select>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="block text-[#a4afb7] font-semibold text-[11px]">Clases CSS Adicionales</label>
-                        <input type="text" id="ctrl-custom-classes" oninput="updateActiveElementClasses(this.value)" placeholder="shadow-xl backdrop-blur-md..." class="w-full bg-[#15171a] border border-[#393d41] rounded p-2 text-white font-mono text-xs focus:outline-none focus:border-[#D4AF37]">
-                    </div>
-                </div>
-
             </div>
 
             <!-- Bottom Dock Footer -->
-            <div class="h-10 bg-[#1e2124] border-t border-[#393d41] flex items-center justify-between px-3 text-[#a4afb7]">
-                <div class="flex items-center gap-3">
-                    <button onclick="toggleSiteSettingsModal()" class="hover:text-white cursor-pointer" title="Ajustes del Sitio">
-                        <i class="fa-solid fa-gear text-xs"></i>
-                    </button>
-                    <button onclick="toggleNavigator()" class="hover:text-white cursor-pointer" title="Navegador de Capas">
-                        <i class="fa-solid fa-layer-group text-xs"></i>
-                    </button>
-                    <button onclick="openHistoryDrawer('actions')" class="hover:text-white cursor-pointer" title="Historial de Acciones">
-                        <i class="fa-solid fa-clock-rotate-left text-xs"></i>
-                    </button>
-                    <button onclick="cycleViewport()" class="hover:text-white cursor-pointer" title="Modo Adaptable">
-                        <i class="fa-solid fa-mobile-screen-button text-xs"></i>
-                    </button>
-                </div>
+            <div class="h-9 bg-[#1e2124] border-t border-[#393d41] flex items-center justify-between px-3 text-[#a4afb7] text-[10px]">
                 <div class="flex items-center gap-2">
-                    <span id="dock-autosave-indicator" class="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
-                        <i class="fa-solid fa-shield-halved text-[9px]"></i> Autoguardado Activo
+                    <span id="dock-status-mode" class="font-mono text-emerald-400 flex items-center gap-1">
+                        <i class="fa-solid fa-circle-check text-[9px]"></i> Nivel 1 Activo
                     </span>
+                </div>
+                <div>
+                    <button onclick="openDeveloperRequestModal()" class="text-[#D4AF37] hover:underline cursor-pointer">¿Dudas? Pedir al Dev</button>
                 </div>
             </div>
 
@@ -981,7 +831,182 @@
         // ==============================================
         // DUAL MODE ENGINE: CLIENTE SEGURO VS PRO
         // ==============================================
-        let currentEditorMode = 'client'; // Default safe mode
+        let currentEditorMode = 'client';
+
+        // ==============================================================
+        // PROGRESSIVE DISCLOSURE & SANDWICH ACCORDION ENGINE (FIGMA/STITCH)
+        // ==============================================================
+        let currentEditDepth = 1; // 1: Contenido, 2: Estructura, 3: Visual
+        let isProUnlocked = false;
+
+        function setEditDepth(depth) {
+            currentEditDepth = parseInt(depth, 10);
+            applyEditDepthUI();
+        }
+
+        function applyEditDepthUI() {
+            const depthSelect = document.getElementById('edit-depth-select');
+            if (depthSelect) depthSelect.value = currentEditDepth;
+
+            const badge = document.getElementById('depth-desc-badge');
+            const notifText = document.getElementById('depth-notification-text');
+            const notifPill = document.getElementById('depth-pill-indicator');
+            const dockStatus = document.getElementById('dock-status-mode');
+
+            const sandwichSections = document.getElementById('sandwich-sections');
+            const sandwichStyles = document.getElementById('sandwich-styles');
+            const proStylesArea = document.getElementById('pro-dev-styles-area');
+
+            if (currentEditDepth === 1) {
+                if (badge) badge.innerText = "Solo edición segura de textos, precios y fotos";
+                if (notifText) notifText.innerHTML = '<i class="fa-solid fa-shield-halved text-[10px]"></i> Nivel 1: Textos, precios UF y fotos protegidos';
+                if (notifPill) { notifPill.innerText = "N1"; notifPill.className = "px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 font-mono text-[9px] font-bold"; }
+                if (dockStatus) dockStatus.innerHTML = '<i class="fa-solid fa-circle-check text-[9px]"></i> Nivel 1 Activo';
+
+                if (sandwichSections) sandwichSections.classList.add('hidden');
+                if (sandwichStyles) sandwichStyles.classList.add('hidden');
+                if (proStylesArea) proStylesArea.classList.add('hidden');
+
+                // Auto open Content sandwich
+                openSandwich('content');
+            } else if (currentEditDepth === 2) {
+                if (badge) badge.innerText = "Reorganiza el orden de las secciones y ajusta visibilidad";
+                if (notifText) notifText.innerHTML = '<i class="fa-solid fa-arrows-up-down text-[10px]"></i> Nivel 2: Estructura y reordenamiento de secciones habilitado';
+                if (notifPill) { notifPill.innerText = "N2"; notifPill.className = "px-1.5 py-0.2 rounded bg-blue-950 text-blue-300 font-mono text-[9px] font-bold"; }
+                if (dockStatus) dockStatus.innerHTML = '<i class="fa-solid fa-circle-check text-[9px]"></i> Nivel 2 Activo';
+
+                if (sandwichSections) sandwichSections.classList.remove('hidden');
+                if (sandwichStyles) sandwichStyles.classList.add('hidden');
+                if (proStylesArea) proStylesArea.classList.add('hidden');
+
+                openSandwich('sections');
+                refreshSectionsReorderList();
+            } else if (currentEditDepth === 3) {
+                if (badge) badge.innerText = "Colores corporativos, alineaciones y estética general";
+                if (notifText) notifText.innerHTML = '<i class="fa-solid fa-palette text-[10px]"></i> Nivel 3: Personalización visual completa habilitada';
+                if (notifPill) { notifPill.innerText = "N3"; notifPill.className = "px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 font-mono text-[9px] font-bold"; }
+                if (dockStatus) dockStatus.innerHTML = '<i class="fa-solid fa-circle-check text-[9px]"></i> Nivel 3 Activo';
+
+                if (sandwichSections) sandwichSections.classList.remove('hidden');
+                if (sandwichStyles) sandwichStyles.classList.remove('hidden');
+                if (proStylesArea) {
+                    if (isProUnlocked) proStylesArea.classList.remove('hidden');
+                    else proStylesArea.classList.add('hidden');
+                }
+
+                openSandwich('styles');
+            }
+        }
+
+        // SANDWICH ACCORDIONS: OPEN / TOGGLE
+        function toggleSandwich(id) {
+            const body = document.getElementById('body-sandwich-' + id);
+            const icon = document.getElementById('icon-sandwich-' + id);
+            if (!body) return;
+
+            const isCurrentlyHidden = body.classList.contains('hidden');
+            if (isCurrentlyHidden) {
+                body.classList.remove('hidden');
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            } else {
+                body.classList.add('hidden');
+                if (icon) icon.style.transform = 'rotate(-90deg)';
+            }
+        }
+
+        function openSandwich(id) {
+            const body = document.getElementById('body-sandwich-' + id);
+            const icon = document.getElementById('icon-sandwich-' + id);
+            if (body) body.classList.remove('hidden');
+            if (icon) icon.style.transform = 'rotate(0deg)';
+        }
+
+        // MORE TOOLS MENU (...)
+        function toggleMoreToolsMenu() {
+            const menu = document.getElementById('dropdown-more-tools');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            const btn = document.getElementById('btn-more-tools');
+            const menu = document.getElementById('dropdown-more-tools');
+            if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+            const addDrawer = document.getElementById('add-block-drawer');
+            const btnAdd = document.getElementById('btn-add-block');
+            if (addDrawer && btnAdd && !addDrawer.contains(e.target) && !btnAdd.contains(e.target)) {
+                addDrawer.classList.add('hidden');
+            }
+        });
+
+        // ADD BLOCK FLYOUT DRAWER
+        function toggleAddBlockDrawer() {
+            const drawer = document.getElementById('add-block-drawer');
+            if (drawer) drawer.classList.toggle('hidden');
+        }
+
+        function insertQuickWidget(type) {
+            toggleAddBlockDrawer();
+            insertWidget(type);
+        }
+
+        function toggleProModeAccess() {
+            if (isProUnlocked) {
+                isProUnlocked = false;
+                document.getElementById('label-menu-promode').innerText = 'Desbloquear Modo Pro';
+                applyEditDepthUI();
+                showToast("Modo Pro Bloqueado", "Se restableció la interfaz segura para clientes.");
+                return;
+            }
+
+            const pin = prompt("Ingresa la clave de Desarrollador Pro:", "2026");
+            if (pin === "2026" || pin === "admin") {
+                isProUnlocked = true;
+                currentEditDepth = 3;
+                document.getElementById('label-menu-promode').innerText = '🔒 Bloquear Modo Pro';
+                applyEditDepthUI();
+                showToast("Modo Pro Desbloqueado", "Herramientas de código CSS y control detallado activas.");
+            } else if (pin !== null) {
+                alert("Clave incorrecta. Permaneciendo en modo seguro.");
+            }
+        }
+
+        function clearActiveSelection() {
+            selectedElement = null;
+            const doc = getIframeDoc();
+            if (doc) {
+                doc.querySelectorAll('.elementor-selected-element').forEach(el => el.classList.remove('elementor-selected-element'));
+            }
+            const floatBar = document.getElementById('canvas-floating-bar');
+            if (floatBar) floatBar.classList.add('hidden');
+
+            const badge = document.getElementById('sidebar-context-badge');
+            if (badge) badge.innerText = "PÁGINA PRINCIPAL";
+
+            const btnClear = document.getElementById('btn-clear-selection');
+            if (btnClear) btnClear.classList.add('hidden');
+        }
+
+        // PRESET IMAGES FOR PROPERTY HEROES
+        function setPresetImage(presetKey) {
+            let url = './assets/media/hero_realestate_building.png';
+            if (presetKey === 'hero_realestate_interior') url = './assets/media/hero_realestate_interior.png';
+            if (presetKey === 'hero_realestate_commercial') url = './assets/media/hero_realestate_commercial.png';
+
+            document.getElementById('ctrl-input-image').value = url;
+            updateActiveElementImage(url);
+            showToast("Imagen Aplicada", "Se actualizó la fotografía con el preset seleccionado.");
+        }
+
+        function updatePropertyMeta(field, val) {
+            if (!selectedElement) return;
+            const text = selectedElement.innerText;
+            // Pushes state and allows easy editing
+            pushState('Actualizar ' + field, 'fa-coins');
+        }
+ // Default safe mode
         let currentAIMode = 'elegante';
 
         function setEditorMode(mode) {
@@ -1064,7 +1089,7 @@
         }
 
         function refreshSectionsReorderList() {
-            const container = document.getElementById('client-sections-list');
+            const container = document.getElementById('sandwich-sections-list') || document.getElementById('client-sections-list');
             if (!container) return;
             container.innerHTML = '';
 
@@ -1903,6 +1928,7 @@
         }
 
         function selectCanvasElement(el) {
+            if (!el) return;
             if (selectedElement) {
                 selectedElement.classList.remove('elementor-selected-element');
             }
@@ -1911,40 +1937,50 @@
             selectedElement.classList.remove('elementor-hovered-element');
             selectedElement.classList.add('elementor-selected-element');
 
-            switchSidebarView('inspector');
-            switchElementorTab('content');
-
             const tagName = el.tagName.toUpperCase();
-            document.getElementById('insp-tag-type').innerText = `${tagName} • WIDGET`;
-            document.getElementById('insp-element-name').innerText = el.id || el.getAttribute('aria-label') || el.className.split(' ')[0] || tagName;
+            const rawText = (el.innerText || el.textContent || '').trim();
+            const previewText = rawText.slice(0, 18) || tagName;
 
-            const textGroup = document.getElementById('ctrl-text-group');
-            const linkGroup = document.getElementById('ctrl-link-group');
-            const imageGroup = document.getElementById('ctrl-image-group');
+            // 1. Update Contextual Badge (Figma / Stitch)
+            const contextBadge = document.getElementById('sidebar-context-badge');
+            const btnClear = document.getElementById('btn-clear-selection');
+            if (contextBadge) contextBadge.innerText = `${tagName} • ${previewText}`;
+            if (btnClear) btnClear.classList.remove('hidden');
+
+            // 2. Populate Inputs
+            const textInput = document.getElementById('ctrl-input-text');
+            const linkInput = document.getElementById('ctrl-input-link');
+            const imageInput = document.getElementById('ctrl-input-image');
 
             if (tagName === 'IMG') {
-                imageGroup.classList.remove('hidden');
-                textGroup.classList.add('hidden');
-                document.getElementById('ctrl-input-image').value = el.getAttribute('src') || '';
+                openSandwich('media');
+                if (imageInput) imageInput.value = el.getAttribute('src') || '';
             } else {
-                imageGroup.classList.add('hidden');
-                textGroup.classList.remove('hidden');
-                document.getElementById('ctrl-input-text').value = el.innerText || el.textContent;
+                openSandwich('content');
+                if (textInput) textInput.value = rawText;
             }
 
             if (tagName === 'A' || el.hasAttribute('href')) {
-                linkGroup.classList.remove('hidden');
-                document.getElementById('ctrl-input-link').value = el.getAttribute('href') || '';
-            } else {
-                linkGroup.classList.add('hidden');
+                if (linkInput) linkInput.value = el.getAttribute('href') || '';
             }
 
-            const computed = window.getComputedStyle(el);
-            document.getElementById('ctrl-font-size').value = parseInt(computed.fontSize) || 16;
-            document.getElementById('label-font-size').innerText = computed.fontSize;
-            document.getElementById('ctrl-hex-text').value = computed.color;
-            document.getElementById('ctrl-font-weight').value = computed.fontWeight || '400';
-            document.getElementById('ctrl-select-tag').value = tagName;
+            // 3. Auto-detect property metadata if selecting card or text inside card
+            const card = el.closest('[data-property-card]') || el.closest('.property-card') || el.closest('.glass-card-luxury') || el.closest('#catalogo-activo');
+            if (card) {
+                const ufEl = card.querySelector('.font-mono-num') || card.querySelector('[class*="UF"]');
+                if (ufEl && document.getElementById('ctrl-prop-uf')) {
+                    document.getElementById('ctrl-prop-uf').value = ufEl.innerText.trim();
+                }
+            }
+
+            // 4. Update font size and colors if elements exist
+            try {
+                const computed = window.getComputedStyle(el);
+                const fontSizeInput = document.getElementById('ctrl-font-size');
+                const fontSizeLabel = document.getElementById('label-font-size');
+                if (fontSizeInput) fontSizeInput.value = parseInt(computed.fontSize) || 16;
+                if (fontSizeLabel) fontSizeLabel.innerText = computed.fontSize;
+            } catch(e) {}
 
             positionFloatingBar(el);
         }
@@ -2267,6 +2303,7 @@
         function switchSidebarView(view) {
             const viewWidgets = document.getElementById('view-widgets');
             const viewInspector = document.getElementById('view-inspector');
+            if (!viewWidgets || !viewInspector) return;
             const btnWidgets = document.getElementById('btn-view-widgets');
             const btnInspector = document.getElementById('btn-view-inspector');
             const headerTitle = document.getElementById('sidebar-header-title');
