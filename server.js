@@ -29,6 +29,38 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon'
 };
 
+// Intelligent Chilean Luxury Real Estate Copywriting Engine (editor-agents)
+function generateChileanLuxuryCopy(text, mode = 'elegante') {
+  const clean = text.trim();
+
+  if (mode === 'elegante') {
+    if (clean.length < 30) {
+      return `Residencia Exclusiva de Alto Estándar con Vistas Panorámicas Privilegiadas`;
+    }
+    return `Propiedad de arquitectura contemporánea y finas terminaciones en enclave residencial consolidado. Cuenta con amplios espacios iluminados naturalmente, terraza panorámica, seguridad integral 24/7 y conectividad directa a los principales centros de servicios y colegios.`;
+  }
+
+  if (mode === 'chile') {
+    return `Exclusiva propiedad ubicada en el sector más cotizado de Santiago Oriente y la Costa Central (Viña del Mar / Concón). Excelente plusvalía en UF, conserjería de alta gama, control de acceso fiduciario y gastos comunes controlados bajo la Ley de Copropiedad N° 21.442.`;
+  }
+
+  if (mode === 'fiduciario') {
+    return `Activo inmobiliario seleccionado bajo rigurosa auditoría de títulos, tasación comercial técnica y proyección fiduciaria para inversionistas patrimoniales. Gestión y comercialización directa a cargo de W Gestión Inmobiliaria.`;
+  }
+
+  if (mode === 'cta') {
+    const ctas = [
+      'AGENDAR VISITA PRIVADA',
+      'SOLICITAR DOSSIER COMPLETO (UF)',
+      'COORDINAR REUNIÓN CON EJECUTIVO',
+      'CONSIGNAR PROPIEDAD EXCLUSIVA'
+    ];
+    return ctas[Math.floor(Math.random() * ctas.length)];
+  }
+
+  return clean;
+}
+
 const server = http.createServer((req, res) => {
   const urlObj = new URL(req.url, `http://${req.headers.host}`);
   const pathname = urlObj.pathname;
@@ -44,14 +76,72 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // --- API: AI Real Estate Copywriting Assistant (editor-agents) ---
+  if (pathname === '/api/ai/enhance-text' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const { text = '', mode = 'elegante' } = JSON.parse(body);
+        const enhanced = generateChileanLuxuryCopy(text, mode);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: true,
+          mode: mode,
+          original: text,
+          enhanced: enhanced
+        }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
+  }
+
+  // --- API: Developer Request Channel ---
+  if (pathname === '/api/developer-request' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        const { category = 'Modificación Avanzada', description = '', contactName = 'Cliente W Gestión' } = JSON.parse(body);
+        
+        const whatsAppPhone = '56965312618';
+        const targetEmail = 'automatizable@gmail.com';
+
+        const messageText = `*Solicitud de Cambio Avanzado - W Gestión Inmobiliaria*\n` +
+          `• *Tipo:* ${category}\n` +
+          `• *Cliente:* ${contactName}\n` +
+          `• *Detalle:* ${description}\n` +
+          `• *Fecha:* ${new Date().toLocaleString()}\n` +
+          `• *Entorno:* V2 Avanzada`;
+
+        const waLink = `https://wa.me/${whatsAppPhone}?text=${encodeURIComponent(messageText)}`;
+        const mailtoLink = `mailto:${targetEmail}?subject=${encodeURIComponent('Solicitud de Cambio Avanzado - W Gestión Inmobiliaria')}&body=${encodeURIComponent(messageText)}`;
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          success: true,
+          waLink: waLink,
+          mailtoLink: mailtoLink,
+          message: 'Solicitud estructurada correctamente para envío.'
+        }));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    return;
+  }
+
   // --- API: Autosave draft ---
   if (pathname === '/api/autosave' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
       try {
-        const payload = JSON.parse(body);
-        const { html } = payload;
+        const { html } = JSON.parse(body);
         if (!html) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: false, error: 'HTML ausente' }));
@@ -60,11 +150,7 @@ const server = http.createServer((req, res) => {
 
         fs.writeFileSync(AUTOSAVE_FILE, html, 'utf8');
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({
-          success: true,
-          timestamp: new Date().toISOString(),
-          message: 'Borrador guardado automáticamente.'
-        }));
+        res.end(JSON.stringify({ success: true, timestamp: new Date().toISOString() }));
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: false, error: err.message }));
@@ -128,14 +214,14 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // --- API: Save & Publish HTML from Elementor Editor ---
+  // --- API: Save & Publish HTML ---
   if (pathname === '/api/save' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
       try {
         const payload = JSON.parse(body);
-        const { html, filename = 'index.html', label = 'Publicación Manual' } = payload;
+        const { html, filename = 'index.html' } = payload;
 
         if (!html || typeof html !== 'string') {
           res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -143,7 +229,6 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        // 1. Create timestamped backup of current file before overwriting
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         const backupFileName = `revision-${timestamp}.html`;
         const backupFilePath = path.join(BACKUPS_DIR, backupFileName);
@@ -153,19 +238,15 @@ const server = http.createServer((req, res) => {
           fs.copyFileSync(targetFilePath, backupFilePath);
         }
 
-        // 2. Write new HTML to target and mirror if index.html
         fs.writeFileSync(targetFilePath, html, 'utf8');
         if (filename === 'index.html') {
           const mirrorPath = path.join(__dirname, 'landing.html');
           fs.writeFileSync(mirrorPath, html, 'utf8');
         }
 
-        // Remove old autosave draft once explicitly published
         if (fs.existsSync(AUTOSAVE_FILE)) {
           fs.unlinkSync(AUTOSAVE_FILE);
         }
-
-        console.log(`[API /api/save] ✅ Archivo ${filename} actualizado. Respaldo creado: ${backupFileName}`);
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
@@ -175,7 +256,6 @@ const server = http.createServer((req, res) => {
           timestamp: new Date().toISOString()
         }));
       } catch (err) {
-        console.error('[API /api/save] ❌ Error:', err);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: false, error: err.message }));
       }
@@ -210,7 +290,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // --- API: Restore Backup or Checkpoint ---
+  // --- API: Restore Backup ---
   if (pathname === '/api/restore' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => body += chunk);
@@ -224,7 +304,6 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        // Before restoring, take a safety backup of current state
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         const safetyBackup = path.join(BACKUPS_DIR, `safety-before-restore-${timestamp}.html`);
         const targetPath = path.join(__dirname, target);
@@ -251,7 +330,6 @@ const server = http.createServer((req, res) => {
   // --- Static File Serving ---
   let filePath = path.join(__dirname, pathname === '/' ? 'index.html' : decodeURIComponent(pathname));
 
-  // Security: prevent path traversal outside root
   if (!filePath.startsWith(__dirname)) {
     res.writeHead(403, { 'Content-Type': 'text/plain' });
     res.end('403 Prohibido');
@@ -268,30 +346,12 @@ const server = http.createServer((req, res) => {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
-    // Handle partial range requests (for video streaming)
-    const range = req.headers.range;
-    if (range && ext === '.mp4') {
-      const parts = range.replace(/bytes=/, '').split('-');
-      const start = parseInt(parts[0], 10);
-      const end = parts[1] ? parseInt(parts[1], 10) : stats.size - 1;
-      const chunksize = end - start + 1;
-      const file = fs.createReadStream(filePath, { start, end });
-
-      res.writeHead(206, {
-        'Content-Range': `bytes ${start}-${end}/${stats.size}`,
-        'Accept-Ranges': 'bytes',
-        'Content-Length': chunksize,
-        'Content-Type': contentType
-      });
-      file.pipe(res);
-    } else {
-      res.writeHead(200, {
-        'Content-Length': stats.size,
-        'Content-Type': contentType,
-        'Accept-Ranges': 'bytes'
-      });
-      fs.createReadStream(filePath).pipe(res);
-    }
+    res.writeHead(200, {
+      'Content-Length': stats.size,
+      'Content-Type': contentType,
+      'Accept-Ranges': 'bytes'
+    });
+    fs.createReadStream(filePath).pipe(res);
   });
 });
 
@@ -299,7 +359,6 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`=======================================================`);
   console.log(`🚀 Servidor W Gestión Inmobiliaria V2 activo:`);
   console.log(`👉 Landing Page: http://localhost:${PORT}/`);
-  console.log(`👉 Elementor Visual Builder: http://localhost:${PORT}/intranet.html`);
-  console.log(`👉 Elementor Direct Alias: http://localhost:${PORT}/editor.html`);
+  console.log(`👉 Editor Visual Modo Dual: http://localhost:${PORT}/intranet.html`);
   console.log(`=======================================================`);
 });
